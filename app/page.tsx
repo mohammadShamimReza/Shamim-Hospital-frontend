@@ -69,13 +69,13 @@ import {
 } from "@/components/ui/sidebar";
 const data = {
   user: {
-    name: "shadcn",
+    name: "Shamim (admin)",
     email: "m@example.com",
     avatar: "/avatars/shadcn.jpg",
   },
   navMain: [
     {
-      title: "Playground",
+      title: "Overview",
       url: "#",
       icon: SquareTerminal,
       isActive: true,
@@ -95,7 +95,7 @@ const data = {
       ],
     },
     {
-      title: "Models",
+      title: "Doctors",
       url: "#",
       icon: Bot,
       items: [
@@ -114,7 +114,7 @@ const data = {
       ],
     },
     {
-      title: "Documentation",
+      title: "Patients",
       url: "#",
       icon: BookOpen,
       items: [
@@ -137,7 +137,99 @@ const data = {
       ],
     },
     {
-      title: "Settings",
+      title: "Staff",
+      url: "#",
+      icon: Settings2,
+      items: [
+        {
+          title: "General",
+          url: "#",
+        },
+        {
+          title: "Team",
+          url: "#",
+        },
+        {
+          title: "Billing",
+          url: "#",
+        },
+        {
+          title: "Limits",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Naurse",
+      url: "#",
+      icon: Settings2,
+      items: [
+        {
+          title: "Naurse",
+          url: "#",
+        },
+        {
+          title: "Team",
+          url: "#",
+        },
+        {
+          title: "Billing",
+          url: "#",
+        },
+        {
+          title: "Limits",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "",
+      url: "#",
+      icon: Settings2,
+      items: [
+        {
+          title: "General",
+          url: "#",
+        },
+        {
+          title: "Team",
+          url: "#",
+        },
+        {
+          title: "Billing",
+          url: "#",
+        },
+        {
+          title: "Limits",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Inbox",
+      url: "#",
+      icon: Settings2,
+      items: [
+        {
+          title: "Inbox",
+          url: "#",
+        },
+        {
+          title: "Team",
+          url: "#",
+        },
+        {
+          title: "Billing",
+          url: "#",
+        },
+        {
+          title: "Limits",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Services",
       url: "#",
       icon: Settings2,
       items: [
@@ -204,8 +296,8 @@ export default function Page() {
                     <Command className="size-4" />
                   </div>
                   <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold">Acme Inc</span>
-                    <span className="truncate text-xs">Enterprise</span>
+                    <span className="truncate font-semibold">Sh Hospital</span>
+                    <span className="truncate text-xs">Hospital Management</span>
                   </div>
                 </a>
               </SidebarMenuButton>
