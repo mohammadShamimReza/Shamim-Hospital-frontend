@@ -1,27 +1,29 @@
 "use client";
 
 
+import DoctorPage from "@/components/contants/Doctor";
+import Header from "@/components/contants/Header";
+import InboxPage from "@/components/contants/Inbox";
+import NursePage from "@/components/contants/Naurse";
+import NoticePage from "@/components/contants/Notice";
+import Overview from "@/components/contants/Overview";
+import PatientPage from "@/components/contants/Patient";
+import ServicesPage from "@/components/contants/Service";
+import StaffPage from "@/components/contants/Staff";
 import MySidebarContant from "@/components/sidebar/MySidebarContant";
 import MySidebarFooter from "@/components/sidebar/MySidebarFooter";
 import MySidebarHeader from "@/components/sidebar/MySidebarHeader";
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Separator } from "@/components/ui/separator";
-import {
   Sidebar,
   SidebarInset,
   SidebarProvider,
-  SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { useNavigation } from "@/contexts/NavigatoinContext";
 
 
 export default function Page() {
+  const { selectedMenu } = useNavigation();
+  console.log(selectedMenu);
   return (
     <SidebarProvider>
       <Sidebar variant="inset">
@@ -30,33 +32,16 @@ export default function Page() {
         <MySidebarFooter />
       </Sidebar>
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2">
-          <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator orientation="vertical" className="mr-2 h-4" />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem className="hidden md:block">
-                  <BreadcrumbLink href="#">
-                    Building Your Application
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
-                <BreadcrumbSeparator className="hidden md:block" />
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
-          </div>
-        </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div className="aspect-video rounded-xl bg-muted/50" />
-            <div className="aspect-video rounded-xl bg-muted/50" />
-            <div className="aspect-video rounded-xl bg-muted/50" />
-          </div>
-          <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
-        </div>
+        <Header />
+
+        {selectedMenu === "Overview" && <Overview />}
+        {selectedMenu === "Doctors" && <DoctorPage />}
+        {selectedMenu === "Patients" && <PatientPage />}
+        {selectedMenu === "Staff" && <StaffPage />}
+        {selectedMenu === "Nurses" && <NursePage />}
+        {selectedMenu === "Notice" && <NoticePage />}
+        {selectedMenu === "Inbox" && <InboxPage />}
+        {selectedMenu === "Services" && <ServicesPage />}
       </SidebarInset>
     </SidebarProvider>
   );

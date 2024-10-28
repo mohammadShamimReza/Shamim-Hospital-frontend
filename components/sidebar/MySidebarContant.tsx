@@ -1,3 +1,5 @@
+"use client";
+
 import {
   BookA,
   BriefcaseMedical,
@@ -16,6 +18,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "../ui/sidebar";
+import { useNavigation } from "@/contexts/NavigatoinContext";
 
 const data = {
   user: {
@@ -46,7 +49,7 @@ const data = {
       icon: BookA,
     },
     {
-      title: "Naurse",
+      title: "Nurses",
       url: "#",
       icon: UserRoundMinusIcon,
     },
@@ -69,6 +72,9 @@ const data = {
 };
 
 export default function MySidebarContant() {
+  const { selectedMenu, setSelectedMenu } = useNavigation();
+
+
   return (
     <SidebarContent>
       <SidebarGroup>
@@ -79,7 +85,8 @@ export default function MySidebarContant() {
               <SidebarMenuButton
                 asChild
                 tooltip={item.title}
-                isActive={item.isActive}
+                isActive={selectedMenu === item.title}
+                onClick={() => setSelectedMenu(item.title)}
               >
                 <a href={item.url}>
                   <item.icon />
