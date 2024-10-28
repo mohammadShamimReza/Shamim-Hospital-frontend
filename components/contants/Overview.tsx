@@ -13,12 +13,12 @@ export default function Overview() {
       {/* Header with Breadcrumbs */}
 
       {/* Main Content Area */}
-      <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+      <div className="flex flex-1 flex-col gap-4 p-4 pt-0 mt-3">
         <header className="mb-8 text-center">
-          <h1 className="text-3xl md:text-4xl font-bold text-blue-600">
+          <h1 className="text-3xl md:text-4xl font-bold ">
             Hospital Management Overview
           </h1>
-          <p className="text-gray-700 mt-2">
+          <p className=" mt-2">
             Manage and monitor hospital activities effectively with a quick
             overview of each section.
           </p>

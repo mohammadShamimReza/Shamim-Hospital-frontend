@@ -96,7 +96,7 @@ export default function MySidebarContant() {
   return (
     <SidebarContent>
       <SidebarGroup>
-        <SidebarGroupLabel>My works</SidebarGroupLabel>
+        <SidebarGroupLabel>My place</SidebarGroupLabel>
         <SidebarMenu>
           {data.navMain.map((item) => (
             <SidebarMenuItem key={item.title}>
