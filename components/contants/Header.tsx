@@ -5,10 +5,18 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useNavigation } from "@/contexts/NavigatoinContext";
 import { Moon, Sun } from "lucide-react"; // Replace with icons from your icon set if needed
 import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
 export default function Header() {
   const { selectedMenu } = useNavigation();
   const { theme, setTheme } = useTheme();
+
+  const [mounted, setMounted] = useState(false);
+
+  // Ensures this component renders only after the client mounts
+  useEffect(() => setMounted(true), []);
+
+  if (!mounted) return null; // Prevents hydration error by skipping SSR rendering
 
   // Function to toggle theme between light and dark
   const toggleTheme = () => {
