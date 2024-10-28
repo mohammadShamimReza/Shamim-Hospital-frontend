@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Bell,
   BookA,
   BriefcaseMedical,
   FolderKanban,
@@ -8,6 +9,8 @@ import {
   Inbox,
   PersonStanding,
   Shell,
+  Signature,
+  SquareUserRound,
   UserRoundMinusIcon,
 } from "lucide-react";
 import {
@@ -54,6 +57,11 @@ const data = {
       icon: UserRoundMinusIcon,
     },
     {
+      title: "Appointments",
+      url: "#",
+      icon: Signature,
+    },
+    {
       title: "Notice",
       url: "#",
       icon: Shell,
@@ -64,9 +72,19 @@ const data = {
       icon: Inbox,
     },
     {
+      title: "Notifications",
+      url: "#",
+      icon: Bell,
+    },
+    {
       title: "Services",
       url: "#",
       icon: HandPlatter,
+    },
+    {
+      title: "Account",
+      url: "#",
+      icon: SquareUserRound,
     },
   ],
 };
