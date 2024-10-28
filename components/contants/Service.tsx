@@ -30,7 +30,7 @@ const serviceSchema = z.object({
   description: z.string().min(10, "Description must be at least 10 characters"),
   department: z.string().min(2, "Department is required"),
   status: z.enum(["Available", "Unavailable"]),
-  cost: z.number().min(0, "Cost must be a positive number"),
+  cost: z.coerce.number().min(0, "Cost must be a positive number"),
 });
 
 type Service = z.infer<typeof serviceSchema> & { id?: number };
