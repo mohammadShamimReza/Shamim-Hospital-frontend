@@ -12,7 +12,7 @@ import NoticePage from "@/components/contants/Notice";
 import NotificationPage from "@/components/contants/Notification";
 import Overview from "@/components/contants/Overview";
 import ServicesPage from "@/components/contants/Service";
-import StaffPage from "@/components/contants/Staff";
+import StaffPage from "@/components/contants/staff/StaffPage";
 import UserPage from "@/components/contants/user/UserPage";
 import UserAppointmentsPage from "@/components/contants/UserAppointment";
 import MySidebarContant from "@/components/sidebar/MySidebarContant";
