@@ -1,47 +1,42 @@
 "use client";
 
-import MainPage from "@/components/contants/MainPage";
+import MainPage from "@/components/contants/adminContant/MainPage";
 import { getTokenFromCookie } from "@/lib/auth/token";
+import { useGetUserInfoQuery } from "@/redux/api/authApi";
 import { useAppDispatch } from "@/redux/hooks";
-import { storeAuthToken } from "@/redux/slice/authSlice";
-import { useEffect, useState } from "react";
+import { storeAuthToken, storeUserInfo } from "@/redux/slice/authSlice";
+import { useEffect, useMemo, useState } from "react";
 
 export default function Page() {
   const [isMounted, setIsMounted] = useState(false);
 
-  // const {
-  //   data: userData,
-  //   isLoading,
-  //   isError: authenticatedUserInfoDataError,
-  // } = useGetUserInfoQuery();
-
   const dispatch = useAppDispatch();
+  const tokenFromLocalStorage = useMemo(() => getTokenFromCookie(), []);
+  const { data: userData } = useGetUserInfoQuery({ undefined });
 
+  // Set initial mount state
   useEffect(() => {
     setIsMounted(true);
-    const tokenFromLocalStorage = getTokenFromCookie();
+  }, []);
+
+  // Store token in Redux if available
+  useEffect(() => {
     if (tokenFromLocalStorage) {
       dispatch(storeAuthToken(tokenFromLocalStorage));
     }
-  }, [dispatch]);
+  }, [tokenFromLocalStorage, dispatch]);
 
-  // useEffect(() => {
-  //   if (userData) {
-  //     dispatch(storeUserInfo(userData));
-  //   }
-  // }, [userData, dispatch]);
+  // Store user data in Redux when available
+  useEffect(() => {
+    if (userData) {
+      dispatch(storeUserInfo(userData?.data));
+    }
+  }, [userData, dispatch]);
 
-
-
+  // Render a loading message if not mounted
   if (!isMounted) {
-    return (
-      <>
-        <h2>Reload the page</h2>
-      </>
-    );
+    return <h2>Loading...</h2>;
   }
 
-  return (
-    <MainPage />
-  );
+  return <MainPage />;
 }

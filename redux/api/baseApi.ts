@@ -13,7 +13,7 @@ export const baseApi = createApi({
       const token =
         (getState() as RootState).auth.authToken || getTokenFromCookie();
       if (token) {
-        headers.set("authorization", `Bearer ${token}`);
+        headers.set("authorization", `${token}`);
       }
       return headers;
     },

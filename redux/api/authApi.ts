@@ -19,8 +19,17 @@ const authApi = baseApi.injectEndpoints({
       //   return baseQueryReturnValue.data;
       // },
     }),
+    getUserInfo: builder.query({
+      query: () => ({
+        url: `${AUTH}/me`,
+      }),
+      // transformResponse: (rawResult: UserDataWithDay) => {
+      //   return rawResult;
+      // },
+      // providesTags: ["updateUserDay", "updateUser"],
+    }),
   }),
 });
 
 
-export const {useLoginUserMutation} = authApi;
+export const {useLoginUserMutation, useGetUserInfoQuery} = authApi;

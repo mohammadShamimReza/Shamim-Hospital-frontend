@@ -68,8 +68,11 @@ export default function LoginPage() {
          });
        } else {
          toast("Login successfully");
-         storeTokenInCookie(result?.data?.jwt);
-         dispatch(storeAuthToken(result?.data?.jwt));
+         console.log(result)
+         console.log(result.data?.data.accessToken);
+         storeTokenInCookie(result?.data?.data.accessToken);
+         dispatch(storeAuthToken(result?.data?.data.accessToken));
+         localStorage.setItem("jwt", result?.data?.data.accessToken);
 
          dispatch(storeUserInfo(result?.data?.user));
          router.push("/");
