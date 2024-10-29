@@ -31,7 +31,8 @@ const loginSchema = z.object({
     .regex(
       /(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/,
       "Password must contain a letter, a number, and a special character"
-    ),
+  ),
+  role: z.enum(["admin","doctor", "patient", "nurse", "staff"]),
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;
@@ -42,7 +43,7 @@ export default function LoginPage() {
   const [ loginUser ] = useLoginUserMutation();
   const formMethods = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
-    defaultValues: { email: "", password: "" },
+    defaultValues: { email: "", password: "", role: "patient" },
   });
   const {
     handleSubmit,
@@ -56,9 +57,10 @@ export default function LoginPage() {
       try {
         
         const result = await loginUser(data);
+        console.log(result)
+        
        if (result?.error) {
          toast("User is not valid", {
-           
            style: {
              backgroundColor: "red",
              color: "white",
@@ -128,6 +130,28 @@ export default function LoginPage() {
                         placeholder="At least 8 characters, one special character, and one number"
                         {...field}
                       />
+                    </FormControl>
+                    <FormMessage>{errors.password?.message}</FormMessage>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={control}
+                name="role"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex items-center justify-between">
+                      <FormLabel>role</FormLabel>
+                    </div>
+                    <FormControl>
+                      <select {...field} className="border rounded-md p-2">
+                        <option value="patient">Patient</option>
+                        <option value="admin">Admin</option>
+                        <option value="doctor">Doctor</option>
+                        <option value="staff">Staff</option>
+                        <option value="nurse">Nurse</option>
+                      </select>
                     </FormControl>
                     <FormMessage>{errors.password?.message}</FormMessage>
                   </FormItem>
