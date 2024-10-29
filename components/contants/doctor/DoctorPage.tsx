@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import DoctorSearch from "./DoctorSearch";
 import DoctorForm from "./DoctorForm";
 import DoctorTable from "./DoctorTable";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
@@ -10,46 +9,26 @@ import { Doctor } from "@/schemas/doctorSchema";
 
 export default function DoctorPage() {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
-  const [filteredDoctors, setFilteredDoctors] = useState<Doctor[]>([]);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [selectedDoctorIndex, setSelectedDoctorIndex] = useState<number | null>(
     null
   );
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [deleteConfirmation, setDeleteConfirmation] = useState("");
-  const [searchEmail, setSearchEmail] = useState("");
 
-  const closeDeleteModal = () => {
-    setIsDeleteModalOpen(false);
-    setDeleteConfirmation("");
-  };
-
-  // Add Doctor function
-  const addDoctor = (data: Doctor) => {
-    console.log("Adding Doctor:", data);
-    setDoctors([...doctors, { ...data,}]);
-    resetForm();
-  };
-
-  // Update Doctor function
-  const updateDoctor = (data: Doctor) => {
-    console.log("Updating Doctor:", data);
-    setDoctors((prev) =>
-      prev.map((doc, index) =>
-        index === selectedDoctorIndex ? { ...data } : doc
-      )
-    );
-    resetForm();
-  };
-
-  // Determine whether to add or update
-  const addOrUpdateDoctor = (data: Doctor) => {
+  // Add or Update Doctor function
+  const handleSaveDoctor = (data: Doctor) => {
+    console.log(data)
     if (isEditing && selectedDoctorIndex !== null) {
-      updateDoctor(data);
+      setDoctors((prev) =>
+        prev.map((doc, index) => (index === selectedDoctorIndex ? data : doc))
+      );
     } else {
-      addDoctor(data);
+      setDoctors([...doctors, data]);
     }
+    setIsFormVisible(false);
+    setIsEditing(false);
+    setSelectedDoctorIndex(null);
   };
 
   const handleEdit = (doctor: Doctor, index: number) => {
@@ -60,7 +39,6 @@ export default function DoctorPage() {
 
   const handleDeleteModal = (index: number) => {
     setSelectedDoctorIndex(index);
-    setDeleteConfirmation("");
     setIsDeleteModalOpen(true);
   };
 
@@ -68,21 +46,8 @@ export default function DoctorPage() {
     if (selectedDoctorIndex !== null) {
       setDoctors(doctors.filter((_, i) => i !== selectedDoctorIndex));
       setIsDeleteModalOpen(false);
+      setSelectedDoctorIndex(null);
     }
-  };
-
-  const resetForm = () => {
-    setIsEditing(false);
-    setSelectedDoctorIndex(null);
-    setIsFormVisible(false);
-  };
-
-  const handleEmailSearch = (email: string) => {
-    setSearchEmail(email);
-    const filtered = doctors.filter((doctor) =>
-      doctor.email.toLowerCase().includes(email.toLowerCase())
-    );
-    setFilteredDoctors(filtered);
   };
 
   return (
@@ -96,30 +61,27 @@ export default function DoctorPage() {
         >
           Add Doctor
         </Button>
-        <DoctorSearch searchEmail={searchEmail} onSearch={handleEmailSearch} />
       </div>
 
       {isFormVisible && (
         <DoctorForm
-          onSubmit={addOrUpdateDoctor}
-          onCancel={resetForm}
+          onSubmit={handleSaveDoctor}
+          onCancel={() => setIsFormVisible(false)}
           initialData={isEditing ? doctors[selectedDoctorIndex!] : undefined}
           isEditing={isEditing}
         />
       )}
 
       <DoctorTable
-        doctors={searchEmail ? filteredDoctors : doctors}
+        doctors={doctors}
         onEdit={handleEdit}
         onDelete={handleDeleteModal}
       />
 
       <DeleteConfirmationModal
         isOpen={isDeleteModalOpen}
-        onClose={closeDeleteModal}
+        onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={confirmDelete}
-        confirmationText={deleteConfirmation}
-        setConfirmationText={setDeleteConfirmation}
       />
     </div>
   );

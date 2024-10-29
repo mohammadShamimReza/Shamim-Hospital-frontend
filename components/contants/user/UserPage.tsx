@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { User } from "@/schemas/userSchema";
 import UserTable from "./UserTable";
 import UserForm from "./UserForm";
-import UserDetailsModal from "./UserDetailsModal";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 
 export default function UserPage() {
@@ -16,31 +15,24 @@ export default function UserPage() {
     null
   );
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [deleteConfirmation, setDeleteConfirmation] = useState("");
   const [searchEmail, setSearchEmail] = useState("");
-  const [isUserDetailsModalOpen, setIsUserDetailsModalOpen] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
-  const closeDeleteModal = () => {
-    setIsDeleteModalOpen(false);
-    setDeleteConfirmation("");
-  };
+  const closeDeleteModal = () => setIsDeleteModalOpen(false);
 
-  const handleEdit = (user: User, index: number) => {
+  const handleEdit = (index: number) => {
     setSelectedUserIndex(index);
     setIsFormVisible(true);
   };
 
-  const handleDeleteModal = (index: number) => {
+  const handleDelete = (index: number) => {
     setSelectedUserIndex(index);
-    setDeleteConfirmation("");
     setIsDeleteModalOpen(true);
   };
 
   const confirmDelete = () => {
     if (selectedUserIndex !== null) {
       setUsers(users.filter((_, i) => i !== selectedUserIndex));
-      setIsDeleteModalOpen(false);
+      closeDeleteModal();
     }
   };
 
@@ -52,15 +44,9 @@ export default function UserPage() {
   const handleEmailSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     const email = e.target.value.toLowerCase();
     setSearchEmail(email);
-    const filtered = users.filter((user) =>
-      user.email.toLowerCase().includes(email)
+    setFilteredUsers(
+      users.filter((user) => user.email.toLowerCase().includes(email))
     );
-    setFilteredUsers(filtered);
-  };
-
-  const handleViewUser = (user: User) => {
-    setSelectedUser(user);
-    setIsUserDetailsModalOpen(true);
   };
 
   return (
@@ -76,38 +62,35 @@ export default function UserPage() {
 
       <UserTable
         users={searchEmail ? filteredUsers : users}
-        onEdit={handleEdit}
-        onDelete={handleDeleteModal}
-        onView={handleViewUser}
+        onEdit={(user, index) => handleEdit(index)}
+        onDelete={(index) => handleDelete(index)}
       />
 
       {isFormVisible && (
         <UserForm
           user={selectedUserIndex !== null ? users[selectedUserIndex] : null}
           onSave={(updatedUser) => {
-            setUsers((prev) =>
-              prev.map((user, i) =>
-                i === selectedUserIndex ? updatedUser : user
-              )
-            );
+            if (selectedUserIndex !== null) {
+              setUsers((prev) =>
+                prev.map((user, i) =>
+                  i === selectedUserIndex ? updatedUser : user
+                )
+              );
+              console.log("Updated User:", updatedUser);
+            } else {
+              setUsers([...users, updatedUser]);
+              console.log("New User Created:", updatedUser);
+            }
             resetForm();
           }}
           onCancel={resetForm}
         />
       )}
 
-      <UserDetailsModal
-        isOpen={isUserDetailsModalOpen}
-        user={selectedUser}
-        onClose={() => setIsUserDetailsModalOpen(false)}
-      />
-
       <DeleteConfirmationModal
         isOpen={isDeleteModalOpen}
         onClose={closeDeleteModal}
         onConfirm={confirmDelete}
-        confirmationText={deleteConfirmation}
-        setConfirmationText={setDeleteConfirmation}
       />
     </div>
   );

@@ -1,3 +1,4 @@
+"use client";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -14,15 +15,9 @@ interface UserTableProps {
   users: User[];
   onEdit: (user: User, index: number) => void;
   onDelete: (index: number) => void;
-  onView: (user: User) => void;
 }
 
-export default function UserTable({
-  users,
-  onEdit,
-  onDelete,
-  onView,
-}: UserTableProps) {
+export default function UserTable({ users, onEdit, onDelete }: UserTableProps) {
   return (
     <Table>
       <TableHeader>
@@ -34,11 +29,7 @@ export default function UserTable({
       </TableHeader>
       <TableBody>
         {users.map((user, index) => (
-          <TableRow
-            key={index}
-            onClick={() => onView(user)}
-            className="cursor-pointer"
-          >
+          <TableRow key={index}>
             <TableCell>{user.name}</TableCell>
             <TableCell>{user.email}</TableCell>
             <TableCell>

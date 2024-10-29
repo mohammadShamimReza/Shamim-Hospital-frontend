@@ -35,7 +35,7 @@ export default function DoctorTable({
       </TableHeader>
       <TableBody>
         {doctors.map((doctor, index) => (
-          <TableRow key={index}>
+          <TableRow key={doctor.email || index}>
             <TableCell>{doctor.name}</TableCell>
             <TableCell>{doctor.email}</TableCell>
             <TableCell>{doctor.phone}</TableCell>

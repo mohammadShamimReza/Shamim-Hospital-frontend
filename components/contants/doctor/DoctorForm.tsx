@@ -49,17 +49,6 @@ export default function DoctorForm({
     control,
     formState: { errors },
   } = methods;
-    
-      const handleFormSubmit = (data: Doctor) => {
-        // Parse departmentId and serviceId to integers
-        const parsedData = {
-          ...data,
-          serviceId: data.serviceId
-            ? parseInt(data.serviceId.toString(), 10)
-            : undefined,
-        };
-        onSubmit(parsedData);
-      };
 
   return (
     <Card className="mb-8">
@@ -69,7 +58,10 @@ export default function DoctorForm({
       <CardContent>
         <FormProvider {...methods}>
           <form
-            onSubmit={handleSubmit(handleFormSubmit)}
+            onSubmit={handleSubmit((data) => {
+              onSubmit(data);
+              reset();
+            })}
             className="grid gap-4"
           >
             {/* Name Field */}
@@ -206,8 +198,6 @@ export default function DoctorForm({
                 </FormItem>
               )}
             />
-
-            
 
             {/* Service ID Field */}
             <FormField

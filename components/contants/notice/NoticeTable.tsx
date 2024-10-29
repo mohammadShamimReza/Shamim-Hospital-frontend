@@ -1,3 +1,5 @@
+"use client";
+
 import { Notice } from "@/schemas/noticeSchema";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,14 +15,12 @@ interface NoticeTableProps {
   noticeList: Notice[];
   onEdit: (notice: Notice, index: number) => void;
   onDelete: (index: number) => void;
-  onView: (notice: Notice) => void;
 }
 
 export default function NoticeTable({
   noticeList,
   onEdit,
   onDelete,
-  onView,
 }: NoticeTableProps) {
   return (
     <Table>
@@ -33,11 +33,7 @@ export default function NoticeTable({
       </TableHeader>
       <TableBody>
         {noticeList.map((notice, index) => (
-          <TableRow
-            key={notice.id ?? index}
-            onClick={() => onView(notice)}
-            className="cursor-pointer"
-          >
+          <TableRow key={notice.id ?? index}>
             <TableCell>{notice.title}</TableCell>
             <TableCell>{notice.date}</TableCell>
             <TableCell>

@@ -2,36 +2,43 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Nurse } from "@/schemas/nurseSchema";
 import NurseForm from "./NurseForm";
 import NurseTable from "./NurseTable";
 import NurseDetailsModal from "./NurseDetailsModal";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
+import { Nurse } from "@/schemas/nurseSchema";
 
 export default function NursePage() {
   const [nurses, setNurses] = useState<Nurse[]>([]);
-  const [filteredNurses, setFilteredNurses] = useState<Nurse[]>([]);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [selectedNurseIndex, setSelectedNurseIndex] = useState<number | null>(
     null
   );
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [deleteConfirmation, setDeleteConfirmation] = useState("");
-  const [searchEmail, setSearchEmail] = useState("");
   const [isNurseDetailsModalOpen, setIsNurseDetailsModalOpen] = useState(false);
   const [selectedNurse, setSelectedNurse] = useState<Nurse | null>(null);
 
-  const closeDeleteModal = () => {
-    setIsDeleteModalOpen(false);
-    setDeleteConfirmation("");
-  };
+  const closeDeleteModal = () => setIsDeleteModalOpen(false);
 
   const handleEdit = (nurse: Nurse, index: number) => {
     setIsEditing(true);
     setSelectedNurseIndex(index);
     setIsFormVisible(true);
+  };
+
+  const handleSaveNurse = (nurse: Nurse) => {
+    if (isEditing && selectedNurseIndex !== null) {
+      setNurses((prev) =>
+        prev.map((item, i) => (i === selectedNurseIndex ? nurse : item))
+      );
+      console.log("Nurse Updated:", nurse);
+    } else {
+      setNurses([...nurses, { ...nurse, id: Date.now() }]);
+      console.log("Nurse Created:", nurse);
+    }
+    setIsFormVisible(false);
+    setIsEditing(false);
   };
 
   const confirmDelete = () => {
@@ -41,30 +48,10 @@ export default function NursePage() {
     }
   };
 
-  const handleEmailSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const email = e.target.value.toLowerCase();
-    setSearchEmail(email);
-    const filtered = nurses.filter((nurse) =>
-      nurse.email.toLowerCase().includes(email)
-    );
-    setFilteredNurses(filtered);
-  };
-
-  const handleViewNurse = (nurse: Nurse) => {
-    setSelectedNurse(nurse);
-    setIsNurseDetailsModalOpen(true);
-  };
-
   return (
     <div className="p-6">
       <div className="flex items-center gap-4 mb-4">
         <Button onClick={() => setIsFormVisible(true)}>Add Nurse</Button>
-        <Input
-          placeholder="Search by email"
-          value={searchEmail}
-          onChange={handleEmailSearch}
-          className="w-1/2"
-        />
       </div>
 
       {isFormVisible && (
@@ -73,17 +60,7 @@ export default function NursePage() {
           initialData={
             selectedNurseIndex !== null ? nurses[selectedNurseIndex] : undefined
           }
-          onSave={(nurse) => {
-            if (isEditing && selectedNurseIndex !== null) {
-              setNurses((prev) =>
-                prev.map((item, i) => (i === selectedNurseIndex ? nurse : item))
-              );
-            } else {
-              setNurses([...nurses, { ...nurse, id: Date.now() }]);
-            }
-            setIsFormVisible(false);
-            setIsEditing(false);
-          }}
+          onSave={handleSaveNurse}
           onCancel={() => {
             setIsFormVisible(false);
             setIsEditing(false);
@@ -92,13 +69,16 @@ export default function NursePage() {
       )}
 
       <NurseTable
-        nurseList={searchEmail ? filteredNurses : nurses}
+        nurseList={nurses}
         onEdit={handleEdit}
         onDelete={(index) => {
           setSelectedNurseIndex(index);
           setIsDeleteModalOpen(true);
         }}
-        onView={handleViewNurse}
+        onView={(nurse) => {
+          setSelectedNurse(nurse);
+          setIsNurseDetailsModalOpen(true);
+        }}
       />
 
       <NurseDetailsModal
@@ -111,8 +91,6 @@ export default function NursePage() {
         isOpen={isDeleteModalOpen}
         onClose={closeDeleteModal}
         onConfirm={confirmDelete}
-        confirmationText={deleteConfirmation}
-        setConfirmationText={setDeleteConfirmation}
       />
     </div>
   );

@@ -1,3 +1,5 @@
+"use client";
+
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -182,7 +184,11 @@ export default function NurseForm({
                 <FormItem>
                   <FormLabel>Profile Image URL</FormLabel>
                   <FormControl>
-                    <Input placeholder="Profile Image URL" {...field} />
+                    <Input
+                      type="url"
+                      placeholder="Profile Image URL"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage>{errors.profile_image?.message}</FormMessage>
                 </FormItem>
