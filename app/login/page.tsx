@@ -16,6 +16,11 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
+import { useAppDispatch } from "@/redux/hooks";
+import { useLoginUserMutation } from "@/redux/api/authApi";
+import { toast } from "sonner";
+import { storeTokenInCookie } from "@/lib/auth/token";
+import { storeAuthToken, storeUserInfo } from "@/redux/slice/authSlice";
 
 // Define the validation schema using Zod
 const loginSchema = z.object({
@@ -33,6 +38,8 @@ type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const router = useRouter();
+  const dispatch = useAppDispatch();
+  const [ loginUser ] = useLoginUserMutation();
   const formMethods = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: { email: "", password: "" },
@@ -45,8 +52,29 @@ export default function LoginPage() {
 
   const onSubmit = async (data: LoginFormData) => {
     console.log(data);
-    if (data.email === "test@example.com" && data.password === "password123!") {
-      router.push("/dashboard");
+    if (data.email !== "" && data.password !== "") {
+      try {
+        
+        const result = await loginUser(data);
+       if (result?.error) {
+         toast("User is not valid", {
+           
+           style: {
+             backgroundColor: "red",
+             color: "white",
+           },
+         });
+       } else {
+         toast("Login successfully");
+         storeTokenInCookie(result?.data?.jwt);
+         dispatch(storeAuthToken(result?.data?.jwt));
+
+         dispatch(storeUserInfo(result?.data?.user));
+         router.push("/");
+       }
+      } catch (error) {
+        console.log(error)
+      }
     } else {
       alert("Invalid email or password.");
     }

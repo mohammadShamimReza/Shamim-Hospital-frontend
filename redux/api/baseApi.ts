@@ -8,7 +8,7 @@ export const baseApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl:
  
-      "http://localhost:1337/api",
+      "http://localhost:4000/api/v1",
     prepareHeaders: (headers, { getState }) => {
       const token =
         (getState() as RootState).auth.authToken || getTokenFromCookie();

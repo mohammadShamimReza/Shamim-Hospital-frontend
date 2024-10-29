@@ -2,7 +2,8 @@
 
 
 import Account from "@/components/contants/Account";
-import DoctorPage from "@/components/contants/Doctor";
+import DoctorPage from "@/components/contants/doctor/DoctorPage";
+
 import DoctorAppointmentsPage from "@/components/contants/DoctorAppointment";
 import Header from "@/components/contants/Header";
 import InboxPage from "@/components/contants/Inbox";
@@ -10,9 +11,9 @@ import NursePage from "@/components/contants/Naurse";
 import NoticePage from "@/components/contants/Notice";
 import NotificationPage from "@/components/contants/Notification";
 import Overview from "@/components/contants/Overview";
-import PatientPage from "@/components/contants/Patient";
 import ServicesPage from "@/components/contants/Service";
 import StaffPage from "@/components/contants/Staff";
+import UserPage from "@/components/contants/user/UserPage";
 import UserAppointmentsPage from "@/components/contants/UserAppointment";
 import MySidebarContant from "@/components/sidebar/MySidebarContant";
 import MySidebarFooter from "@/components/sidebar/MySidebarFooter";
@@ -27,7 +28,6 @@ import { useNavigation } from "@/contexts/NavigatoinContext";
 
 export default function Page() {
   const { selectedMenu } = useNavigation();
-  console.log(selectedMenu);
   return (
     <SidebarProvider>
       <Sidebar variant="inset">
@@ -39,7 +39,7 @@ export default function Page() {
         <Header />
         {selectedMenu === "Overview" && <Overview />}
         {selectedMenu === "Doctors" && <DoctorPage />}
-        {selectedMenu === "Patients" && <PatientPage />}
+        {selectedMenu === "Patients" && <UserPage />}
         {selectedMenu === "Staff" && <StaffPage />}
         {selectedMenu === "Nurses" && <NursePage />}
         {selectedMenu === "Notice" && <NoticePage />}
