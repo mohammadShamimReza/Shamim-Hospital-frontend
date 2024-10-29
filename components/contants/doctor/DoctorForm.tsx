@@ -34,7 +34,6 @@ export default function DoctorForm({
     designation: "",
     passingYear: "",
     workplace: "",
-    departmentId: undefined,
     serviceId: undefined,
   },
   isEditing,
@@ -55,9 +54,6 @@ export default function DoctorForm({
         // Parse departmentId and serviceId to integers
         const parsedData = {
           ...data,
-          departmentId: data.departmentId
-            ? parseInt(data.departmentId.toString(), 10)
-            : undefined,
           serviceId: data.serviceId
             ? parseInt(data.serviceId.toString(), 10)
             : undefined,
@@ -211,27 +207,7 @@ export default function DoctorForm({
               )}
             />
 
-            {/* Department ID Field */}
-            <FormField
-              control={control}
-              name="departmentId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Department ID</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="Department ID"
-                      {...field}
-                      onChange={(e) =>
-                        field.onChange(parseInt(e.target.value, 10) || "")
-                      }
-                    />
-                  </FormControl>
-                  <FormMessage>{errors.departmentId?.message}</FormMessage>
-                </FormItem>
-              )}
-            />
+            
 
             {/* Service ID Field */}
             <FormField

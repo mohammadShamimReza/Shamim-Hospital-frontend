@@ -55,6 +55,7 @@ export default function StaffForm({
           <form
             onSubmit={handleSubmit((data) => {
               onSave(data);
+              console.log("Staff Data Submitted:", data); // Log data
               reset();
             })}
             className="grid gap-4"
@@ -161,7 +162,12 @@ export default function StaffForm({
                 <FormItem>
                   <FormLabel>Room ID</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="Room ID" {...field} />
+                    <Input
+                      type="number"
+                      placeholder="Room ID"
+                      {...field}
+                      onChange={(e) => field.onChange(Number(e.target.value))}
+                    />
                   </FormControl>
                   <FormMessage>{errors.roomId?.message}</FormMessage>
                 </FormItem>

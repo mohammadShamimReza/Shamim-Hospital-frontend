@@ -12,14 +12,12 @@ import {
 interface StaffTableProps {
   staffList: Staff[];
   onEdit: (staff: Staff, index: number) => void;
-  onDelete: (index: number) => void;
   onView: (staff: Staff) => void;
 }
 
 export default function StaffTable({
   staffList,
   onEdit,
-  onDelete,
   onView,
 }: StaffTableProps) {
   return (
@@ -45,13 +43,6 @@ export default function StaffTable({
                 onClick={() => onEdit(staff, index)}
               >
                 Edit
-              </Button>
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={() => onDelete(index)}
-              >
-                Delete
               </Button>
               <Button variant="outline" size="sm" onClick={() => onView(staff)}>
                 View

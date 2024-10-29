@@ -2,31 +2,20 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import StaffForm from "./StaffForm";
 import StaffTable from "./StaffTable";
 import StaffDetailsModal from "./StaffDetailsModal";
-import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import { Staff } from "@/schemas/staffSchema";
 
 export default function StaffPage() {
   const [staffList, setStaffList] = useState<Staff[]>([]);
-  const [filteredStaffList, setFilteredStaffList] = useState<Staff[]>([]);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [selectedStaffIndex, setSelectedStaffIndex] = useState<number | null>(
     null
   );
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [deleteConfirmation, setDeleteConfirmation] = useState("");
-  const [searchEmail, setSearchEmail] = useState("");
   const [isStaffDetailsModalOpen, setIsStaffDetailsModalOpen] = useState(false);
   const [selectedStaff, setSelectedStaff] = useState<Staff | null>(null);
-
-  const closeDeleteModal = () => {
-    setIsDeleteModalOpen(false);
-    setDeleteConfirmation("");
-  };
 
   const handleEdit = (staff: Staff, index: number) => {
     setIsEditing(true);
@@ -34,37 +23,36 @@ export default function StaffPage() {
     setIsFormVisible(true);
   };
 
-  const confirmDelete = () => {
-    if (selectedStaffIndex !== null) {
-      setStaffList(staffList.filter((_, i) => i !== selectedStaffIndex));
-      setIsDeleteModalOpen(false);
-    }
-  };
-
-  const handleEmailSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const email = e.target.value.toLowerCase();
-    setSearchEmail(email);
-    const filtered = staffList.filter((staff) =>
-      staff.email.toLowerCase().includes(email)
-    );
-    setFilteredStaffList(filtered);
-  };
-
   const handleViewStaff = (staff: Staff) => {
     setSelectedStaff(staff);
     setIsStaffDetailsModalOpen(true);
   };
 
+  const handleSave = (staff: Staff) => {
+    console.log("Staff Data Submitted:", staff); // Log data for create/update
+    if (isEditing && selectedStaffIndex !== null) {
+      setStaffList((prev) =>
+        prev.map((item, i) => (i === selectedStaffIndex ? staff : item))
+      );
+    } else {
+      setStaffList([...staffList, staff]);
+    }
+    setIsFormVisible(false);
+    setIsEditing(false);
+    setSelectedStaffIndex(null);
+  };
+
   return (
     <div className="p-6">
       <div className="flex items-center gap-4 mb-4">
-        <Button onClick={() => setIsFormVisible(true)}>Add Staff</Button>
-        <Input
-          placeholder="Search by email"
-          value={searchEmail}
-          onChange={handleEmailSearch}
-          className="w-1/2"
-        />
+        <Button
+          onClick={() => {
+            setIsFormVisible(true);
+            setIsEditing(false);
+          }}
+        >
+          Add Staff
+        </Button>
       </div>
 
       {isFormVisible && (
@@ -75,17 +63,7 @@ export default function StaffPage() {
               ? staffList[selectedStaffIndex]
               : undefined
           }
-          onSave={(staff) => {
-            if (isEditing && selectedStaffIndex !== null) {
-              setStaffList((prev) =>
-                prev.map((item, i) => (i === selectedStaffIndex ? staff : item))
-              );
-            } else {
-              setStaffList([...staffList, { ...staff, id: Date.now() }]);
-            }
-            setIsFormVisible(false);
-            setIsEditing(false);
-          }}
+          onSave={handleSave}
           onCancel={() => {
             setIsFormVisible(false);
             setIsEditing(false);
@@ -94,12 +72,8 @@ export default function StaffPage() {
       )}
 
       <StaffTable
-        staffList={searchEmail ? filteredStaffList : staffList}
+        staffList={staffList}
         onEdit={handleEdit}
-        onDelete={(index) => {
-          setSelectedStaffIndex(index);
-          setIsDeleteModalOpen(true);
-        }}
         onView={handleViewStaff}
       />
 
@@ -107,14 +81,6 @@ export default function StaffPage() {
         isOpen={isStaffDetailsModalOpen}
         staff={selectedStaff}
         onClose={() => setIsStaffDetailsModalOpen(false)}
-      />
-
-      <DeleteConfirmationModal
-        isOpen={isDeleteModalOpen}
-        onClose={closeDeleteModal}
-        onConfirm={confirmDelete}
-        confirmationText={deleteConfirmation}
-        setConfirmationText={setDeleteConfirmation}
       />
     </div>
   );

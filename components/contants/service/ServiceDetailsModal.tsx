@@ -22,12 +22,7 @@ export default function ServiceDetailsModal({
         <p>
           <strong>Name:</strong> {service.serviceName}
         </p>
-        <p>
-          <strong>Department ID:</strong> {service.departmentId ?? "N/A"}
-        </p>
-        <p>
-          <strong>Status:</strong> {service.status}
-        </p>
+       
         <p>
           <strong>Price:</strong> ${service.price}
         </p>

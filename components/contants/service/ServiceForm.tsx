@@ -1,16 +1,16 @@
-import { useForm, FormProvider } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { serviceSchema, Service } from "@/schemas/serviceSchema";
+import { Input } from "@/components/ui/input";
+import { Service, serviceSchema } from "@/schemas/serviceSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { FormProvider, useForm } from "react-hook-form";
 
 interface ServiceFormProps {
   isEditing: boolean;
@@ -32,7 +32,10 @@ export default function ServiceForm({
       description: "",
       duration: 0,
       price: 0,
-      status: "Available",
+      serviceType: "Consultation",
+      bodyPart: "",
+      specialty: "",
+      maxAppointments: undefined,
     },
   });
 
@@ -53,6 +56,7 @@ export default function ServiceForm({
           <form
             onSubmit={handleSubmit((data) => {
               onSave(data);
+              console.log("Service Data Submitted:", data); // Log form data on submit
               reset();
             })}
             className="grid gap-4"
@@ -92,7 +96,12 @@ export default function ServiceForm({
                 <FormItem>
                   <FormLabel>Duration (in minutes)</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="Duration" {...field} />
+                    <Input
+                      type="number"
+                      placeholder="Duration"
+                      {...field}
+                      onChange={(e) => field.onChange(Number(e.target.value))}
+                    />
                   </FormControl>
                   <FormMessage>{errors.duration?.message}</FormMessage>
                 </FormItem>
@@ -106,7 +115,12 @@ export default function ServiceForm({
                 <FormItem>
                   <FormLabel>Price</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="Price" {...field} />
+                    <Input
+                      type="number"
+                      placeholder="Price"
+                      {...field}
+                      onChange={(e) => field.onChange(Number(e.target.value))}
+                    />
                   </FormControl>
                   <FormMessage>{errors.price?.message}</FormMessage>
                 </FormItem>
@@ -115,20 +129,51 @@ export default function ServiceForm({
 
             <FormField
               control={control}
-              name="status"
+              name="serviceType"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Status</FormLabel>
+                  <FormLabel>Service Type</FormLabel>
                   <FormControl>
                     <select {...field} className="border rounded-md p-2">
-                      <option value="Available">Available</option>
-                      <option value="Unavailable">Unavailable</option>
+                      <option value="Consultation">Consultation</option>
+                      <option value="Surgery">Surgery</option>
+                      <option value="Therapy">Therapy</option>
                     </select>
                   </FormControl>
-                  <FormMessage>{errors.status?.message}</FormMessage>
+                  <FormMessage>{errors.serviceType?.message}</FormMessage>
                 </FormItem>
               )}
             />
+
+            <FormField
+              control={control}
+              name="bodyPart"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Body Part</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Body Part" {...field} />
+                  </FormControl>
+                  <FormMessage>{errors.bodyPart?.message}</FormMessage>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={control}
+              name="specialty"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Specialty</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Specialty" {...field} />
+                  </FormControl>
+                  <FormMessage>{errors.specialty?.message}</FormMessage>
+                </FormItem>
+              )}
+            />
+
+            
 
             <div className="flex gap-4">
               <Button type="submit">

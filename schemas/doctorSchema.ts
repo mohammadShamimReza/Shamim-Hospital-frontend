@@ -12,7 +12,6 @@ export const doctorSchema = z.object({
   designation: z.string().optional(),
   passingYear: z.string().optional(),
   workplace: z.string().optional(),
-  departmentId: z.number().optional(),
   serviceId: z.number().optional(),
 });
 
