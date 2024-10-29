@@ -10,20 +10,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useGetAllNurseQuery } from "@/redux/api/nurseApi";
 
 interface NurseTableProps {
-  nurseList: Nurse[];
   onEdit: (nurse: Nurse, index: number) => void;
   onDelete: (index: number) => void;
   onView: (nurse: Nurse) => void;
 }
 
 export default function NurseTable({
-  nurseList,
   onEdit,
   onDelete,
   onView,
 }: NurseTableProps) {
+  const { data: nurseList } = useGetAllNurseQuery({ undefined });
+  console.log(nurseList);
   return (
     <Table>
       <TableHeader>
@@ -35,11 +36,10 @@ export default function NurseTable({
         </TableRow>
       </TableHeader>
       <TableBody>
-        {nurseList.map((nurse, index) => (
+        {nurseList?.data?.map((nurse, index) => (
           <TableRow key={index}>
             <TableCell>{nurse.name}</TableCell>
             <TableCell>{nurse.email}</TableCell>
-            <TableCell>{nurse.department}</TableCell>
             <TableCell>
               <div className="flex gap-2">
                 <Button

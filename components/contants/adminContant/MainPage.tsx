@@ -7,7 +7,6 @@ import AdminContantPage from "./AdminContantPage";
 
 export default function MainPage() {
   const userInfo = useAppSelector((state) => state.auth.userInfo);
-  console.log(userInfo);
 
   return (
     <SidebarProvider>

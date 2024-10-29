@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Nurse, nurseSchema } from "@/schemas/nurseSchema";
+import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 interface NurseFormProps {
   isEditing: boolean;
@@ -23,23 +25,23 @@ interface NurseFormProps {
 
 export default function NurseForm({
   isEditing,
-  initialData,
   onSave,
   onCancel,
 }: NurseFormProps) {
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
   const methods = useForm<Nurse>({
     resolver: zodResolver(nurseSchema),
-    defaultValues: initialData || {
+    defaultValues:  {
       name: "",
       email: "",
-      phone: "",
+      password: "",
+      phone: 0,
       address: "",
-      department: "",
-      shift: "",
-      employmentDate: "",
-      profile_image: "",
-      roomId: undefined,
-      role: "",
+      role: "nurse",
     },
   });
 
@@ -94,6 +96,40 @@ export default function NurseForm({
               )}
             />
 
+            <FormField
+              control={control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <Input
+                        type={showPassword ? "text" : "password"}
+                        placeholder="name123$#"
+                        {...field}
+                      />
+                      <button
+                        type="button"
+                        onClick={togglePasswordVisibility}
+                        className="absolute inset-y-0 right-0 px-2 flex items-center"
+                        aria-label={
+                          showPassword ? "Hide password" : "Show password"
+                        }
+                      >
+                        {showPassword ? (
+                          <EyeOff size={16} />
+                        ) : (
+                          <Eye size={16} />
+                        )}
+                      </button>
+                    </div>
+                  </FormControl>
+                  <FormMessage>{errors.password?.message}</FormMessage>
+                </FormItem>
+              )}
+            />
+
             {/* Phone Field */}
             <FormField
               control={control}
@@ -102,7 +138,14 @@ export default function NurseForm({
                 <FormItem>
                   <FormLabel>Phone</FormLabel>
                   <FormControl>
-                    <Input placeholder="Phone Number" {...field} />
+                    <Input
+                      type="number"
+                      placeholder="Phone Number"
+                      {...field}
+                      onChange={(e) =>
+                        field.onChange(parseInt(e.target.value, 10) || "")
+                      }
+                    />
                   </FormControl>
                   <FormMessage>{errors.phone?.message}</FormMessage>
                 </FormItem>
@@ -124,92 +167,6 @@ export default function NurseForm({
               )}
             />
 
-            {/* Department Field */}
-            <FormField
-              control={control}
-              name="department"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Department</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Department" {...field} />
-                  </FormControl>
-                  <FormMessage>{errors.department?.message}</FormMessage>
-                </FormItem>
-              )}
-            />
-
-            {/* Shift Field */}
-            <FormField
-              control={control}
-              name="shift"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Shift</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Shift Timing (e.g., Night)"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage>{errors.shift?.message}</FormMessage>
-                </FormItem>
-              )}
-            />
-
-            {/* Employment Date Field */}
-            <FormField
-              control={control}
-              name="employmentDate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Employment Date</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="date"
-                      placeholder="Employment Date"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage>{errors.employmentDate?.message}</FormMessage>
-                </FormItem>
-              )}
-            />
-
-            {/* Profile Image Field */}
-            <FormField
-              control={control}
-              name="profile_image"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Profile Image URL</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="url"
-                      placeholder="Profile Image URL"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage>{errors.profile_image?.message}</FormMessage>
-                </FormItem>
-              )}
-            />
-
-            {/* Room ID Field */}
-            <FormField
-              control={control}
-              name="roomId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Room ID</FormLabel>
-                  <FormControl>
-                    <Input type="number" placeholder="Room ID" {...field} />
-                  </FormControl>
-                  <FormMessage>{errors.roomId?.message}</FormMessage>
-                </FormItem>
-              )}
-            />
-
             {/* Role Field */}
             <FormField
               control={control}
@@ -218,7 +175,12 @@ export default function NurseForm({
                 <FormItem>
                   <FormLabel>Role</FormLabel>
                   <FormControl>
-                    <Input placeholder="Role" {...field} />
+                    <Input
+                      placeholder="Role"
+                      {...field}
+                      value={"nurse"}
+                      disabled
+                    />
                   </FormControl>
                   <FormMessage>{errors.role?.message}</FormMessage>
                 </FormItem>
