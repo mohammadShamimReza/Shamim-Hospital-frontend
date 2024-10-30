@@ -6,7 +6,7 @@ import { User } from "@/schemas/userSchema";
 import UserTable from "./UserTable";
 import UserForm from "./UserForm";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
-import { useDeleteUserMutation, useGetAllUserQuery } from "@/redux/api/userApi";
+import { useDeleteUserMutation, useGetAllUserQuery, useUpdateUserMutation } from "@/redux/api/userApi";
 import UserDetailsModal from "./UserDetailsModal";
 
 export default function UserPage() {
@@ -26,25 +26,32 @@ export default function UserPage() {
       setFilteredUsers(userData.data);
     }
   }, [userData]);
-console.log(isFormVisible)
   const handleEdit = (user: User) => {
     console.log('first')
     setSelectedUser(user);
     setIsFormVisible(true);
     handleEditUser(user)
   };
-  const handleEditUser = async (user: User) => { 
-    console.log(user, 'for editing user');
-                
+    const [updateUser] = useUpdateUserMutation();
 
+  const handleEditUser = async (user: User) => {     
+      if (user.id) {
+        const result = await updateUser({ id: user.id, body: user });
+        console.log("userd Updated:", result);
+
+    setIsFormVisible(true);
+      }
   }
 
+  console.log(selectedUser)
+  const [deleteUser] = useDeleteUserMutation();
+
   const handleDelete = (user: User) => {
+    console.log(user)
     setSelectedUser(user);
     setIsDeleteModalOpen(true);
   };
 
-  const [deleteUser] = useDeleteUserMutation();
 
   const confirmDelete = async () => {
     if (selectedUser && selectedUser.id) {
