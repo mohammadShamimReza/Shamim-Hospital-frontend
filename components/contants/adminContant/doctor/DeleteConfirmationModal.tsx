@@ -15,7 +15,7 @@ export default function DeleteConfirmationModal({
   onConfirm,
 }: DeleteConfirmationModalProps) {
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={() =>onClose()}>
       <ModalContent>
         <h3 className="text-lg font-semibold mb-4">Confirm Delete</h3>
         <p>Are you sure you want to delete this doctor?</p>
@@ -23,7 +23,7 @@ export default function DeleteConfirmationModal({
           <Button variant="destructive" onClick={onConfirm}>
             Confirm Delete
           </Button>
-          <Button variant="outline" onClick={onClose}>
+          <Button variant="outline" onClick={()=>onClose()}>
             Cancel
           </Button>
         </ModalFooter>

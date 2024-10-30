@@ -13,34 +13,40 @@ import {
 } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Doctor, doctorSchema } from "@/schemas/doctorSchema";
+import { Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
+
 
 interface DoctorFormProps {
   onSubmit: (data: Doctor) => void;
   onCancel: () => void;
-  initialData?: Doctor;
+  initialData?: Doctor | null;
   isEditing: boolean;
 }
 
 export default function DoctorForm({
   onSubmit,
   onCancel,
-  initialData = {
-    name: "",
-    email: "",
-    password: "",
-    phone: "",
-    address: "",
-    role: "",
-    designation: "",
-    passingYear: "",
-    workplace: "",
-    serviceId: undefined,
-  },
+  initialData ,
   isEditing,
 }: DoctorFormProps) {
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
   const methods = useForm<Doctor>({
     resolver: zodResolver(doctorSchema),
-    defaultValues: initialData,
+    defaultValues: initialData || {
+      name: "",
+      email: "",
+      password: "",
+      phone: 0,
+      address: "",
+      role: "doctor",
+      designation: "",
+      passingYear: "",
+    } ,
   });
 
   const {
@@ -94,7 +100,6 @@ export default function DoctorForm({
               )}
             />
 
-            {/* Password Field */}
             <FormField
               control={control}
               name="password"
@@ -102,7 +107,27 @@ export default function DoctorForm({
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="Password" {...field} />
+                    <div className="relative">
+                      <Input
+                        type={showPassword ? "text" : "password"}
+                        placeholder="name123$#"
+                        {...field}
+                      />
+                      <button
+                        type="button"
+                        onClick={togglePasswordVisibility}
+                        className="absolute inset-y-0 right-0 px-2 flex items-center"
+                        aria-label={
+                          showPassword ? "Hide password" : "Show password"
+                        }
+                      >
+                        {showPassword ? (
+                          <EyeOff size={16} />
+                        ) : (
+                          <Eye size={16} />
+                        )}
+                      </button>
+                    </div>
                   </FormControl>
                   <FormMessage>{errors.password?.message}</FormMessage>
                 </FormItem>
@@ -117,7 +142,14 @@ export default function DoctorForm({
                 <FormItem>
                   <FormLabel>Phone</FormLabel>
                   <FormControl>
-                    <Input placeholder="Phone Number" {...field} />
+                    <Input
+                      type="number"
+                      placeholder="Phone Number"
+                      {...field}
+                      onChange={(e) =>
+                        field.onChange(parseInt(e.target.value, 10) || "")
+                      }
+                    />
                   </FormControl>
                   <FormMessage>{errors.phone?.message}</FormMessage>
                 </FormItem>
@@ -147,7 +179,12 @@ export default function DoctorForm({
                 <FormItem>
                   <FormLabel>Role</FormLabel>
                   <FormControl>
-                    <Input placeholder="Role" {...field} />
+                    <Input
+                      placeholder="Role"
+                      {...field}
+                      value={"doctor"}
+                      disabled
+                    />
                   </FormControl>
                   <FormMessage>{errors.role?.message}</FormMessage>
                 </FormItem>
@@ -177,46 +214,22 @@ export default function DoctorForm({
                 <FormItem>
                   <FormLabel>Passing Year</FormLabel>
                   <FormControl>
-                    <Input placeholder="Passing Year" {...field} />
+                    <select
+                      {...field}
+                      className="form-select w-full px-3 py-2 border rounded" // Add styling as needed
+                    >
+                      <option value="">Select Year</option>
+                      {Array.from({ length: 50 }, (_, i) => {
+                        const year = new Date().getFullYear() - i;
+                        return (
+                          <option key={year} value={year}>
+                            {year}
+                          </option>
+                        );
+                      })}
+                    </select>
                   </FormControl>
                   <FormMessage>{errors.passingYear?.message}</FormMessage>
-                </FormItem>
-              )}
-            />
-
-            {/* Workplace Field */}
-            <FormField
-              control={control}
-              name="workplace"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Workplace / Institute</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Workplace / Institute" {...field} />
-                  </FormControl>
-                  <FormMessage>{errors.workplace?.message}</FormMessage>
-                </FormItem>
-              )}
-            />
-
-            {/* Service ID Field */}
-            <FormField
-              control={control}
-              name="serviceId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Service ID</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="Service ID"
-                      {...field}
-                      onChange={(e) =>
-                        field.onChange(parseInt(e.target.value, 10) || "")
-                      }
-                    />
-                  </FormControl>
-                  <FormMessage>{errors.serviceId?.message}</FormMessage>
                 </FormItem>
               )}
             />

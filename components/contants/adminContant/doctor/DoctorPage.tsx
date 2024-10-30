@@ -1,52 +1,93 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import DoctorForm from "./DoctorForm";
 import DoctorTable from "./DoctorTable";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
+import {
+  useCreateDoctorMutation,
+  useDeleteDoctorMutation,
+  useGetAllDoctorQuery,
+  useUpdateDoctorMutation,
+} from "@/redux/api/doctorApi";
+import DoctorDetailModals from "./DoctorDetailsModal";
 import { Doctor } from "@/schemas/doctorSchema";
 
 export default function DoctorPage() {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [selectedDoctorIndex, setSelectedDoctorIndex] = useState<number | null>(
-    null
-  );
+ 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+
+
+  const { data: doctorData } = useGetAllDoctorQuery();
+
+  const [createDoctor] = useCreateDoctorMutation();
+  const [updateDoctor] = useUpdateDoctorMutation();
+  const [deleteDoctor] = useDeleteDoctorMutation();
+
+  useEffect(() => {
+    if (doctorData?.data) setDoctors(doctorData.data);
+  }, [doctorData]);
+
   // Add or Update Doctor function
-  const handleSaveDoctor = (data: Doctor) => {
-    console.log(data)
-    if (isEditing && selectedDoctorIndex !== null) {
-      setDoctors((prev) =>
-        prev.map((doc, index) => (index === selectedDoctorIndex ? data : doc))
-      );
-    } else {
-      setDoctors([...doctors, data]);
+  const handleSaveDoctor = async (doctor: Doctor) => {
+    console.log(doctor, 'before save');
+    try {
+      if (isEditing && selectedDoctor !== null) {
+         if (doctor.id) {
+           const result = await updateDoctor({ id: doctor.id, body: doctor });
+           console.log("Doctor Updated:", result);
+            setIsEditing(false);
+            setIsFormVisible(false);
+         }
+       } else {
+         const result = await createDoctor(doctor);
+         console.log("Doctor Added:", result);
+       }
+      //  setIsFormVisible(false);
+      //  setIsEditing(false);
+      //  setSelectedDoctorIndex(null);
+    } catch (error) {
+      console.log(error);
     }
-    setIsFormVisible(false);
-    setIsEditing(false);
-    setSelectedDoctorIndex(null);
+   
   };
 
-  const handleEdit = (doctor: Doctor, index: number) => {
+  const handleEdit = (doctor: Doctor) => {
     setIsEditing(true);
-    setSelectedDoctorIndex(index);
     setIsFormVisible(true);
+    setSelectedDoctor(doctor);
   };
 
-  const handleDeleteModal = (index: number) => {
-    setSelectedDoctorIndex(index);
+  const handleDetailsModal = (doctor: Doctor) => {
+    setSelectedDoctor(doctor);
+    setIsDetailsModalOpen(true);
+  }
+
+  const handleDeleteModal = (doctor: Doctor) => {
+    console.log(doctor)
+setSelectedDoctor(doctor)
     setIsDeleteModalOpen(true);
   };
 
-  const confirmDelete = () => {
-    if (selectedDoctorIndex !== null) {
-      setDoctors(doctors.filter((_, i) => i !== selectedDoctorIndex));
-      setIsDeleteModalOpen(false);
-      setSelectedDoctorIndex(null);
+  const confirmDelete =async () => {
+    if (selectedDoctor && selectedDoctor.id) { 
+         try {
+          const res = await deleteDoctor(selectedDoctor.id);
+           
+           console.log("Doctor Deleted:", res);
+           setSelectedDoctor(null);
+           
+    setIsDeleteModalOpen(false);
+         } catch (error) {
+           console.log("Error Deleting Nurse:", error);
+         }
     }
   };
 
@@ -67,15 +108,22 @@ export default function DoctorPage() {
         <DoctorForm
           onSubmit={handleSaveDoctor}
           onCancel={() => setIsFormVisible(false)}
-          initialData={isEditing ? doctors[selectedDoctorIndex!] : undefined}
+          initialData={selectedDoctor ? selectedDoctor : null}
           isEditing={isEditing}
         />
       )}
+
+      <DoctorDetailModals
+        isDetailsModalOpen={isDetailsModalOpen}
+        doctor={selectedDoctor}
+        onClose={() => setIsDetailsModalOpen(false)}
+      />
 
       <DoctorTable
         doctors={doctors}
         onEdit={handleEdit}
         onDelete={handleDeleteModal}
+        onView={handleDetailsModal}
       />
 
       <DeleteConfirmationModal

@@ -13,14 +13,17 @@ import {
 
 interface DoctorTableProps {
   doctors: Doctor[];
-  onEdit: (doctor: Doctor, index: number) => void;
-  onDelete: (index: number) => void;
+  onEdit: (doctor: Doctor) => void;
+  onDelete: (doctor: Doctor) => void;
+  onView: (doctor: Doctor) => void;
 }
 
 export default function DoctorTable({
   doctors,
   onEdit,
   onDelete,
+  onView,
+
 }: DoctorTableProps) {
   return (
     <Table>
@@ -35,7 +38,7 @@ export default function DoctorTable({
       </TableHeader>
       <TableBody>
         {doctors.map((doctor, index) => (
-          <TableRow key={doctor.email || index}>
+          <TableRow key={index}>
             <TableCell>{doctor.name}</TableCell>
             <TableCell>{doctor.email}</TableCell>
             <TableCell>{doctor.phone}</TableCell>
@@ -45,16 +48,23 @@ export default function DoctorTable({
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => onEdit(doctor, index)}
+                  onClick={() => onEdit(doctor)}
                 >
                   Edit
                 </Button>
                 <Button
                   variant="destructive"
                   size="sm"
-                  onClick={() => onDelete(index)}
+                  onClick={() => onDelete(doctor)}
                 >
                   Delete
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => onView(doctor)}
+                >
+                  View
                 </Button>
               </div>
             </TableCell>

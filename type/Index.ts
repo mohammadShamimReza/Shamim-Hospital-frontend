@@ -35,3 +35,16 @@ export interface User {
   roomId: string | null;
 }
 
+export interface Doctor {
+  id: number;
+  name: string;
+  email: string;
+  password: string;
+  phone: number;
+  address: string;
+  role: string;
+  designation: string;
+  passingYear: string;
+}
+
+
