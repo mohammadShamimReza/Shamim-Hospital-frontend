@@ -30,7 +30,14 @@ const nurseApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["createUser"],
     }),
+    deleteNurse: builder.mutation<void, number>({
+      query: (id) => ({
+        url: `${NURSE}/${id}`, // Specify the ID in the URL
+        method: "DELETE",
+      }),
+      
+    }),
   }),
 });
 
-export const { useCreateNurseMutation, useGetAllNurseQuery, useUpdateNurseMutation } = nurseApi;
+export const { useCreateNurseMutation, useGetAllNurseQuery, useUpdateNurseMutation, useDeleteNurseMutation } = nurseApi;

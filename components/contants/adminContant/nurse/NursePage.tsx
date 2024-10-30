@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import NurseForm from "./NurseForm";
 import NurseTable from "./NurseTable";
 import { Nurse } from "@/schemas/nurseSchema";
-import { useCreateNurseMutation, useGetAllNurseQuery, useUpdateNurseMutation } from "@/redux/api/nurseApi";
+import { useCreateNurseMutation, useDeleteNurseMutation, useGetAllNurseQuery, useUpdateNurseMutation } from "@/redux/api/nurseApi";
 import NurseDetailsModal from "./NurseDetailsModal";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 
@@ -48,9 +48,19 @@ export default function NursePage() {
     setIsFormVisible(false);
     setIsEditing(false);
   };
+  const [deleteNurse] = useDeleteNurseMutation();
 
-  const confirmDelete = () => {
-    // Add delete functionality here if needed
+  const confirmDelete = async () => {
+    setIsDeleteModalOpen(false);
+    try {
+      if ( selectedNurse!== null&& selectedNurse.id ) {
+        await deleteNurse(selectedNurse?.id);
+        console.log("Nurse Deleted:", selectedNurse?.id);
+        setNurses((prev) => prev.filter((nurse) => nurse.id !== selectedNurse?.id));
+      }
+    } catch (error) {
+      console.log("Error Deleting Nurse:", error);
+    }
   };
 
   const { data: nurseData } = useGetAllNurseQuery();
@@ -91,7 +101,8 @@ export default function NursePage() {
           setSelectedNurse(nurse);
           handleEdit();
         }}
-        onDelete={() => {
+        onDelete={(nurse) => {
+          setSelectedNurse(nurse);
           setIsDeleteModalOpen(true);
         }}
         onView={(nurse) => {

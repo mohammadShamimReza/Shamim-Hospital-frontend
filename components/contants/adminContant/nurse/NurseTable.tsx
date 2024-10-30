@@ -14,7 +14,7 @@ import {
 interface NurseTableProps {
   nurseList: Nurse[] | null;
   onEdit: (nurse: Nurse) => void;
-  onDelete: (index: number) => void;
+  onDelete: (nurse: Nurse) => void;
   onView: (nurse: Nurse) => void;
 }
 
@@ -51,7 +51,7 @@ export default function NurseTable({
                 <Button
                   variant="destructive"
                   size="sm"
-                  onClick={() => onDelete(id)}
+                  onClick={() => onDelete(nurse)}
                 >
                   Delete
                 </Button>
