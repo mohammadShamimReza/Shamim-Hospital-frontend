@@ -54,3 +54,13 @@ export interface Notice {
   content: string;
   authorId: number;
 }
+
+
+export interface Service { 
+  id: number;
+  serviceName: string;
+  description: string;
+  price: number;
+  serviceType: string;
+  bodyPart: string;
+}

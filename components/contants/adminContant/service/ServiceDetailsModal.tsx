@@ -3,26 +3,26 @@ import { Button } from "@/components/ui/button";
 import { Service } from "@/schemas/serviceSchema";
 
 interface ServiceDetailsModalProps {
-  isOpen: boolean;
+  isDetailsModalOpen: boolean;
   service: Service | null;
   onClose: () => void;
 }
 
 export default function ServiceDetailsModal({
-  isOpen,
+  isDetailsModalOpen,
   service,
   onClose,
 }: ServiceDetailsModalProps) {
   if (!service) return null;
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isDetailsModalOpen} onClose={onClose}>
       <ModalContent>
         <h3 className="text-lg font-semibold mb-4">Service Details</h3>
         <p>
           <strong>Name:</strong> {service.serviceName}
         </p>
-       
+
         <p>
           <strong>Price:</strong> ${service.price}
         </p>

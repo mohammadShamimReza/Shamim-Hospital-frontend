@@ -18,7 +18,12 @@ interface NoticeTableProps {
   onView: (notice: Notice) => void;
 }
 
-export default function NoticeTable({ notices, onEdit, onDelete, onView }: NoticeTableProps) {
+export default function NoticeTable({
+  notices,
+  onEdit,
+  onDelete,
+  onView,
+}: NoticeTableProps) {
   return (
     <Table>
       <TableHeader>

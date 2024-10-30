@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const serviceSchema = z.object({
+  id: z.number().optional(),
   serviceName: z
     .string()
     .min(2, { message: "Service name must be at least 2 characters" })
@@ -8,10 +9,7 @@ export const serviceSchema = z.object({
   description: z
     .string()
     .min(10, { message: "Description must be at least 10 characters" }),
-  duration: z
-    .number()
-    .min(0, { message: "Duration must be a positive number" })
-    .int({ message: "Duration must be an integer value" }),
+
   price: z.number().min(0, { message: "Price must be a positive number" }),
   serviceType: z
     .string()
@@ -21,12 +19,8 @@ export const serviceSchema = z.object({
         'Service type must be one of "Consultation", "Surgery", or "Therapy"',
     }),
   bodyPart: z.string().nonempty({ message: "Body part is required" }),
-  specialty: z.string().nonempty({ message: "Specialty is required" }),
-  maxAppointments: z
-    .number()
-    .int({ message: "Max appointments must be an integer" })
-    .min(1, { message: "Must allow at least 1 appointment per day" })
-    .optional(),
+
+
 
   
 });

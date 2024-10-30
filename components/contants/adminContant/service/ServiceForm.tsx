@@ -13,29 +13,26 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FormProvider, useForm } from "react-hook-form";
 
 interface ServiceFormProps {
-  isEditing: boolean;
-  initialData?: Service;
-  onSave: (service: Service) => void;
+  onSubmit: (data: Service) => void;
   onCancel: () => void;
+  initialData?: Service | null;
+  isEditing: boolean;
 }
 
 export default function ServiceForm({
-  isEditing,
-  initialData,
-  onSave,
+  onSubmit,
   onCancel,
+  initialData,
+  isEditing,
 }: ServiceFormProps) {
   const methods = useForm<Service>({
     resolver: zodResolver(serviceSchema),
     defaultValues: initialData || {
       serviceName: "",
       description: "",
-      duration: 0,
       price: 0,
       serviceType: "Consultation",
       bodyPart: "",
-      specialty: "",
-      maxAppointments: undefined,
     },
   });
 
@@ -55,8 +52,8 @@ export default function ServiceForm({
         <FormProvider {...methods}>
           <form
             onSubmit={handleSubmit((data) => {
-              onSave(data);
-              console.log("Service Data Submitted:", data); // Log form data on submit
+              console.log(data, "Submitted Notice");
+              onSubmit(data);
               reset();
             })}
             className="grid gap-4"
@@ -89,24 +86,7 @@ export default function ServiceForm({
               )}
             />
 
-            <FormField
-              control={control}
-              name="duration"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Duration (in minutes)</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="Duration"
-                      {...field}
-                      onChange={(e) => field.onChange(Number(e.target.value))}
-                    />
-                  </FormControl>
-                  <FormMessage>{errors.duration?.message}</FormMessage>
-                </FormItem>
-              )}
-            />
+        
 
             <FormField
               control={control}
@@ -159,21 +139,7 @@ export default function ServiceForm({
               )}
             />
 
-            <FormField
-              control={control}
-              name="specialty"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Specialty</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Specialty" {...field} />
-                  </FormControl>
-                  <FormMessage>{errors.specialty?.message}</FormMessage>
-                </FormItem>
-              )}
-            />
-
-            
+       
 
             <div className="flex gap-4">
               <Button type="submit">

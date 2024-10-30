@@ -7,12 +7,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
 
 interface ServiceTableProps {
-  serviceList: Service[];
+  services: Service[];
+  onEdit: (notice: Service) => void;
+  onDelete: (notice: Service) => void;
+  onView: (notice: Service) => void;
 }
 
-export default function ServiceTable({ serviceList }: ServiceTableProps) {
+export default function ServiceTable({
+  services,
+  onEdit,
+  onDelete,
+  onView,
+}: ServiceTableProps) {
   return (
     <Table>
       <TableHeader>
@@ -23,10 +32,35 @@ export default function ServiceTable({ serviceList }: ServiceTableProps) {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {serviceList.map((service, index) => (
+        {services.map((service, index) => (
           <TableRow key={index}>
             <TableCell>{service.serviceName}</TableCell>
             <TableCell>${service.price}</TableCell>
+            <TableCell>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => onEdit(service)}
+                >
+                  Edit
+                </Button>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => onDelete(service)}
+                >
+                  Delete
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => onView(service)}
+                >
+                  View
+                </Button>
+              </div>
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>
