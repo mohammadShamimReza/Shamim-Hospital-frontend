@@ -15,6 +15,7 @@ export default function UserDetailsModal({
 }: UserDetailsModalProps) {
   if (!user) return null;
 
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalContent>

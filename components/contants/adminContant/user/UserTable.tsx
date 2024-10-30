@@ -13,11 +13,12 @@ import { User } from "@/schemas/userSchema";
 
 interface UserTableProps {
   users: User[];
-  onEdit: (user: User, index: number) => void;
-  onDelete: (index: number) => void;
+  onEdit: (user: User) => void;
+  onDelete: (user:User) => void;
+  onView: (user: User) => void;
 }
 
-export default function UserTable({ users, onEdit, onDelete }: UserTableProps) {
+export default function UserTable({ users, onEdit, onDelete, onView }: UserTableProps) {
   return (
     <Table>
       <TableHeader>
@@ -28,7 +29,7 @@ export default function UserTable({ users, onEdit, onDelete }: UserTableProps) {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {users.map((user, index) => (
+        {users?.map((user, index) => (
           <TableRow key={index}>
             <TableCell>{user.name}</TableCell>
             <TableCell>{user.email}</TableCell>
@@ -39,7 +40,7 @@ export default function UserTable({ users, onEdit, onDelete }: UserTableProps) {
                   size="sm"
                   onClick={(e) => {
                     e.stopPropagation();
-                    onEdit(user, index);
+                    onEdit(user);
                   }}
                 >
                   Edit
@@ -49,10 +50,17 @@ export default function UserTable({ users, onEdit, onDelete }: UserTableProps) {
                   size="sm"
                   onClick={(e) => {
                     e.stopPropagation();
-                    onDelete(index);
+                    onDelete(user);
                   }}
                 >
                   Delete
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => onView(user)}
+                >
+                  View
                 </Button>
               </div>
             </TableCell>

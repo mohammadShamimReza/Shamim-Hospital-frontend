@@ -5,14 +5,6 @@ const USER = "/user";
 
 const UserApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    createUser: builder.mutation<void, Partial<User>>({
-      query: (body) => ({
-        url: `${USER}/create`,
-        method: "POST",
-        body,
-      }),
-      invalidatesTags: ["createUser"],
-    }),
     getAllUser: builder.query<
       { statusCode: number; success: boolean; message: string; data: User[] },
       void
@@ -40,7 +32,6 @@ const UserApi = baseApi.injectEndpoints({
 });
 
 export const {
-  useCreateUserMutation,
   useGetAllUserQuery,
   useUpdateUserMutation,
   useDeleteUserMutation,

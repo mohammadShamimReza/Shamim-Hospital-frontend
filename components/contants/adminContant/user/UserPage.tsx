@@ -1,43 +1,69 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { User } from "@/schemas/userSchema";
 import UserTable from "./UserTable";
 import UserForm from "./UserForm";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
+import { useDeleteUserMutation, useGetAllUserQuery } from "@/redux/api/userApi";
+import UserDetailsModal from "./UserDetailsModal";
 
 export default function UserPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [isFormVisible, setIsFormVisible] = useState(false);
-  const [selectedUserIndex, setSelectedUserIndex] = useState<number | null>(
-    null
-  );
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [searchEmail, setSearchEmail] = useState("");
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
 
-  const closeDeleteModal = () => setIsDeleteModalOpen(false);
+  const { data: userData } = useGetAllUserQuery();
 
-  const handleEdit = (index: number) => {
-    setSelectedUserIndex(index);
+  useEffect(() => {
+    if (userData) {
+      setUsers(userData.data);
+      setFilteredUsers(userData.data);
+    }
+  }, [userData]);
+console.log(isFormVisible)
+  const handleEdit = (user: User) => {
+    console.log('first')
+    setSelectedUser(user);
     setIsFormVisible(true);
+    handleEditUser(user)
   };
+  const handleEditUser = async (user: User) => { 
+    console.log(user, 'for editing user');
+                
 
-  const handleDelete = (index: number) => {
-    setSelectedUserIndex(index);
+  }
+
+  const handleDelete = (user: User) => {
+    setSelectedUser(user);
     setIsDeleteModalOpen(true);
   };
 
-  const confirmDelete = () => {
-    if (selectedUserIndex !== null) {
-      setUsers(users.filter((_, i) => i !== selectedUserIndex));
-      closeDeleteModal();
+  const [deleteUser] = useDeleteUserMutation();
+
+  const confirmDelete = async () => {
+    if (selectedUser && selectedUser.id) {
+      try {
+        await deleteUser(selectedUser.id);
+        setUsers(users.filter((user) => user.id !== selectedUser?.id));
+
+        setIsDeleteModalOpen(false);
+      } catch (error) {
+        console.log("Error Deleting Nurse:", error);
+      }
     }
+
+    setIsDeleteModalOpen(false);
+    setSelectedUser(null);
   };
 
   const resetForm = () => {
-    setSelectedUserIndex(null);
+    setSelectedUser(null);
     setIsFormVisible(false);
   };
 
@@ -60,36 +86,31 @@ export default function UserPage() {
         />
       </div>
 
-      <UserTable
-        users={searchEmail ? filteredUsers : users}
-        onEdit={(user, index) => handleEdit(index)}
-        onDelete={(index) => handleDelete(index)}
+      <UserDetailsModal
+        isOpen={isDetailsModalOpen}
+        user={selectedUser}
+        onClose={() => setIsDetailsModalOpen(false)}
       />
 
       {isFormVisible && (
         <UserForm
-          user={selectedUserIndex !== null ? users[selectedUserIndex] : null}
-          onSave={(updatedUser) => {
-            if (selectedUserIndex !== null) {
-              setUsers((prev) =>
-                prev.map((user, i) =>
-                  i === selectedUserIndex ? updatedUser : user
-                )
-              );
-              console.log("Updated User:", updatedUser);
-            } else {
-              setUsers([...users, updatedUser]);
-              console.log("New User Created:", updatedUser);
-            }
-            resetForm();
-          }}
+          user={selectedUser}
+          onSave={handleEditUser}
           onCancel={resetForm}
         />
       )}
-
+      <UserTable
+        users={filteredUsers}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+        onView={(user) => {
+          setSelectedUser(user);
+          setIsDetailsModalOpen(true);
+        }}
+      />
       <DeleteConfirmationModal
         isOpen={isDeleteModalOpen}
-        onClose={closeDeleteModal}
+        onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={confirmDelete}
       />
     </div>

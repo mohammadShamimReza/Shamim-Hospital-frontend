@@ -30,7 +30,6 @@ export default function NurseForm({
   onCancel,
 }: NurseFormProps) {
   const [showPassword, setShowPassword] = useState(false);
-  console.log(initialData, 'initialData')
 
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);

@@ -14,6 +14,9 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { User, userSchema } from "@/schemas/userSchema";
 
+import { Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
+
 interface UserFormProps {
   user: User | null;
   onSave: (data: User) => void;
@@ -21,9 +24,14 @@ interface UserFormProps {
 }
 
 export default function UserForm({ user, onSave, onCancel }: UserFormProps) {
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
   const methods = useForm<User>({
     resolver: zodResolver(userSchema),
-    defaultValues: user || { name: "", email: "", address: "", role: "" },
+    defaultValues: user || { name: "", email: "", address: "", password: "" , phone: 0 },
   });
 
   const {
@@ -39,7 +47,10 @@ export default function UserForm({ user, onSave, onCancel }: UserFormProps) {
       </CardHeader>
       <CardContent>
         <FormProvider {...methods}>
-          <form onSubmit={handleSubmit(onSave)} className="grid gap-4">
+          <form onSubmit={handleSubmit((data) => {
+            onSave(data);
+            
+          })} className="grid gap-4">
             {/* Name Field */}
             <FormField
               control={control}
@@ -69,6 +80,61 @@ export default function UserForm({ user, onSave, onCancel }: UserFormProps) {
                 </FormItem>
               )}
             />
+            <FormField
+              control={control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                      <Input
+                        type={showPassword ? "text" : "password"}
+                        placeholder="name123$#"
+                        {...field}
+                      />
+                      <button
+                        type="button"
+                        onClick={togglePasswordVisibility}
+                        className="absolute inset-y-0 right-0 px-2 flex items-center"
+                        aria-label={
+                          showPassword ? "Hide password" : "Show password"
+                        }
+                      >
+                        {showPassword ? (
+                          <EyeOff size={16} />
+                        ) : (
+                          <Eye size={16} />
+                        )}
+                      </button>
+                    </div>
+                  </FormControl>
+                  <FormMessage>{errors.password?.message}</FormMessage>
+                </FormItem>
+              )}
+            />
+
+            {/* Phone Field */}
+            <FormField
+              control={control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Phone</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="Phone Number"
+                      {...field}
+                      onChange={(e) =>
+                        field.onChange(parseInt(e.target.value, 10) || "")
+                      }
+                    />
+                  </FormControl>
+                  <FormMessage>{errors.phone?.message}</FormMessage>
+                </FormItem>
+              )}
+            />
 
             {/* Address Field */}
             <FormField
@@ -81,21 +147,6 @@ export default function UserForm({ user, onSave, onCancel }: UserFormProps) {
                     <Input placeholder="User's Address" {...field} />
                   </FormControl>
                   <FormMessage>{errors.address?.message}</FormMessage>
-                </FormItem>
-              )}
-            />
-
-            {/* Role Field */}
-            <FormField
-              control={control}
-              name="role"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Role</FormLabel>
-                  <FormControl>
-                    <Input placeholder="User's Role" {...field} />
-                  </FormControl>
-                  <FormMessage>{errors.role?.message}</FormMessage>
                 </FormItem>
               )}
             />
