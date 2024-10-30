@@ -1,119 +1,122 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import NurseForm from "./NurseForm";
 import NurseTable from "./NurseTable";
 import { Nurse } from "@/schemas/nurseSchema";
-import { useCreateNurseMutation, useDeleteNurseMutation, useGetAllNurseQuery, useUpdateNurseMutation } from "@/redux/api/nurseApi";
+import {
+  useCreateNurseMutation,
+  useDeleteNurseMutation,
+  useGetAllNurseQuery,
+  useUpdateNurseMutation,
+} from "@/redux/api/nurseApi";
 import NurseDetailsModal from "./NurseDetailsModal";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 
 export default function NursePage() {
-  const [isFormVisible, setIsFormVisible] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
+  const [formState, setFormState] = useState({
+    isFormVisible: false,
+    isEditing: false,
+    selectedNurse: null as Nurse | null,
+  });
   const [nurses, setNurses] = useState<Nurse[]>([]);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [selectedNurse, setSelectedNurse] = useState<Nurse | null>(null);
-  const [isNurseDetailsModalOpen, setIsNurseDetailsModalOpen] = useState(false);
+  const [modals, setModals] = useState({
+    delete: false,
+    nurseDetails: false,
+  });
+
+  const { data: nurseData } = useGetAllNurseQuery();
   const [createNurse] = useCreateNurseMutation();
+  const [updateNurse] = useUpdateNurseMutation();
+  const [deleteNurse] = useDeleteNurseMutation();
 
-  const closeDeleteModal = () => setIsDeleteModalOpen(false);
-  
+  // Effect to load nurses on data fetch
+  useEffect(() => {
+    if (nurseData?.data) setNurses(nurseData.data);
+  }, [nurseData]);
 
-  const handleEdit = () => {
-    setIsEditing(true);
-    setIsFormVisible(true);
-  };
-  const [updateNurse] = useUpdateNurseMutation()
+  const toggleFormVisibility = useCallback(
+    (isVisible: boolean, isEditing = false, nurse: Nurse | null = null) => {
+      setFormState({
+        isFormVisible: isVisible,
+        isEditing,
+        selectedNurse: nurse,
+      });
+    },
+    []
+  );
 
   const handleSaveNurse = async (nurse: Nurse) => {
-    if (isEditing && selectedNurse !== null) {
-      console.log("Edited Nurse Data:", nurse);
-      if (nurse.id) {
-        const result = await updateNurse({ id: nurse.id, body: nurse });
-        console.log(result)
-      }
-  
-    
-    } else {
-      try {
+    try {
+      if (formState.isEditing && formState.selectedNurse) {
+        if (nurse.id) {
+          const result = await updateNurse({ id: nurse.id, body: nurse });
+          console.log("Nurse Updated:", result);
+        }
+      } else {
         const result = await createNurse(nurse);
         console.log("Nurse Added:", result);
         setNurses((prev) => [...prev, nurse]);
-      } catch (error) {
-        console.log("Error Adding Nurse:", error);
       }
+      toggleFormVisibility(false);
+    } catch (error) {
+      console.log("Error Saving Nurse:", error);
     }
-    setIsFormVisible(false);
-    setIsEditing(false);
   };
-  const [deleteNurse] = useDeleteNurseMutation();
 
   const confirmDelete = async () => {
-    setIsDeleteModalOpen(false);
-    try {
-      if ( selectedNurse!== null&& selectedNurse.id ) {
-        await deleteNurse(selectedNurse?.id);
-        console.log("Nurse Deleted:", selectedNurse?.id);
-        setNurses((prev) => prev.filter((nurse) => nurse.id !== selectedNurse?.id));
+    if (formState.selectedNurse && formState.selectedNurse.id) {
+      try {
+        await deleteNurse(formState.selectedNurse.id);
+        setNurses((prev) =>
+          prev.filter((nurse) => nurse.id !== formState.selectedNurse?.id)
+        );
+        console.log("Nurse Deleted:", formState.selectedNurse.id);
+        setModals((prev) => ({ ...prev, delete: false }));
+      } catch (error) {
+        console.log("Error Deleting Nurse:", error);
       }
-    } catch (error) {
-      console.log("Error Deleting Nurse:", error);
     }
   };
-
-  const { data: nurseData } = useGetAllNurseQuery();
-
-  useEffect(() => {  if (nurseData) {
-    setNurses(nurseData.data);
-  }})
- 
-
 
   return (
     <div className="p-6">
       <div className="flex items-center gap-4 mb-4">
-        <Button onClick={() => setIsFormVisible(true)}>Add Nurse</Button>
+        <Button onClick={() => toggleFormVisibility(true)}>Add Nurse</Button>
       </div>
 
-      {isFormVisible && (
+      {formState.isFormVisible && (
         <NurseForm
-          isEditing={isEditing}
-          initialData={selectedNurse !== null ? selectedNurse : undefined}
+          isEditing={formState.isEditing}
+          initialData={formState.selectedNurse ?? undefined}
           onSave={handleSaveNurse}
-          onCancel={() => {
-            setIsFormVisible(false);
-            setIsEditing(false);
-          }}
+          onCancel={() => toggleFormVisibility(false)}
         />
       )}
 
       <NurseDetailsModal
-        isOpen={isNurseDetailsModalOpen}
-        nurse={selectedNurse}
-        onClose={() => setIsNurseDetailsModalOpen(false)}
+        isOpen={modals.nurseDetails}
+        nurse={formState.selectedNurse}
+        onClose={() => setModals((prev) => ({ ...prev, nurseDetails: false }))}
       />
 
       <NurseTable
-        nurseList={nurses ?? []}
-        onEdit={(nurse) => {
-          setSelectedNurse(nurse);
-          handleEdit();
-        }}
+        nurseList={nurses}
+        onEdit={(nurse) => toggleFormVisibility(true, true, nurse)}
         onDelete={(nurse) => {
-          setSelectedNurse(nurse);
-          setIsDeleteModalOpen(true);
+          setFormState((prev) => ({ ...prev, selectedNurse: nurse }));
+          setModals((prev) => ({ ...prev, delete: true }));
         }}
         onView={(nurse) => {
-          setSelectedNurse(nurse);
-          setIsNurseDetailsModalOpen(true);
+          setFormState((prev) => ({ ...prev, selectedNurse: nurse }));
+          setModals((prev) => ({ ...prev, nurseDetails: true }));
         }}
       />
 
       <DeleteConfirmationModal
-        isOpen={isDeleteModalOpen}
-        onClose={closeDeleteModal}
+        isOpen={modals.delete}
+        onClose={() => setModals((prev) => ({ ...prev, delete: false }))}
         onConfirm={confirmDelete}
       />
     </div>
