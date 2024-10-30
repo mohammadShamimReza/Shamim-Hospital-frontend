@@ -48,3 +48,9 @@ export interface Doctor {
 }
 
 
+export interface Notice {
+  id: number;
+  title: string;
+  content: string;
+  authorId: number;
+}

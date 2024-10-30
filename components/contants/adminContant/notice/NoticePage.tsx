@@ -1,49 +1,89 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import NoticeForm from "./NoticeForm";
 import NoticeTable from "./NoticeTable";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import { Notice } from "@/schemas/noticeSchema";
+import NoticeDetailsModal from "./NoticeDetailsModal";
+import { useCreateNoticeMutation, useDeleteNoticeMutation, useGetAllNoticeQuery, useUpdateNoticeMutation } from "@/redux/api/noticeApi";
 
 export default function NoticePage() {
   const [notices, setNotices] = useState<Notice[]>([]);
+  const [selectedNotice, setSelectedNotice] = useState<Notice | null>(null);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [selectedNoticeIndex, setSelectedNoticeIndex] = useState<number | null>(
-    null
-  );
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  const closeDeleteModal = () => {
-    setIsDeleteModalOpen(false);
-  };
 
-  const handleEdit = (notice: Notice, index: number) => {
-    setIsEditing(true);
-    setSelectedNoticeIndex(index);
-    setIsFormVisible(true);
-  };
+   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  const handleSaveNotice = (notice: Notice) => {
-    if (isEditing && selectedNoticeIndex !== null) {
-      setNotices((prev) =>
-        prev.map((item, i) => (i === selectedNoticeIndex ? notice : item))
-      );
-      console.log("Notice Updated:", notice);
-    } else {
-      setNotices([...notices, { ...notice, id: Date.now() }]);
-      console.log("Notice Created:", notice);
+   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+
+
+
+   const { data: noticeData } = useGetAllNoticeQuery();
+
+   const [createNotice] = useCreateNoticeMutation();
+   const [updateNotice] = useUpdateNoticeMutation();
+   const [deleteNotice] = useDeleteNoticeMutation();
+
+  useEffect(() => {
+    if (noticeData?.data) setNotices(noticeData.data);
+  }, [noticeData]);
+
+  const handleSaveNotice = async (notice: Notice) => {
+    console.log(notice, "before save");
+    try {
+      if (isEditing && selectedNotice !== null) {
+        if (notice.id) {
+          const result = await updateNotice({ id: notice.id, body: notice });
+          console.log("notice Updated:", result);
+          setIsEditing(false);
+          setIsFormVisible(false);
+        }
+      } else {
+        const result = await createNotice(notice);
+        console.log("notice Added:", result);
+      }
+      //  setIsFormVisible(false);
+      //  setIsEditing(false);
+      //  setSelectedDoctorIndex(null);
+    } catch (error) {
+      console.log(error);
     }
-    setIsFormVisible(false);
-    setIsEditing(false);
   };
 
-  const confirmDelete = () => {
-    if (selectedNoticeIndex !== null) {
-      setNotices(notices.filter((_, i) => i !== selectedNoticeIndex));
-      setIsDeleteModalOpen(false);
+  const handleEdit = (notice: Notice) => {
+    setIsEditing(true);
+    setIsFormVisible(true);
+    setSelectedNotice(notice);
+  };
+
+
+  const handleDetailsModal = (notice: Notice) => {
+    setSelectedNotice(notice);
+    setIsDetailsModalOpen(true);
+  };
+
+    const handleDeleteModal = (notice: Notice) => {
+      console.log(notice);
+      setSelectedNotice(notice);
+      setIsDeleteModalOpen(true);
+    };
+
+  const confirmDelete = async () => {
+    if (selectedNotice && selectedNotice.id) {
+      try {
+        const res = await deleteNotice(selectedNotice.id);
+
+        console.log("Notice Deleted:", res);
+        setSelectedNotice(null);
+
+        setIsDeleteModalOpen(false);
+      } catch (error) {
+        console.log("Error Deleting Nurse:", error);
+      }
     }
   };
 
@@ -55,32 +95,29 @@ export default function NoticePage() {
 
       {isFormVisible && (
         <NoticeForm
+          onSubmit={handleSaveNotice}
+          onCancel={() => setIsFormVisible(false)}
+          initialData={selectedNotice ? selectedNotice : null}
           isEditing={isEditing}
-          initialData={
-            selectedNoticeIndex !== null
-              ? notices[selectedNoticeIndex]
-              : undefined
-          }
-          onSave={handleSaveNotice}
-          onCancel={() => {
-            setIsFormVisible(false);
-            setIsEditing(false);
-          }}
         />
       )}
 
+      <NoticeDetailsModal
+        isDetailsModalOpen={isDetailsModalOpen}
+        notice={selectedNotice}
+        onClose={() => setIsDetailsModalOpen(false)}
+      />
+
       <NoticeTable
-        noticeList={notices}
+        notices={notices}
         onEdit={handleEdit}
-        onDelete={(index) => {
-          setSelectedNoticeIndex(index);
-          setIsDeleteModalOpen(true);
-        }}
+        onDelete={handleDeleteModal}
+        onView={handleDetailsModal}
       />
 
       <DeleteConfirmationModal
         isOpen={isDeleteModalOpen}
-        onClose={closeDeleteModal}
+        onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={confirmDelete}
       />
     </div>

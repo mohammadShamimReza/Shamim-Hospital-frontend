@@ -12,51 +12,54 @@ import {
 } from "@/components/ui/table";
 
 interface NoticeTableProps {
-  noticeList: Notice[];
-  onEdit: (notice: Notice, index: number) => void;
-  onDelete: (index: number) => void;
+  notices: Notice[];
+  onEdit: (notice: Notice) => void;
+  onDelete: (notice: Notice) => void;
+  onView: (notice: Notice) => void;
 }
 
-export default function NoticeTable({
-  noticeList,
-  onEdit,
-  onDelete,
-}: NoticeTableProps) {
+export default function NoticeTable({ notices, onEdit, onDelete, onView }: NoticeTableProps) {
   return (
     <Table>
       <TableHeader>
         <TableRow>
           <TableHead>Title</TableHead>
-          <TableHead>Date</TableHead>
+          <TableHead>Description</TableHead>
           <TableHead>Actions</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {noticeList.map((notice, index) => (
+        {notices.map((notice, index) => (
           <TableRow key={notice.id ?? index}>
             <TableCell>{notice.title}</TableCell>
-            <TableCell>{notice.date}</TableCell>
             <TableCell>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onEdit(notice, index);
-                }}
-              >
-                Edit
-              </Button>
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onDelete(index);
-                }}
-              >
-                Delete
-              </Button>
+              {notice.content.split(" ").slice(0, 4).join(" ")}...
+            </TableCell>
+
+            <TableCell>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => onEdit(notice)}
+                >
+                  Edit
+                </Button>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => onDelete(notice)}
+                >
+                  Delete
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => onView(notice)}
+                >
+                  View
+                </Button>
+              </div>
             </TableCell>
           </TableRow>
         ))}

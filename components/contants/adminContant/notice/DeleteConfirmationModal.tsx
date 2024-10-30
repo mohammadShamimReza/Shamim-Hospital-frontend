@@ -23,7 +23,7 @@ export default function DeleteConfirmationModal({
           <Button variant="destructive" onClick={onConfirm}>
             Confirm Delete
           </Button>
-          <Button variant="outline" onClick={onClose}>
+          <Button variant="outline" onClick={() => onClose()}>
             Cancel
           </Button>
         </ModalFooter>

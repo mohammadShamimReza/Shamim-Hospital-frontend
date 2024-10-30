@@ -15,24 +15,24 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { noticeSchema, Notice } from "@/schemas/noticeSchema";
 
 interface NoticeFormProps {
-  isEditing: boolean;
-  initialData?: Notice;
-  onSave: (notice: Notice) => void;
+  onSubmit: (data: Notice) => void;
   onCancel: () => void;
+  initialData?: Notice | null;
+  isEditing: boolean;
 }
 
 export default function NoticeForm({
-  isEditing,
-  initialData,
-  onSave,
+  onSubmit,
   onCancel,
+  initialData,
+  isEditing,
 }: NoticeFormProps) {
   const methods = useForm<Notice>({
     resolver: zodResolver(noticeSchema),
     defaultValues: initialData || {
       title: "",
       content: "",
-      date: new Date().toISOString().split("T")[0],
+      authorId: 0,
     },
   });
 
@@ -52,11 +52,13 @@ export default function NoticeForm({
         <FormProvider {...methods}>
           <form
             onSubmit={handleSubmit((data) => {
-              onSave(data);
+              console.log(data, "Submitted Notice");
+              onSubmit(data);
               reset();
             })}
             className="grid gap-4"
           >
+            {/* Title Field */}
             <FormField
               control={control}
               name="title"
@@ -71,6 +73,7 @@ export default function NoticeForm({
               )}
             />
 
+            {/* Content Field */}
             <FormField
               control={control}
               name="content"
@@ -78,7 +81,12 @@ export default function NoticeForm({
                 <FormItem>
                   <FormLabel>Content</FormLabel>
                   <FormControl>
-                    <Input placeholder="Notice Content" {...field} />
+                    <textarea
+                      placeholder="Notice Content"
+                      {...field}
+                      className="form-textarea w-full px-3 py-2 border rounded"
+                      rows={4}
+                    />
                   </FormControl>
                   <FormMessage>{errors.content?.message}</FormMessage>
                 </FormItem>
@@ -87,14 +95,22 @@ export default function NoticeForm({
 
             <FormField
               control={control}
-              name="date"
+              name="authorId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Date</FormLabel>
+                  <FormLabel>authorId</FormLabel>
                   <FormControl>
-                    <Input type="date" {...field} />
+                    <input
+                      type="number"
+                      placeholder="Notice Content"
+                      {...field}
+                      onChange={(e) =>
+                        field.onChange(parseInt(e.target.value, 10) || "")
+                      }
+                      className="form-textarea w-full px-3 py-2 border rounded"
+                    />
                   </FormControl>
-                  <FormMessage>{errors.date?.message}</FormMessage>
+                  <FormMessage>{errors.content?.message}</FormMessage>
                 </FormItem>
               )}
             />
@@ -103,7 +119,13 @@ export default function NoticeForm({
               <Button type="submit">
                 {isEditing ? "Update Notice" : "Add Notice"}
               </Button>
-              <Button variant="outline" onClick={onCancel}>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  reset();
+                  onCancel();
+                }}
+              >
                 Cancel
               </Button>
             </div>

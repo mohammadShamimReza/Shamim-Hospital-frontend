@@ -3,28 +3,26 @@ import { Button } from "@/components/ui/button";
 import { Notice } from "@/schemas/noticeSchema";
 
 interface NoticeDetailsModalProps {
-  isOpen: boolean;
+  isDetailsModalOpen: boolean;
   notice: Notice | null;
   onClose: () => void;
 }
 
 export default function NoticeDetailsModal({
-  isOpen,
+  isDetailsModalOpen,
   notice,
   onClose,
 }: NoticeDetailsModalProps) {
   if (!notice) return null;
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isDetailsModalOpen} onClose={onClose}>
       <ModalContent>
         <h3 className="text-lg font-semibold mb-4">Notice Details</h3>
         <p>
           <strong>Title:</strong> {notice.title}
         </p>
-        <p>
-          <strong>Date:</strong> {notice.date}
-        </p>
+     
         <p>
           <strong>Content:</strong> {notice.content}
         </p>
