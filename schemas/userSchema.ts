@@ -12,10 +12,9 @@ export const userSchema = z.object({
       /(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/,
       "Password must contain a letter, a number, and a special character"
     ),
+  phone: z.number().min(10, "Phone number must be at least 10 characters"),
   address: z.string().optional(),
-  profile_image: z.string().url("Profile image must be a valid URL").optional(),
-  role: z.string().min(1, "Role is required"), // Assuming role is a required field (e.g., 'admin', 'user')
-  appointments: z.array(z.any()).optional(), // Assuming appointments data may vary; use z.any() or define a nested schema if available
+  role: z.string().min(1, "Role is required"),
 });
 
 // Define the User type based on the Zod schema

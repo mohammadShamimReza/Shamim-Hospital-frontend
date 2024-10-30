@@ -21,28 +21,55 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
+import { useState } from "react";
+
+import { Eye, EyeOff } from "lucide-react";
+import { useCreateUserMutation } from "@/redux/api/authApi";
+import { toast } from "sonner";
+import { storeTokenInCookie } from "@/lib/auth/token";
+import { storeAuthToken, storeUserInfo } from "@/redux/slice/authSlice";
+import { useAppDispatch } from "@/redux/hooks";
 
 // Define validation schema with Zod
 const signupSchema = z.object({
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
+  
+  name: z.string().min(1, "name name is required"),
   email: z.string().email("Invalid email format"),
+  phone: z.number().min(10, "Invalid phone number format"),
   password: z
     .string()
     .min(8, "Password must be at least 8 characters long")
     .regex(
       /(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/,
       "Password must contain a letter, a number, and a special character"
-    ),
+  ),
+  
+  address: z.string().optional(),
+
+  role: z.string().min(2, "Role is required"),
 });
 
 type SignupFormData = z.infer<typeof signupSchema>;
 
 const SignupPage: React.FC = () => {
+    const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+  const dispatch = useAppDispatch();
+
+    const togglePasswordVisibility = () => {
+      setShowPassword((prev) => !prev);
+    };
+    const [createUser] = useCreateUserMutation()
   const formMethods = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
-    defaultValues: { firstName: "", lastName: "", email: "", password: "" },
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      phone: 0,
+      address: "",
+      role: "patient"
+    },
   });
 
   const {
@@ -54,11 +81,35 @@ const SignupPage: React.FC = () => {
   const onSubmit = async (data: SignupFormData) => {
     console.log(data);
     // Simulated API call
-    if (data.email !== "test@example.com") {
-      router.push("/dashboard"); // Redirect on successful signup
-    } else {
-      alert("Account creation failed. Try again.");
-    }
+       if (data.email !== "" && data.password !== "") {
+         try {
+           const result = await createUser(data);
+           console.log(result);
+
+           if (result?.error) {
+             toast("User not created successfully", {
+               style: {
+                 backgroundColor: "red",
+                 color: "white",
+               },
+             });
+           } else {
+             toast("User created successfully");
+             console.log(result);
+             console.log(result.data?.data.accessToken);
+             storeTokenInCookie(result?.data?.data.accessToken);
+             dispatch(storeAuthToken(result?.data?.data.accessToken));
+             localStorage.setItem("jwt", result?.data?.data.accessToken);
+
+             dispatch(storeUserInfo(result?.data?.user));
+             router.push("/");
+           }
+         } catch (error) {
+           console.log(error);
+         }
+       } else {
+         alert("Invalid email or password.");
+       }
   };
 
   return (
@@ -74,67 +125,126 @@ const SignupPage: React.FC = () => {
           <FormProvider {...formMethods}>
             <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
               <div className="grid grid-cols-2 gap-4">
-                <FormField
-                  control={control}
-                  name="firstName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>First Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Max" {...field} />
-                      </FormControl>
-                      <FormMessage>{errors.firstName?.message}</FormMessage>
-                    </FormItem>
-                  )}
-                />
+         <FormField
+              control={control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Name" {...field} />
+                  </FormControl>
+                  <FormMessage>{errors.name?.message}</FormMessage>
+                </FormItem>
+              )}
+            />
 
-                <FormField
-                  control={control}
-                  name="lastName"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Last Name</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Robinson" {...field} />
-                      </FormControl>
-                      <FormMessage>{errors.lastName?.message}</FormMessage>
-                    </FormItem>
-                  )}
-                />
-              </div>
+            {/* Email Field */}
+            <FormField
+              control={control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input type="email" placeholder="Email" {...field} />
+                  </FormControl>
+                  <FormMessage>{errors.email?.message}</FormMessage>
+                </FormItem>
+              )}
+            />
 
-              <FormField
-                control={control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input placeholder="m@example.com" {...field} />
-                    </FormControl>
-                    <FormMessage>{errors.email?.message}</FormMessage>
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
+            <FormField
+              control={control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <div className="relative">
                       <Input
-                        type="password"
-                        placeholder="At least 8 characters, one special character, and one number"
+                        type={showPassword ? "text" : "password"}
+                        placeholder="name123$#"
                         {...field}
                       />
-                    </FormControl>
-                    <FormMessage>{errors.password?.message}</FormMessage>
-                  </FormItem>
-                )}
-              />
+                      <button
+                        type="button"
+                        onClick={togglePasswordVisibility}
+                        className="absolute inset-y-0 right-0 px-2 flex items-center"
+                        aria-label={
+                          showPassword ? "Hide password" : "Show password"
+                        }
+                      >
+                        {showPassword ? (
+                          <EyeOff size={16} />
+                        ) : (
+                          <Eye size={16} />
+                        )}
+                      </button>
+                    </div>
+                  </FormControl>
+                  <FormMessage>{errors.password?.message}</FormMessage>
+                </FormItem>
+              )}
+            />
 
+            {/* Phone Field */}
+            <FormField
+              control={control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Phone</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="Phone Number"
+                      {...field}
+                      onChange={(e) =>
+                        field.onChange(parseInt(e.target.value, 10) || "")
+                      }
+                    />
+                  </FormControl>
+                  <FormMessage>{errors.phone?.message}</FormMessage>
+                </FormItem>
+              )}
+            />
+
+            {/* Address Field */}
+            <FormField
+              control={control}
+              name="address"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Address</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Address" {...field} />
+                  </FormControl>
+                  <FormMessage>{errors.address?.message}</FormMessage>
+                </FormItem>
+              )}
+            />
+
+            {/* Role Field */}
+            <FormField
+              control={control}
+              name="role"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Role</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Role"
+                      {...field}
+                      value={"patient"}
+                      disabled
+                    />
+                  </FormControl>
+                  <FormMessage>{errors.role?.message}</FormMessage>
+                </FormItem>
+              )}
+                />
+                </div>
               <Button type="submit" className="w-full">
                 Create an Account
               </Button>

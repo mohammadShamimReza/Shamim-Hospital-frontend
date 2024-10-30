@@ -19,6 +19,19 @@ const authApi = baseApi.injectEndpoints({
       //   return baseQueryReturnValue.data;
       // },
     }),
+    createUser: builder.mutation({
+      query: (body) => ({
+        url: `${AUTH}/signup`,
+        method: "POST",
+        body,
+      }),
+      // transformResponse: (rawResult: UserData | Error) => {
+      //   return rawResult;
+      // },
+      // transformErrorResponse(baseQueryReturnValue, meta, arg) {
+      //   return baseQueryReturnValue.data;
+      // },
+    }),
     getUserInfo: builder.query({
       query: () => ({
         url: `${AUTH}/me`,
@@ -32,4 +45,4 @@ const authApi = baseApi.injectEndpoints({
 });
 
 
-export const {useLoginUserMutation, useGetUserInfoQuery} = authApi;
+export const {useLoginUserMutation, useGetUserInfoQuery, useCreateUserMutation} = authApi;
