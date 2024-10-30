@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Nurse, nurseSchema } from "@/schemas/nurseSchema";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Eye, EyeOff } from "lucide-react";
 
 interface NurseFormProps {
@@ -25,23 +25,27 @@ interface NurseFormProps {
 
 export default function NurseForm({
   isEditing,
+  initialData,
   onSave,
   onCancel,
 }: NurseFormProps) {
   const [showPassword, setShowPassword] = useState(false);
+  console.log(initialData, 'initialData')
 
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };
+
   const methods = useForm<Nurse>({
     resolver: zodResolver(nurseSchema),
-    defaultValues:  {
+    defaultValues: {
       name: "",
       email: "",
       password: "",
       phone: 0,
       address: "",
       role: "nurse",
+      ...initialData, // Include initialData in defaultValues
     },
   });
 
@@ -51,6 +55,13 @@ export default function NurseForm({
     control,
     formState: { errors },
   } = methods;
+
+  // Reset form values when initialData changes
+  useEffect(() => {
+    if (initialData) {
+      reset(initialData); // Set form values to initialData
+    }
+  }, [initialData, reset]);
 
   return (
     <Card className="mb-8">

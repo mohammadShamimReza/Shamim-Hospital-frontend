@@ -25,12 +25,8 @@ export default function NurseDetailsModal({
         <p>
           <strong>Email:</strong> {nurse.email}
         </p>
-        <p>
-          <strong>Department:</strong> {nurse.department}
-        </p>
-        <p>
-          <strong>Shift:</strong> {nurse.shift}
-        </p>
+        
+        
       </ModalContent>
       <ModalFooter>
         <Button variant="outline" onClick={onClose}>

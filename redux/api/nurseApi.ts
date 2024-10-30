@@ -1,10 +1,11 @@
-import { baseApi } from "./baseApi"
+import { Nurse } from "@/type/Index";
+import { baseApi } from "./baseApi";
 
-const NURSE = "/nurse"
+const NURSE = "/nurse";
 
 const nurseApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    createNurse: builder.mutation({
+    createNurse: builder.mutation<void, Partial<Nurse>>({
       query: (body) => ({
         url: `${NURSE}/create`,
         method: "POST",
@@ -12,14 +13,16 @@ const nurseApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["createUser"],
     }),
-    getAllNurse: builder.query({
+    getAllNurse: builder.query<
+      { statusCode: number; success: boolean; message: string; data: Nurse[] },
+      void
+    >({
       query: () => ({
-        url: `${NURSE}/`
+        url: `${NURSE}/`,
       }),
       providesTags: ["createUser"],
     }),
   }),
 });
 
-
-export const {useCreateNurseMutation, useGetAllNurseQuery} = nurseApi
+export const { useCreateNurseMutation, useGetAllNurseQuery } = nurseApi;
