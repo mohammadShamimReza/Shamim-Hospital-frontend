@@ -1,3 +1,5 @@
+"use client";
+
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -10,7 +12,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { staffSchema, Staff } from "@/schemas/staffSchema";
+import { Staff, staffSchema } from "@/schemas/staffSchema";
+import { useState, useEffect } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 interface StaffFormProps {
   isEditing: boolean;
@@ -25,16 +29,22 @@ export default function StaffForm({
   onSave,
   onCancel,
 }: StaffFormProps) {
+  const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
+
   const methods = useForm<Staff>({
     resolver: zodResolver(staffSchema),
-    defaultValues: initialData || {
+    defaultValues: {
       name: "",
       email: "",
       password: "",
+      phone: 0,
       address: "",
-      profile_image: "",
-      role: "",
-      roomId: undefined,
+      role: "staff",
+      ...initialData, // Set default values based on initial data
     },
   });
 
@@ -44,6 +54,12 @@ export default function StaffForm({
     control,
     formState: { errors },
   } = methods;
+
+  useEffect(() => {
+    if (initialData) {
+      reset(initialData); // Reset form values if initialData changes
+    }
+  }, [initialData, reset]);
 
   return (
     <Card className="mb-8">
@@ -55,7 +71,6 @@ export default function StaffForm({
           <form
             onSubmit={handleSubmit((data) => {
               onSave(data);
-              console.log("Staff Data Submitted:", data); // Log data
               reset();
             })}
             className="grid gap-4"
@@ -90,7 +105,7 @@ export default function StaffForm({
               )}
             />
 
-            {/* Password Field */}
+            {/* Password Field with Toggle Visibility */}
             <FormField
               control={control}
               name="password"
@@ -98,9 +113,50 @@ export default function StaffForm({
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="Password" {...field} />
+                    <div className="relative">
+                      <Input
+                        type={showPassword ? "text" : "password"}
+                        placeholder="name123$#"
+                        {...field}
+                      />
+                      <button
+                        type="button"
+                        onClick={togglePasswordVisibility}
+                        className="absolute inset-y-0 right-0 px-2 flex items-center"
+                        aria-label={
+                          showPassword ? "Hide password" : "Show password"
+                        }
+                      >
+                        {showPassword ? (
+                          <EyeOff size={16} />
+                        ) : (
+                          <Eye size={16} />
+                        )}
+                      </button>
+                    </div>
                   </FormControl>
                   <FormMessage>{errors.password?.message}</FormMessage>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Phone</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="Phone Number"
+                      {...field}
+                      onChange={(e) =>
+                        field.onChange(parseInt(e.target.value, 10) || "")
+                      }
+                    />
+                  </FormControl>
+                  <FormMessage>{errors.phone?.message}</FormMessage>
                 </FormItem>
               )}
             />
@@ -120,26 +176,7 @@ export default function StaffForm({
               )}
             />
 
-            {/* Profile Image Field */}
-            <FormField
-              control={control}
-              name="profile_image"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Profile Image URL</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="url"
-                      placeholder="Profile Image URL"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage>{errors.profile_image?.message}</FormMessage>
-                </FormItem>
-              )}
-            />
-
-            {/* Role Field */}
+            {/* Role Field (Disabled for Staff) */}
             <FormField
               control={control}
               name="role"
@@ -147,29 +184,14 @@ export default function StaffForm({
                 <FormItem>
                   <FormLabel>Role</FormLabel>
                   <FormControl>
-                    <Input placeholder="Role" {...field} />
-                  </FormControl>
-                  <FormMessage>{errors.role?.message}</FormMessage>
-                </FormItem>
-              )}
-            />
-
-            {/* Room ID Field */}
-            <FormField
-              control={control}
-              name="roomId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Room ID</FormLabel>
-                  <FormControl>
                     <Input
-                      type="number"
-                      placeholder="Room ID"
+                      placeholder="Role"
                       {...field}
-                      onChange={(e) => field.onChange(Number(e.target.value))}
+                      value="staff"
+                      disabled
                     />
                   </FormControl>
-                  <FormMessage>{errors.roomId?.message}</FormMessage>
+                  <FormMessage>{errors.role?.message}</FormMessage>
                 </FormItem>
               )}
             />

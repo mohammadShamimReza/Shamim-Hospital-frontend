@@ -1,86 +1,129 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import StaffForm from "./StaffForm";
 import StaffTable from "./StaffTable";
-import StaffDetailsModal from "./StaffDetailsModal";
 import { Staff } from "@/schemas/staffSchema";
+import {
+  useCreateStaffMutation,
+  useDeleteStaffMutation,
+  useGetAllStaffQuery,
+  useUpdateStaffMutation,
+} from "@/redux/api/staffApi"; // Adjust to match Staff API endpoints
+import StaffDetailsModal from "./StaffDetailsModal";
+import DeleteConfirmationModal from "./DeleteConfirmationModal";
+import { toast } from "sonner";
 
 export default function StaffPage() {
+  const [formState, setFormState] = useState({
+    isFormVisible: false,
+    isEditing: false,
+    selectedStaff: null as Staff | null,
+  });
   const [staffList, setStaffList] = useState<Staff[]>([]);
-  const [isFormVisible, setIsFormVisible] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [selectedStaffIndex, setSelectedStaffIndex] = useState<number | null>(
-    null
+  const [modals, setModals] = useState({
+    delete: false,
+    staffDetails: false,
+  });
+
+  const { data: staffData } = useGetAllStaffQuery();
+  const [createStaff] = useCreateStaffMutation();
+  const [updateStaff] = useUpdateStaffMutation();
+  const [deleteStaff] = useDeleteStaffMutation();
+
+  useEffect(() => {
+    if (staffData?.data) setStaffList(staffData.data);
+  }, [staffData]);
+
+  const toggleFormVisibility = useCallback(
+    (isVisible: boolean, isEditing = false, staff: Staff | null = null) => {
+      setFormState({
+        isFormVisible: isVisible,
+        isEditing,
+        selectedStaff: staff,
+      });
+    },
+    []
   );
-  const [isStaffDetailsModalOpen, setIsStaffDetailsModalOpen] = useState(false);
-  const [selectedStaff, setSelectedStaff] = useState<Staff | null>(null);
 
-  const handleEdit = (staff: Staff, index: number) => {
-    setIsEditing(true);
-    setSelectedStaffIndex(index);
-    setIsFormVisible(true);
-  };
-
-  const handleViewStaff = (staff: Staff) => {
-    setSelectedStaff(staff);
-    setIsStaffDetailsModalOpen(true);
-  };
-
-  const handleSave = (staff: Staff) => {
-    console.log("Staff Data Submitted:", staff); // Log data for create/update
-    if (isEditing && selectedStaffIndex !== null) {
-      setStaffList((prev) =>
-        prev.map((item, i) => (i === selectedStaffIndex ? staff : item))
-      );
-    } else {
-      setStaffList([...staffList, staff]);
+  const handleSaveStaff = async (staff: Staff) => {
+    try {
+      if (formState.isEditing && formState.selectedStaff) {
+        if (staff.id) {
+          const result = await updateStaff({ id: staff.id, body: staff });
+          console.log("Staff Updated:", result);
+        }
+      } else {
+        const result = await createStaff(staff);
+        console.log("Staff Added:", result);
+        setStaffList((prev) => [...prev, staff]);
+      }
+      toggleFormVisibility(false);
+    } catch (error) {
+      console.log("Error Saving Staff:", error);
+      toast("Error saving staff.", {
+        style: { backgroundColor: "red", color: "white" },
+      });
     }
-    setIsFormVisible(false);
-    setIsEditing(false);
-    setSelectedStaffIndex(null);
+  };
+
+  const confirmDelete = async () => {
+    if (formState.selectedStaff && formState.selectedStaff.id) {
+      try {
+        await deleteStaff(formState.selectedStaff.id);
+        setStaffList((prev) =>
+          prev.filter((staff) => staff.id !== formState.selectedStaff?.id)
+        );
+        console.log("Staff Deleted:", formState.selectedStaff.id);
+        setModals((prev) => ({ ...prev, delete: false }));
+      } catch (error) {
+        console.log("Error Deleting Staff:", error);
+        toast("Error deleting staff.", {
+          style: { backgroundColor: "red", color: "white" },
+        });
+      }
+    }
   };
 
   return (
     <div className="p-6">
       <div className="flex items-center gap-4 mb-4">
-        <Button
-          onClick={() => {
-            setIsFormVisible(true);
-            setIsEditing(false);
-          }}
-        >
-          Add Staff
-        </Button>
+        <Button onClick={() => toggleFormVisibility(true)}>Add Staff</Button>
       </div>
 
-      {isFormVisible && (
+      {formState.isFormVisible && (
         <StaffForm
-          isEditing={isEditing}
-          initialData={
-            selectedStaffIndex !== null
-              ? staffList[selectedStaffIndex]
-              : undefined
-          }
-          onSave={handleSave}
-          onCancel={() => {
-            setIsFormVisible(false);
-            setIsEditing(false);
-          }}
+          isEditing={formState.isEditing}
+          initialData={formState.selectedStaff ?? undefined}
+          onSave={handleSaveStaff}
+          onCancel={() => toggleFormVisibility(false)}
         />
       )}
 
-      <StaffTable
-        staffList={staffList}
-        onEdit={handleEdit}
-        onView={handleViewStaff}
+      <StaffDetailsModal
+        isOpen={modals.staffDetails}
+        staff={formState.selectedStaff}
+        onClose={() => setModals((prev) => ({ ...prev, staffDetails: false }))}
       />
 
-      <StaffDetailsModal
-        isOpen={isStaffDetailsModalOpen}
-        staff={selectedStaff}
-        onClose={() => setIsStaffDetailsModalOpen(false)}
+      <StaffTable
+        staffList={staffList}
+        onEdit={(staff) => toggleFormVisibility(true, true, staff)}
+        onDelete={(staff) => {
+          setFormState((prev) => ({ ...prev, selectedStaff: staff }));
+          setModals((prev) => ({ ...prev, delete: true }));
+        }}
+        onView={(staff) => {
+          setFormState((prev) => ({ ...prev, selectedStaff: staff }));
+          setModals((prev) => ({ ...prev, staffDetails: true }));
+        }}
+      />
+
+      <DeleteConfirmationModal
+        isOpen={modals.delete}
+        onClose={() => setModals((prev) => ({ ...prev, delete: false }))}
+        onConfirm={confirmDelete}
       />
     </div>
   );

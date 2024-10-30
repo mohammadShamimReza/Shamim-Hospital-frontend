@@ -1,3 +1,5 @@
+"use client";
+
 import { Staff } from "@/schemas/staffSchema";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,13 +13,15 @@ import {
 
 interface StaffTableProps {
   staffList: Staff[];
-  onEdit: (staff: Staff, index: number) => void;
+  onEdit: (staff: Staff) => void;
+  onDelete: (staff: Staff) => void;
   onView: (staff: Staff) => void;
 }
 
 export default function StaffTable({
   staffList,
   onEdit,
+  onDelete,
   onView,
 }: StaffTableProps) {
   return (
@@ -37,16 +41,29 @@ export default function StaffTable({
             <TableCell>{staff.email}</TableCell>
             <TableCell>{staff.role}</TableCell>
             <TableCell>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => onEdit(staff, index)}
-              >
-                Edit
-              </Button>
-              <Button variant="outline" size="sm" onClick={() => onView(staff)}>
-                View
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => onEdit(staff)}
+                >
+                  Edit
+                </Button>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => onDelete(staff)}
+                >
+                  Delete
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => onView(staff)}
+                >
+                  View
+                </Button>
+              </div>
             </TableCell>
           </TableRow>
         ))}

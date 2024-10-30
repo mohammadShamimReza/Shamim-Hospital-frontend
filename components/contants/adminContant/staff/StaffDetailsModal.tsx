@@ -1,3 +1,5 @@
+"use client";
+
 import { Modal, ModalContent, ModalFooter } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
 import { Staff } from "@/schemas/staffSchema";
