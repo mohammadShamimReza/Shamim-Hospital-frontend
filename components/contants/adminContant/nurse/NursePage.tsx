@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import NurseForm from "./NurseForm";
 import NurseTable from "./NurseTable";
 import { Nurse } from "@/schemas/nurseSchema";
-import { useCreateNurseMutation, useGetAllNurseQuery } from "@/redux/api/nurseApi";
+import { useCreateNurseMutation, useGetAllNurseQuery, useUpdateNurseMutation } from "@/redux/api/nurseApi";
 import NurseDetailsModal from "./NurseDetailsModal";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 
@@ -19,20 +19,23 @@ export default function NursePage() {
   const [createNurse] = useCreateNurseMutation();
 
   const closeDeleteModal = () => setIsDeleteModalOpen(false);
-  console.log(selectedNurse, 'selectedNurse');
+  
 
-  const handleEdit = (nurse: Nurse) => {
+  const handleEdit = () => {
     setIsEditing(true);
     setIsFormVisible(true);
-    console.log("Editing Nurse:", nurse);
   };
+  const [updateNurse] = useUpdateNurseMutation()
 
   const handleSaveNurse = async (nurse: Nurse) => {
     if (isEditing && selectedNurse !== null) {
       console.log("Edited Nurse Data:", nurse);
-      // setNurses((prev) =>
-      //   prev.map((item, i) => (i === selectedNurse ? nurse : item))
-      // );
+      if (nurse.id) {
+        const result = await updateNurse({ id: nurse.id, body: nurse });
+        console.log(result)
+      }
+  
+    
     } else {
       try {
         const result = await createNurse(nurse);
@@ -57,7 +60,6 @@ export default function NursePage() {
   }})
  
 
-  console.log(selectedNurse, 'selectedNurse');
 
   return (
     <div className="p-6">
@@ -87,7 +89,7 @@ export default function NursePage() {
         nurseList={nurses ?? []}
         onEdit={(nurse) => {
           setSelectedNurse(nurse);
-          handleEdit(nurse);
+          handleEdit();
         }}
         onDelete={() => {
           setIsDeleteModalOpen(true);

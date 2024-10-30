@@ -22,7 +22,15 @@ const nurseApi = baseApi.injectEndpoints({
       }),
       providesTags: ["createUser"],
     }),
+    updateNurse: builder.mutation<void, { id: number; body: Partial<Nurse> }>({
+      query: ({ id, body }) => ({
+        url: `${NURSE}/${id}`, // Include the id in the URL
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: ["createUser"],
+    }),
   }),
 });
 
-export const { useCreateNurseMutation, useGetAllNurseQuery } = nurseApi;
+export const { useCreateNurseMutation, useGetAllNurseQuery, useUpdateNurseMutation } = nurseApi;
