@@ -22,6 +22,15 @@ const StaffApi = baseApi.injectEndpoints({
       }),
       providesTags: ["createUser"],
     }),
+    getStaffById: builder.query<
+      { statusCode: number; success: boolean; message: string; data: Staff },
+      { id: number }
+    >({
+      query: ({ id }) => ({
+        url: `${STAFF}/${id}`,
+      }),
+      providesTags: ["createUser"],
+    }),
     updateStaff: builder.mutation<void, { id: number; body: Partial<Staff> }>({
       query: ({ id, body }) => ({
         url: `${STAFF}/${id}`, // Include the id in the URL
@@ -42,6 +51,8 @@ const StaffApi = baseApi.injectEndpoints({
 export const {
   useCreateStaffMutation,
   useGetAllStaffQuery,
+  useGetStaffByIdQuery,
+
   useUpdateStaffMutation,
   useDeleteStaffMutation,
 } = StaffApi;

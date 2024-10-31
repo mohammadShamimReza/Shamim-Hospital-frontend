@@ -63,7 +63,7 @@ const UserProfile = () => {
             console.log(error)
         }
         
-    // setIsEditing(false);
+    setIsEditing(false);
   };
 
     return (

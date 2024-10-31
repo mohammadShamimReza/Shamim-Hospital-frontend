@@ -23,84 +23,48 @@ import {
   SidebarMenuItem,
 } from "../ui/sidebar";
 import { useNavigation } from "@/contexts/NavigatoinContext";
+import { useAppSelector } from "@/redux/hooks";
+import { useEffect, useState } from "react";
+import { SidebarNavMenus } from "./NavMenu";
 
-const data = {
-  user: {
-    name: "Shamim (admin)",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
-  navMain: [
-    {
-      title: "Overview",
-      url: "#",
-      icon: FolderKanban,
-      isActive: true,
-    },
-    {
-      title: "Doctors",
-      url: "#",
-      icon: BriefcaseMedical,
-    },
-    {
-      title: "Patients",
-      url: "#",
-      icon: PersonStanding,
-    },
-    {
-      title: "Room",
-      url: "#",
-      icon: School,
-    },
-    {
-      title: "Staff",
-      url: "#",
-      icon: BookA,
-    },
-    {
-      title: "Nurses",
-      url: "#",
-      icon: UserRoundMinusIcon,
-    },
-    {
-      title: "Appointments",
-      url: "#",
-      icon: Signature,
-    },
-    {
-      title: "Notice",
-      url: "#",
-      icon: Shell,
-    },
-    {
-      title: "Inbox",
-      url: "#",
-      icon: Inbox,
-    },
-    
-    {
-      title: "Services",
-      url: "#",
-      icon: HandPlatter,
-    },
-    {
-      title: "Account",
-      url: "#",
-      icon: SquareUserRound,
-    },
-  ],
-};
+
 
 export default function MySidebarContant() {
   const { selectedMenu, setSelectedMenu } = useNavigation();
+  const [role, setRole] = useState("");
 
+  const navMenus = SidebarNavMenus;
+
+  let menus 
+
+  if (role === "admin") {
+    menus = navMenus.navAdmin
+  } else if (role === "doctor") {
+    menus = navMenus.navDoctor
+  } else if (role === "patient") {
+    menus = navMenus.navPatient
+  } else if (role === "staff") {
+    menus = navMenus.navStaffandNurse
+  } else if (role === "nurse") { 
+    menus = navMenus.navStaffandNurse
+  } else {
+    menus = navMenus.navSuperAdmin
+  }
+
+  const UserInfo = useAppSelector((state) => state.auth.userInfo);
+
+  useEffect(() => {
+    if (UserInfo) {
+      setRole(UserInfo.role);
+    }
+  }, [UserInfo]);
 
   return (
     <SidebarContent>
       <SidebarGroup>
         <SidebarGroupLabel>My place</SidebarGroupLabel>
         <SidebarMenu>
-          {data.navMain.map((item) => (
+          {menus.map((item) => (
             <SidebarMenuItem key={item.title}>
               <SidebarMenuButton
                 asChild

@@ -22,6 +22,16 @@ const nurseApi = baseApi.injectEndpoints({
       }),
       providesTags: ["createUser"],
     }),
+    getNurseById: builder.query<
+      { statusCode: number; success: boolean; message: string; data: Nurse },
+      {id: number}
+    >({
+      query: ({id}) => ({
+        url: `${NURSE}/${id}`,
+      }),
+      providesTags: ["createUser"],
+    }),
+
     updateNurse: builder.mutation<void, { id: number; body: Partial<Nurse> }>({
       query: ({ id, body }) => ({
         url: `${NURSE}/${id}`, // Include the id in the URL
@@ -35,9 +45,8 @@ const nurseApi = baseApi.injectEndpoints({
         url: `${NURSE}/${id}`, // Specify the ID in the URL
         method: "DELETE",
       }),
-      
     }),
   }),
 });
 
-export const { useCreateNurseMutation, useGetAllNurseQuery, useUpdateNurseMutation, useDeleteNurseMutation } = nurseApi;
+export const { useCreateNurseMutation, useGetAllNurseQuery, useGetNurseByIdQuery, useUpdateNurseMutation, useDeleteNurseMutation } = nurseApi;

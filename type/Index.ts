@@ -8,6 +8,9 @@ export interface Nurse {
   profile_image: string | null;
   role: string;
   roomId: string | null;
+  room: {
+    roomNumber: number;
+  }
 }
 
 
@@ -21,6 +24,9 @@ export interface Staff {
   profile_image: string | null;
   role: string;
   roomId: string | null;
+  room: {
+    roomNumber: number;
+  };
 }
 
 export interface User {
