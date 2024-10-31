@@ -99,6 +99,26 @@ const data = {
       ],
     },
     {
+      title: "Room",
+      url: "#",
+      icon: SquareTerminal,
+      isActive: true,
+      items: [
+        {
+          title: "History",
+          url: "#",
+        },
+        {
+          title: "Starred",
+          url: "#",
+        },
+        {
+          title: "Settings",
+          url: "#",
+        },
+      ],
+    },
+    {
       title: "Staff",
       url: "#",
       icon: Settings2,

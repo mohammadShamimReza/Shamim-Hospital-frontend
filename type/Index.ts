@@ -76,3 +76,10 @@ export interface Service {
   serviceType: string;
   bodyPart: string;
 }
+
+
+export interface Room {
+  id: number;
+  roomNumber: string;
+  needNurseAndStaff: number;
+}

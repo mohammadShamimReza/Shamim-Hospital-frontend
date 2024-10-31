@@ -8,6 +8,7 @@ import {
   HandPlatter,
   Inbox,
   PersonStanding,
+  School,
   Shell,
   Signature,
   SquareUserRound,
@@ -45,6 +46,11 @@ const data = {
       title: "Patients",
       url: "#",
       icon: PersonStanding,
+    },
+    {
+      title: "Room",
+      url: "#",
+      icon: School,
     },
     {
       title: "Staff",

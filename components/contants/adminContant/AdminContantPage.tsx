@@ -4,15 +4,16 @@ import AccountPage from "./account/AccountPage";
 import DoctorPage from "./doctor/DoctorPage";
 import DoctorAppointmentsPage from "./DoctorAppointment";
 import Header from './Header';
-import InboxPage from "./Inbox";
+import InboxPage from "./Inbox/Inbox";
 import NoticePage from "./notice/NoticePage";
-import NotificationPage from "./Notification";
+import NotificationPage from "./notificatoin/Notification";
 import NursePage from "./nurse/NursePage";
 import Overview from "./Overview";
 import ServicesPage from './service/ServicesPage';
 import StaffPage from "./staff/StaffPage";
 import UserPage from "./user/UserPage";
 import UserAppointmentsPage from "./UserAppointment";
+import RoomPage from './room/RoomPage';
 
 export default function AdminContantPage() {
       const { selectedMenu } = useNavigation();
@@ -23,6 +24,7 @@ export default function AdminContantPage() {
       {selectedMenu === "Overview" && <Overview />}
       {selectedMenu === "Doctors" && <DoctorPage />}
       {selectedMenu === "Patients" && <UserPage />}
+      {selectedMenu === "Room" && <RoomPage />}
       {selectedMenu === "Staff" && <StaffPage />}
       {selectedMenu === "Nurses" && <NursePage />}
       {selectedMenu === "Notice" && <NoticePage />}
