@@ -6,6 +6,7 @@ import { Sidebar, SidebarProvider } from "../ui/sidebar";
 import AdminContantPage from "./adminContant/AdminContantPage";
 import NurseContantPage from "./nurseContant/NurseContantPage";
 import StaffContantPage from "./staffContant/StaffContantPage";
+import DoctorContantPage from "./doctorContant/DoctorContantPage";
 
 export default function MainPage() {
   const userInfo = useAppSelector((state) => state.auth.userInfo);
@@ -21,6 +22,7 @@ export default function MainPage() {
       {userInfo?.role === "nurse" && <NurseContantPage />}
 
       {userInfo?.role === "staff" && <StaffContantPage />}
+      {userInfo?.role === "doctor" && <DoctorContantPage />}
     </SidebarProvider>
   );
 }
