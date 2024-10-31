@@ -1,6 +1,6 @@
 "use client";
 
-import MainPage from "@/components/contants/adminContant/MainPage";
+import MainPage from "@/components/contants/MainPage";
 import { getTokenFromCookie } from "@/lib/auth/token";
 import { useGetUserInfoQuery } from "@/redux/api/authApi";
 import { useAppDispatch } from "@/redux/hooks";

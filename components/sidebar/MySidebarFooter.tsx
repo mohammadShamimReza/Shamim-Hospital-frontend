@@ -28,6 +28,10 @@ import {
   Settings2,
   SquareTerminal,
 } from "lucide-react";
+import { removeToken } from "@/lib/auth/token";
+import { useAppDispatch } from "@/redux/hooks";
+import { removeAuthToken, storeUserInfo } from "@/redux/slice/authSlice";
+import { useRouter } from "next/navigation";
 
 const data = {
   user: {
@@ -35,237 +39,258 @@ const data = {
     email: "m@example.com",
     avatar: "/avatars/shadcn.jpg",
   },
-  navMain: [
-    {
-      title: "Overview",
-      url: "#",
-      icon: SquareTerminal,
-      isActive: true,
-      items: [
-        {
-          title: "History",
-          url: "#",
-        },
-        {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Doctors",
-      url: "#",
-      icon: Bot,
-      items: [
-        {
-          title: "Genesis",
-          url: "#",
-        },
-        {
-          title: "Explorer",
-          url: "#",
-        },
-        {
-          title: "Quantum",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Patients",
-      url: "#",
-      icon: BookOpen,
-      items: [
-        {
-          title: "Introduction",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Room",
-      url: "#",
-      icon: SquareTerminal,
-      isActive: true,
-      items: [
-        {
-          title: "History",
-          url: "#",
-        },
-        {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Staff",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Naurse",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "Naurse",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Notice",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Inbox",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "Inbox",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Services",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
-    },
-  ],
-  navSecondary: [
-    {
-      title: "Support",
-      url: "#",
-      icon: LifeBuoy,
-    },
-    {
-      title: "Feedback",
-      url: "#",
-      icon: Send,
-    },
-  ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
-    },
-  ],
+  // navMain: [
+  //   {
+  //     title: "Overview",
+  //     url: "#",
+  //     icon: SquareTerminal,
+  //     isActive: true,
+  //     items: [
+  //       {
+  //         title: "History",
+  //         url: "#",
+  //       },
+  //       {
+  //         title: "Starred",
+  //         url: "#",
+  //       },
+  //       {
+  //         title: "Settings",
+  //         url: "#",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     title: "Doctors",
+  //     url: "#",
+  //     icon: Bot,
+  //     items: [
+  //       {
+  //         title: "Genesis",
+  //         url: "#",
+  //       },
+  //       {
+  //         title: "Explorer",
+  //         url: "#",
+  //       },
+  //       {
+  //         title: "Quantum",
+  //         url: "#",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     title: "Patients",
+  //     url: "#",
+  //     icon: BookOpen,
+  //     items: [
+  //       {
+  //         title: "Introduction",
+  //         url: "#",
+  //       },
+  //       {
+  //         title: "Get Started",
+  //         url: "#",
+  //       },
+  //       {
+  //         title: "Tutorials",
+  //         url: "#",
+  //       },
+  //       {
+  //         title: "Changelog",
+  //         url: "#",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     title: "Room",
+  //     url: "#",
+  //     icon: SquareTerminal,
+  //     isActive: true,
+  //     items: [
+  //       {
+  //         title: "History",
+  //         url: "#",
+  //       },
+  //       {
+  //         title: "Starred",
+  //         url: "#",
+  //       },
+  //       {
+  //         title: "Settings",
+  //         url: "#",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     title: "Staff",
+  //     url: "#",
+  //     icon: Settings2,
+  //     items: [
+  //       {
+  //         title: "General",
+  //         url: "#",
+  //       },
+  //       {
+  //         title: "Team",
+  //         url: "#",
+  //       },
+  //       {
+  //         title: "Billing",
+  //         url: "#",
+  //       },
+  //       {
+  //         title: "Limits",
+  //         url: "#",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     title: "Naurse",
+  //     url: "#",
+  //     icon: Settings2,
+  //     items: [
+  //       {
+  //         title: "Naurse",
+  //         url: "#",
+  //       },
+  //       {
+  //         title: "Team",
+  //         url: "#",
+  //       },
+  //       {
+  //         title: "Billing",
+  //         url: "#",
+  //       },
+  //       {
+  //         title: "Limits",
+  //         url: "#",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     title: "Notice",
+  //     url: "#",
+  //     icon: Settings2,
+  //     items: [
+  //       {
+  //         title: "General",
+  //         url: "#",
+  //       },
+  //       {
+  //         title: "Team",
+  //         url: "#",
+  //       },
+  //       {
+  //         title: "Billing",
+  //         url: "#",
+  //       },
+  //       {
+  //         title: "Limits",
+  //         url: "#",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     title: "Inbox",
+  //     url: "#",
+  //     icon: Settings2,
+  //     items: [
+  //       {
+  //         title: "Inbox",
+  //         url: "#",
+  //       },
+  //       {
+  //         title: "Team",
+  //         url: "#",
+  //       },
+  //       {
+  //         title: "Billing",
+  //         url: "#",
+  //       },
+  //       {
+  //         title: "Limits",
+  //         url: "#",
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     title: "Services",
+  //     url: "#",
+  //     icon: Settings2,
+  //     items: [
+  //       {
+  //         title: "General",
+  //         url: "#",
+  //       },
+  //       {
+  //         title: "Team",
+  //         url: "#",
+  //       },
+  //       {
+  //         title: "Billing",
+  //         url: "#",
+  //       },
+  //       {
+  //         title: "Limits",
+  //         url: "#",
+  //       },
+  //     ],
+  //   },
+  // ],
+  // navSecondary: [
+  //   {
+  //     title: "Support",
+  //     url: "#",
+  //     icon: LifeBuoy,
+  //   },
+  //   {
+  //     title: "Feedback",
+  //     url: "#",
+  //     icon: Send,
+  //   },
+  // ],
+  // projects: [
+  //   {
+  //     name: "Design Engineering",
+  //     url: "#",
+  //     icon: Frame,
+  //   },
+  //   {
+  //     name: "Sales & Marketing",
+  //     url: "#",
+  //     icon: PieChart,
+  //   },
+  //   {
+  //     name: "Travel",
+  //     url: "#",
+  //     icon: Map,
+  //   },
+  // ],
 };
 
 export default function MySidebarFooter() {
+  const dispatch = useAppDispatch()
+  const router = useRouter()
+
+  const handleLogOut = () => {
+     dispatch(removeAuthToken());
+     dispatch(
+       storeUserInfo({
+         name: "",
+         email: "",
+         role: "",
+         id: "",
+         phone: 0,
+         address: "",
+       })
+     );
+    removeToken(
+     
+    )
+     router.push("/login");
+  }
+
   return (
     <SidebarFooter>
       <SidebarMenu>
@@ -311,7 +336,7 @@ export default function MySidebarFooter() {
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
 
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleLogOut() }>
                 <LogOut />
                 Log out
               </DropdownMenuItem>

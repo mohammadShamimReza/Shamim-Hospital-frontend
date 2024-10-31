@@ -77,11 +77,7 @@ const data = {
       url: "#",
       icon: Inbox,
     },
-    {
-      title: "Notifications",
-      url: "#",
-      icon: Bell,
-    },
+    
     {
       title: "Services",
       url: "#",

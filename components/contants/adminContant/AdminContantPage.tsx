@@ -3,10 +3,9 @@ import { useNavigation } from "@/contexts/NavigatoinContext";
 import AccountPage from "./account/AccountPage";
 import DoctorPage from "./doctor/DoctorPage";
 import DoctorAppointmentsPage from "./DoctorAppointment";
-import Header from './Header';
+import Header from '../Header';
 import InboxPage from "./Inbox/Inbox";
 import NoticePage from "./notice/NoticePage";
-import NotificationPage from "./notificatoin/Notification";
 import NursePage from "./nurse/NursePage";
 import Overview from "./Overview";
 import ServicesPage from './service/ServicesPage';
@@ -33,7 +32,6 @@ export default function AdminContantPage() {
       {selectedMenu === "Appointments" && <UserAppointmentsPage />}
       {selectedMenu === "Appointments" && <DoctorAppointmentsPage />}
       {selectedMenu === "Account" && <AccountPage />}
-      {selectedMenu === "Notifications" && <NotificationPage />}
     </SidebarInset>
   );
 }
