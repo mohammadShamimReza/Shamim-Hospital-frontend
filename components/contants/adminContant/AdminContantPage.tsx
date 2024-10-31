@@ -1,19 +1,18 @@
 import { SidebarInset } from '@/components/ui/sidebar';
-import React from 'react'
+import { useNavigation } from "@/contexts/NavigatoinContext";
+import AccountPage from "./account/AccountPage";
+import DoctorPage from "./doctor/DoctorPage";
+import DoctorAppointmentsPage from "./DoctorAppointment";
 import Header from './Header';
-import Overview from './Overview';
-import DoctorPage from './doctor/DoctorPage';
-import UserPage from './user/UserPage';
-import StaffPage from './staff/StaffPage';
-import NursePage from './nurse/NursePage';
-import NoticePage from './notice/NoticePage';
-import InboxPage from './Inbox';
+import InboxPage from "./Inbox";
+import NoticePage from "./notice/NoticePage";
+import NotificationPage from "./Notification";
+import NursePage from "./nurse/NursePage";
+import Overview from "./Overview";
 import ServicesPage from './service/ServicesPage';
-import UserAppointmentsPage from './UserAppointment';
-import DoctorAppointmentsPage from './DoctorAppointment';
-import Account from './Account';
-import NotificationPage from './Notification';
-import { useNavigation } from '@/contexts/NavigatoinContext';
+import StaffPage from "./staff/StaffPage";
+import UserPage from "./user/UserPage";
+import UserAppointmentsPage from "./UserAppointment";
 
 export default function AdminContantPage() {
       const { selectedMenu } = useNavigation();
@@ -31,7 +30,7 @@ export default function AdminContantPage() {
       {selectedMenu === "Services" && <ServicesPage />}
       {selectedMenu === "Appointments" && <UserAppointmentsPage />}
       {selectedMenu === "Appointments" && <DoctorAppointmentsPage />}
-      {selectedMenu === "Account" && <Account />}
+      {selectedMenu === "Account" && <AccountPage />}
       {selectedMenu === "Notifications" && <NotificationPage />}
     </SidebarInset>
   );

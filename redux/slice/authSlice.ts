@@ -5,6 +5,8 @@ interface UserInfo {
   email: string;
   role: string;
   id: string;
+  phone: number;
+  address: string
 }
 
 interface AuthState {
@@ -18,6 +20,8 @@ const initialState: AuthState = {
     email: "",
     role: "",
     id: "",
+    phone: 0, // Initial value for phone (default to 0 or your preferred placeholder)
+    address: "", // Initial value for address (default to an empty string)
   },
   authToken: null,
 };
