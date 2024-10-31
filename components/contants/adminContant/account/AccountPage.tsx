@@ -15,6 +15,9 @@ import {
 } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAppSelector } from "@/redux/hooks";
+import { User } from "@/schemas/userSchema";
+import { useUpdateUserMutation } from "@/redux/api/userApi";
+import { useUpdateAdminMutation } from "@/redux/api/adminApi";
 
 // Define schema with Zod
 const userSchema = z.object({
@@ -25,14 +28,14 @@ const userSchema = z.object({
   role: z.string(),
 });
 
-type UserFormData = z.infer<typeof userSchema>;
+
 
 const UserProfile = () => {
   const userInfo = useAppSelector((state) => state.auth.userInfo);
   const [isEditing, setIsEditing] = useState(false);
 
   // Initialize react-hook-form with default values from Redux state
-  const methods = useForm<UserFormData>({
+  const methods = useForm<User>({
     resolver: zodResolver(userSchema),
     defaultValues: {
       name: userInfo.name,
@@ -40,7 +43,7 @@ const UserProfile = () => {
       phone: userInfo.phone,
       address: userInfo.address,
       role: userInfo.role,
-    },
+    } 
   });
 
   const {
@@ -48,10 +51,19 @@ const UserProfile = () => {
     control,
     formState: { errors },
   } = methods;
+    const [updateAdmin] = useUpdateAdminMutation();
 
-  const onSubmit = (data: UserFormData) => {
-    console.log("Updated User Data:", data);
-    setIsEditing(false);
+    const onSubmit = async (user: User) => {
+      console.log(user, user.id)
+        console.log("Updated User Data:", user);
+        try {
+              const result = await updateAdmin({ id: Number(userInfo.id), body: user });
+              console.log("userd Updated:", result);
+        } catch (error) {
+            console.log(error)
+        }
+        
+    // setIsEditing(false);
   };
 
     return (
@@ -142,7 +154,12 @@ const UserProfile = () => {
                       <FormItem>
                         <FormLabel>Role</FormLabel>
                         <FormControl>
-                          <Input placeholder="Enter role" {...field} disabled />
+                          <Input
+                            placeholder="Role"
+                            {...field}
+                            value={userInfo.role}
+                            disabled
+                          />
                         </FormControl>
                         <FormMessage>{errors.role?.message}</FormMessage>
                       </FormItem>
