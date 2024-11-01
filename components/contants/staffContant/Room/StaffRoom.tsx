@@ -1,8 +1,6 @@
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useGetStaffByIdQuery } from "@/redux/api/staffApi";
 import { useAppSelector } from "@/redux/hooks";
-import React from "react";
 
 export default function StaffRoom() {
   const nurseInfo = useAppSelector((state) => state.auth.userInfo);

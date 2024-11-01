@@ -16,7 +16,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAppSelector } from "@/redux/hooks";
 import { User } from "@/schemas/userSchema";
-import { useUpdateUserMutation } from "@/redux/api/userApi";
+
 import { useUpdateStaffMutation } from "@/redux/api/staffApi";
 
 // Define schema with Zod
