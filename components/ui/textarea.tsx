@@ -19,7 +19,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
         ref={ref || register?.ref}
         {...props}
       />
-    );
+    )
   }
 )
 Textarea.displayName = "Textarea"
