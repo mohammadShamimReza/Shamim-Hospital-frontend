@@ -7,6 +7,7 @@ import AdminContantPage from "./adminContant/AdminContantPage";
 import NurseContantPage from "./nurseContant/NurseContantPage";
 import StaffContantPage from "./staffContant/StaffContantPage";
 import DoctorContantPage from "./doctorContant/DoctorContantPage";
+import UserContantPage from "./userContant/UserMainPage";
 
 export default function MainPage() {
   const userInfo = useAppSelector((state) => state.auth.userInfo);
@@ -20,6 +21,7 @@ export default function MainPage() {
       </Sidebar>
       {userInfo?.role === "admin" && <AdminContantPage />}
       {userInfo?.role === "nurse" && <NurseContantPage />}
+      {userInfo?.role === "patient" && <UserContantPage />}
 
       {userInfo?.role === "staff" && <StaffContantPage />}
       {userInfo?.role === "doctor" && <DoctorContantPage />}

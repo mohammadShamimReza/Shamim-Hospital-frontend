@@ -16,7 +16,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAppSelector } from "@/redux/hooks";
 import { User } from "@/schemas/userSchema";
-import { useUpdateNurseMutation } from "@/redux/api/nurseApi";
+import { useUpdateUserMutation } from "@/redux/api/userApi";
 
 // Define schema with Zod
 const userSchema = z.object({
@@ -27,7 +27,7 @@ const userSchema = z.object({
   role: z.string(),
 });
 
-const UserProfile = () => {
+const UserAccountPage = () => {
   const userInfo = useAppSelector((state) => state.auth.userInfo);
   const [isEditing, setIsEditing] = useState(false);
 
@@ -48,13 +48,13 @@ const UserProfile = () => {
     control,
     formState: { errors },
   } = methods;
-  const [updateNurse] = useUpdateNurseMutation();
+  const [updateUser] = useUpdateUserMutation();
 
   const onSubmit = async (user: User) => {
     console.log(user, user.id);
     console.log("Updated User Data:", user);
     try {
-      const result = await updateNurse({ id: Number(userInfo.id), body: user });
+      const result = await updateUser({ id: Number(userInfo.id), body: user });
       console.log("userd Updated:", result);
     } catch (error) {
       console.log(error);
@@ -197,4 +197,4 @@ const UserProfile = () => {
   );
 };
 
-export default UserProfile;
+export default UserAccountPage;
