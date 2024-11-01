@@ -11,7 +11,14 @@ export default function Page() {
   const [isMounted, setIsMounted] = useState(false);
 
   const dispatch = useAppDispatch();
-  const tokenFromLocalStorage = useMemo(() => getTokenFromCookie(), []);
+  const tokenFromLocalStorage = useMemo(() => {
+    // Only access localStorage if running in the browser
+    if (typeof window !== "undefined") {
+      return getTokenFromCookie();
+    }
+    return null;
+  }, []);
+
   const { data: userData } = useGetUserInfoQuery({ undefined });
 
   // Set initial mount state

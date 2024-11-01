@@ -1,23 +1,22 @@
 "use client";
 
-import React, { useState } from "react";
-import { useForm, FormProvider } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { useUpdateAdminMutation } from "@/redux/api/adminApi";
 import { useAppSelector } from "@/redux/hooks";
 import { User } from "@/schemas/userSchema";
-import { useUpdateUserMutation } from "@/redux/api/userApi";
-import { useUpdateAdminMutation } from "@/redux/api/adminApi";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import { z } from "zod";
 
 // Define schema with Zod
 const userSchema = z.object({

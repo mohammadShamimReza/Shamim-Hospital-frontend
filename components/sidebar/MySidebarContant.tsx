@@ -1,19 +1,6 @@
 "use client";
 
-import {
-  Bell,
-  BookA,
-  BriefcaseMedical,
-  FolderKanban,
-  HandPlatter,
-  Inbox,
-  PersonStanding,
-  School,
-  Shell,
-  Signature,
-  SquareUserRound,
-  UserRoundMinusIcon,
-} from "lucide-react";
+
 import {
   SidebarContent,
   SidebarGroup,

@@ -17,17 +17,7 @@ import {
   SidebarMenuItem,
 } from "../ui/sidebar";
 
-import {
-  BookOpen,
-  Bot,
-  Frame,
-  LifeBuoy,
-  Map,
-  PieChart,
-  Send,
-  Settings2,
-  SquareTerminal,
-} from "lucide-react";
+
 import { removeToken } from "@/lib/auth/token";
 import { useAppDispatch } from "@/redux/hooks";
 import { removeAuthToken, storeUserInfo } from "@/redux/slice/authSlice";
