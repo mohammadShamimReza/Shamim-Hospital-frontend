@@ -19,9 +19,13 @@ import {
 
 
 import { removeToken } from "@/lib/auth/token";
-import { useAppDispatch } from "@/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { removeAuthToken, storeUserInfo } from "@/redux/slice/authSlice";
 import { useRouter } from "next/navigation";
+
+
+
+
 
 const data = {
   user: {
@@ -33,6 +37,7 @@ const data = {
 };
 
 export default function MySidebarFooter() {
+  const userData = useAppSelector((state) => state.auth.userInfo);
   const dispatch = useAppDispatch()
   const router = useRouter()
 
@@ -48,9 +53,7 @@ export default function MySidebarFooter() {
          address: "",
        })
      );
-    removeToken(
-     
-    )
+    removeToken()
      router.push("/login");
   }
 
@@ -70,9 +73,9 @@ export default function MySidebarFooter() {
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">
-                    {data.user.name}
+                    {`${userData.name} (${userData.role})`}
                   </span>
-                  <span className="truncate text-xs">{data.user.email}</span>
+                  <span className="truncate text-xs">{userData.email}</span>
                 </div>
                 <ChevronsUpDown className="ml-auto size-4" />
               </SidebarMenuButton>
@@ -99,7 +102,7 @@ export default function MySidebarFooter() {
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
 
-              <DropdownMenuItem onClick={() => handleLogOut() }>
+              <DropdownMenuItem onClick={() => handleLogOut()}>
                 <LogOut />
                 Log out
               </DropdownMenuItem>

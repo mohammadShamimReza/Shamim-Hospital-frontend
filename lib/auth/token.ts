@@ -2,7 +2,8 @@ import Cookies from "js-cookie";
 
 export const storeTokenInCookie = (jwt: string) => {
   if (jwt) {
-    Cookies.set("jwt", jwt, { sameSite: "None", secure: false });
+    console.log(jwt, 'this is jwt from set'  );
+    Cookies.set("jwt", jwt);
     // Check if token was stored in cookies, and if not, use localStorage as a fallback
     if (!Cookies.get("jwt")) {
       localStorage.setItem("jwt", jwt);
@@ -12,7 +13,8 @@ export const storeTokenInCookie = (jwt: string) => {
 
 export const getTokenFromCookie = () => {
   // Check cookies first, then fallback to localStorage
-  return Cookies.get("jwt") || localStorage.getItem("jwt");
+  console.log(Cookies.get("jwt"), ' thi is c');
+  return Cookies.get("jwt") ;
 };
 
 export const removeToken = () => {
