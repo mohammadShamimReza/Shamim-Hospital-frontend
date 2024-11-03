@@ -29,6 +29,7 @@ import { toast } from "sonner";
 import { storeTokenInCookie } from "@/lib/auth/token";
 import { storeAuthToken, storeUserInfo } from "@/redux/slice/authSlice";
 import { useAppDispatch } from "@/redux/hooks";
+import { useNavigation } from "@/contexts/NavigatoinContext";
 
 // Define validation schema with Zod
 const signupSchema = z.object({
@@ -52,6 +53,7 @@ const signupSchema = z.object({
 type SignupFormData = z.infer<typeof signupSchema>;
 
 const SignupPage: React.FC = () => {
+  const {setSelectedMenu} = useNavigation()
     const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -85,7 +87,7 @@ const SignupPage: React.FC = () => {
          try {
            const result = await createUser(data);
            console.log(result);
-
+            setSelectedMenu('overview');
            if (result?.error) {
              toast("User not created successfully", {
                style: {

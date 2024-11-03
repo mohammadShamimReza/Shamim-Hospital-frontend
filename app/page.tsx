@@ -41,9 +41,16 @@ export default function Page() {
   }, [userData, dispatch]);
 
   // Render a loading message if not mounted
-  if (!isMounted) {
-    return <h2>Loading...</h2>;
-  }
+ if (!isMounted) {
+   return (
+     <div className="flex items-center justify-center min-h-screen">
+       <h2 className="text-2xl font-semibold text-gray-700 animate-pulse">
+         Loading...
+       </h2>
+     </div>
+   );
+ }
+
 
   return <MainPage />;
 }

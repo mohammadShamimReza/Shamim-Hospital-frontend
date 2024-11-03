@@ -22,6 +22,7 @@ import { removeToken } from "@/lib/auth/token";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { removeAuthToken, storeUserInfo } from "@/redux/slice/authSlice";
 import { useRouter } from "next/navigation";
+import { useNavigation } from "@/contexts/NavigatoinContext";
 
 
 
@@ -40,6 +41,8 @@ export default function MySidebarFooter() {
   const userData = useAppSelector((state) => state.auth.userInfo);
   const dispatch = useAppDispatch()
   const router = useRouter()
+    const { setSelectedMenu } = useNavigation();
+
 
   const handleLogOut = () => {
      dispatch(removeAuthToken());
@@ -54,7 +57,9 @@ export default function MySidebarFooter() {
        })
      );
     removeToken()
-     router.push("/login");
+    setSelectedMenu('overview');
+    router.push("/login");
+    window.location.reload();
   }
 
   return (

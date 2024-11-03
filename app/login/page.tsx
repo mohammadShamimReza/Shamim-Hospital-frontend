@@ -21,6 +21,7 @@ import { useLoginUserMutation } from "@/redux/api/authApi";
 import { toast } from "sonner";
 import { storeTokenInCookie } from "@/lib/auth/token";
 import { storeAuthToken, storeUserInfo } from "@/redux/slice/authSlice";
+import { useNavigation } from "@/contexts/NavigatoinContext";
 
 // Define the validation schema using Zod
 const loginSchema = z.object({
@@ -38,6 +39,8 @@ const loginSchema = z.object({
 type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
+      const { setSelectedMenu } = useNavigation();
+
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [ loginUser ] = useLoginUserMutation();
@@ -74,8 +77,10 @@ export default function LoginPage() {
          localStorage.setItem("jwt", result?.data?.data.accessToken);
 
          dispatch(storeUserInfo(result?.data?.user));
-         console.log('routing')
+           setSelectedMenu("overview");
+
          router.push("/");
+         window.location.reload();
        }
       } catch (error) {
         console.log(error)
