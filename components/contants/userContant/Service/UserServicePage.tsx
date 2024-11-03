@@ -15,43 +15,52 @@ export default function UserServicePage() {
   const handleCloseModal = () => {
     setSelectedService(null);
   };
+  const handleBookingService = (service: Service) => {
+    console.log(service)
+  };
 
   return (
     <div className="p-4">
-      <h2 className="text-xl font-semibold mb-4 text-center">Service List</h2>
+      <h2 className="text-xl font-semibold mb-4 ">Service List</h2>
 
       <div className="overflow-x-auto">
         <table className="min-w-full shadow-md rounded-lg">
           <thead>
-            <tr>
-              <th className="py-2 px-4 border-b text-center">Service Name</th>
-              <th className="py-2 px-4 border-b text-center">Service Type</th>
-              <th className="py-2 px-4 border-b text-center">Price</th>
-              <th className="py-2 px-4 border-b text-center">Body part</th>
-              <th className="py-2 px-4 border-b text-center">Actions</th>
+            <tr className="text-left">
+              <th className="py-2 px-4 border-b ">Service Name</th>
+              <th className="py-2 px-4 border-b ">Service Type</th>
+              <th className="py-2 px-4 border-b ">Price</th>
+              <th className="py-2 px-4 border-b ">Body part</th>
+              <th className="py-2 px-4 border-b ">Actions</th>
             </tr>
           </thead>
           <tbody>
             {serviceData?.data?.map((service: Service) => (
               <tr key={service.id} className="hover:bg-gray-50">
-                <td className="py-2 px-4 border-b text-left">
+                <td className="py-2 px-4 border-b ">
                   {service.serviceName}
                 </td>
-                <td className="py-2 px-4 border-b text-left">
+                <td className="py-2 px-4 border-b ">
                   {service.serviceType}
                 </td>
-                <td className="py-2 px-4 border-b text-left">
+                <td className="py-2 px-4 border-b ">
                   ${service.price}
                 </td>
-                <td className="py-2 px-4 border-b text-left">
-                  ${service.bodyPart}
+                <td className="py-2 px-4 border-b ">
+                  {service.bodyPart}
                 </td>
-                <td className="py-2 px-4 border-b text-left">
+                <td className="py-2 px-4 border-b  gap-3 flex">
                   <Button
                     onClick={() => handleDetailsClick(service)}
                     className="px-3 py-1 rounded-md"
                   >
                     Details
+                  </Button>
+                  <Button
+                    onClick={() => handleBookingService(service)}
+                    className="px-3 py-1 rounded-md"
+                  >
+                    Book
                   </Button>
                 </td>
               </tr>
@@ -62,7 +71,7 @@ export default function UserServicePage() {
 
       {selectedService && (
         <Modal isOpen={!!selectedService} onClose={handleCloseModal}>
-          <h3 className="text-lg font-semibold mb-4 text-center">
+          <h3 className="text-lg font-semibold mb-4 ">
             Service Details
           </h3>
           <div className="space-y-2">

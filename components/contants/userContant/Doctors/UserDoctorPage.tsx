@@ -23,7 +23,7 @@ export default function UserDoctorPage() {
       <div className="overflow-x-auto">
         <table className="min-w-full shadow-md rounded-lg">
           <thead>
-            <tr>
+            <tr className="text-left">
               <th className="py-2 px-4 border-b">Name</th>
               <th className="py-2 px-4 border-b">Designation</th>
               <th className="py-2 px-4 border-b">Passing Year</th>
