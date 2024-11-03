@@ -30,8 +30,7 @@ import { useNavigation } from "@/contexts/NavigatoinContext";
 
 const data = {
   user: {
-    name: "Shamim (admin)",
-    email: "m@example.com",
+
     avatar: "/avatars/shadcn.jpg",
   },
   
@@ -73,7 +72,7 @@ export default function MySidebarFooter() {
                 className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
               >
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={data.user.avatar} alt={data.user.name} />
+                  <AvatarImage src={data.user.avatar} alt={"Image"} />
                   <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
@@ -94,14 +93,15 @@ export default function MySidebarFooter() {
               <DropdownMenuLabel className="p-0 font-normal">
                 <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                   <Avatar className="h-8 w-8 rounded-lg">
-                    <AvatarImage src={data.user.avatar} alt={data.user.name} />
+                    <AvatarImage src={data.user.avatar} alt={"Image"} />
                     <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="truncate font-semibold">
-                      {data.user.name}
+                      {userData.name}
                     </span>
-                    <span className="truncate text-xs">{data.user.email}</span>
+                    <span>{userData.role}</span>
+                    <span className="truncate text-xs">{userData.email}</span>
                   </div>
                 </div>
               </DropdownMenuLabel>
