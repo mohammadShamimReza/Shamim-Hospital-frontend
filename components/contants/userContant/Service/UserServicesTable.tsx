@@ -13,39 +13,65 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import { format } from "date-fns";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { useCreateAppointmentMutation } from "@/redux/api/appointment";
+import { useAppSelector } from "@/redux/hooks";
 
 interface UserServicesTableProps {
   setSelectedService: React.Dispatch<React.SetStateAction<Service | null>>;
 }
 
 export default function UserServicesTable({
-  setSelectedService,
+    setSelectedService,
 }: UserServicesTableProps) {
-  const [selectServiceForDoctor, setSelectServiceForDoctor] =
-    useState<Service | null>(null);
-  const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
-  const { data: doctorData } = useGetAllDoctorQuery();
-  const { data: serviceData } = useGetAllServiceQuery();
+    const [date, setDate] = React.useState<Date>();
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false); 
+    const [selectServiceForDoctor, setSelectServiceForDoctor] =
+        useState<Service | null>(null);
+    const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
+    const { data: doctorData } = useGetAllDoctorQuery();
+    const { data: serviceData } = useGetAllServiceQuery();
 
-  const handleDetailsClick = (service: Service) => {
-    setSelectedService(service);
-  };
+    const handleDetailsClick = (service: Service) => {
+        setSelectedService(service);
+    };
 
-  const handleBookingService = (service: Service) => {
-    setSelectServiceForDoctor(service);
-  };
+    const handleBookingService = (service: Service) => {
+        setSelectServiceForDoctor(service);
+    };
+    const UserInfo = useAppSelector(state => state.auth.userInfo);
+    
+    const [ createAppointment ] = useCreateAppointmentMutation();
 
-  const handleMakeAppointment = () => {
-    const appointmentDate = new Date(); // Set a static or current date for logging purposes
-
-    if (selectedDoctor && selectServiceForDoctor) {
-      console.log("Selected Service:", selectServiceForDoctor);
-      console.log("Selected Doctor:", selectedDoctor);
-      console.log("Appointment Date:", appointmentDate);
-    } else {
-      console.log("Please select a doctor and a service for the appointment.");
+    const handleMakeAppointment = async () => {
+        const appointmentDate = date || new Date(); // Use selected date or current date
+        const appointmentData = {
+          doctorId: selectedDoctor?.id,
+          serviceId: selectServiceForDoctor?.id,
+          appointmentDate,
+          patientId: Number(UserInfo.id),
+        };
+        alert("are you sure you want to book this appointment?");
+        try {
+            const result = await createAppointment(appointmentData);
+            console.log(result, 'making appointment')
+            setDate(undefined);
+            setSelectedDoctor(null);
+            setSelectServiceForDoctor(null);
+            setIsDrawerOpen(false);
+        } catch (error) {
+            console.log(error)
+        }
     }
-  };
+  
 
   return (
     <div>
@@ -61,7 +87,7 @@ export default function UserServicesTable({
         </thead>
         <tbody>
           {serviceData?.data?.map((service: Service) => (
-            <tr key={service.id} className="hover:bg-gray-50">
+            <tr key={service.id}>
               <td className="py-2 px-4 border-b">{service.serviceName}</td>
               <td className="py-2 px-4 border-b">{service.serviceType}</td>
               <td className="py-2 px-4 border-b">${service.price}</td>
@@ -74,7 +100,7 @@ export default function UserServicesTable({
                   Details
                 </Button>
 
-                <Drawer>
+                <Drawer open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
                   <DrawerTrigger asChild>
                     <Button
                       onClick={() => handleBookingService(service)}
@@ -96,11 +122,16 @@ export default function UserServicesTable({
                             <th className="py-2 px-4 border-b">Designation</th>
                             <th className="py-2 px-4 border-b">Passing Year</th>
                             <th className="py-2 px-4 border-b">Select</th>
+                            {selectedDoctor ? (
+                              <th className="py-2 px-4 border-b">Pick date</th>
+                            ) : (
+                              ""
+                            )}
                           </tr>
                         </thead>
                         <tbody>
                           {doctorData?.data?.map((doctor: Doctor) => (
-                            <tr key={doctor.id} className="hover:bg-gray-50">
+                            <tr key={doctor.id}>
                               <td className="py-2 px-4 border-b">
                                 {doctor.name}
                               </td>
@@ -113,9 +144,46 @@ export default function UserServicesTable({
                               <td className="py-2 px-4 border-b">
                                 <Button
                                   onClick={() => setSelectedDoctor(doctor)}
+                                  className={
+                                    selectedDoctor === doctor
+                                      ? "border-red-50 text-red-600"
+                                      : ""
+                                  }
                                 >
-                                  Select
+                                  {selectedDoctor === doctor
+                                    ? "Selected"
+                                    : "Select"}
                                 </Button>
+                              </td>
+                              <td className="py-2 px-4 border-b">
+                                {selectedDoctor === doctor && (
+                                  <Popover>
+                                    <PopoverTrigger asChild>
+                                      <Button
+                                        variant={"outline"}
+                                        className={cn(
+                                          "w-[280px] justify-start text-left font-normal",
+                                          !date && "text-muted-foreground"
+                                        )}
+                                      >
+                                        <CalendarIcon className="mr-2 h-4 w-4" />
+                                        {date ? (
+                                          format(date, "PPP")
+                                        ) : (
+                                          <span>Pick a date</span>
+                                        )}
+                                      </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto p-0">
+                                      <Calendar
+                                        mode="single"
+                                        selected={date}
+                                        onSelect={setDate}
+                                        initialFocus
+                                      />
+                                    </PopoverContent>
+                                  </Popover>
+                                )}
                               </td>
                             </tr>
                           ))}
@@ -123,7 +191,11 @@ export default function UserServicesTable({
                       </table>
 
                       <DrawerFooter>
-                        <Button onClick={handleMakeAppointment}>
+                        <Button
+                          onClick={handleMakeAppointment}
+                          disabled={!date}
+                          className={cn(!date ? "cursor-not-allowed" : "")}
+                        >
                           Make Appointment
                         </Button>
                         <DrawerClose asChild>

@@ -32,7 +32,7 @@ export default function UserDoctorPage() {
           </thead>
           <tbody>
             {doctorData?.data?.map((doctor: Doctor) => (
-              <tr key={doctor.id} className="hover:bg-gray-50">
+              <tr key={doctor.id} className="">
                 <td className="py-2 px-4 border-b">{doctor.name}</td>
                 <td className="py-2 px-4 border-b">{doctor.designation}</td>
                 <td className="py-2 px-4 border-b">{doctor.passingYear}</td>

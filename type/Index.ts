@@ -89,3 +89,17 @@ export interface Room {
   roomNumber: string;
   needNurseAndStaff: number;
 }
+
+export interface Appointment {
+  id: number;
+  doctorId: number;
+  doctor: Doctor;
+
+  patientId: number;
+  patient: User;
+
+  appointmentDate: Date;
+  serviceId: number;
+  Service: Service;
+  prescription: string;
+}
