@@ -18,11 +18,17 @@ export default function ServicesPage() {
 
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-    const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  
+  const [serviceName, setServicesName] = useState("");
 
   const { data: serviceData } = useGetAllServiceQuery();
-  console.log(serviceData)
 
+const filteredServices = services.filter((service) =>
+  service.serviceName.toLowerCase().includes(serviceName.toLowerCase())
+);
+  console.log(filteredServices, 'Filtered Services');
+  console.log(serviceName, 'Service Name');
     const [createService] = useCreateServiceMutation();
     const [updateService] = useUpdateServiceMutation();
     const [deleteService] = useDeleteServiceMutation();
@@ -32,17 +38,16 @@ export default function ServicesPage() {
     }, [serviceData]);
 
   const handleSaveService = async (service: Service) => {
-    console.log(service, "before save");
     try {
       if (isEditing && selectedService !== null) {
         if (service.id) {
-          const result = await updateService({ id: service.id, body: service });
-          console.log("notice Updated:", result);
+          await updateService({ id: service.id, body: service });
           setIsEditing(false);
           setIsFormVisible(false);
         }
       } else {
         const result = await createService(service);
+        setIsFormVisible(false);
         console.log("Service Added:", result);
       }
       //  setIsFormVisible(false);
@@ -66,7 +71,6 @@ export default function ServicesPage() {
    };
 
    const handleDeleteModal = (service: Service) => {
-     console.log(service);
      setSelectedService(service);
      setIsDeleteModalOpen(true);
    };
@@ -74,9 +78,8 @@ export default function ServicesPage() {
     const confirmDelete = async () => {
       if (selectedService && selectedService.id) {
         try {
-          const res = await deleteService(selectedService.id);
+           await deleteService(selectedService.id);
 
-          console.log("Service Deleted:", res);
           setSelectedService(null);
 
           setIsDeleteModalOpen(false);
@@ -97,7 +100,12 @@ export default function ServicesPage() {
         >
           Add Service
         </Button>
-        <Input placeholder="Search services" className="w-1/2" />
+        <Input
+          placeholder="Search services"
+          className="w-1/2"
+          value={serviceName}
+          onChange={(e) => setServicesName(e.target.value)} // Update search term
+        />
       </div>
 
       {isFormVisible && (
@@ -116,7 +124,7 @@ export default function ServicesPage() {
       />
 
       <ServiceTable
-        services={services}
+        services={filteredServices} // Pass filtered services to the table
         onEdit={handleEdit}
         onDelete={handleDeleteModal}
         onView={handleDetailsModal}

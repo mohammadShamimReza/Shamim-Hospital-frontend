@@ -73,16 +73,8 @@ export const SidebarNavMenus = {
       isActive: true,
     },
 
-    {
-      title: "Patients",
-      url: "#",
-      icon: PersonStanding,
-    },
-    {
-      title: "Room",
-      url: "#",
-      icon: School,
-    },
+
+
     {
       title: "Appointments",
       url: "#",

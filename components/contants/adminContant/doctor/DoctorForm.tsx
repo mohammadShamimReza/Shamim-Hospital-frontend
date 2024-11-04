@@ -199,7 +199,7 @@ export default function DoctorForm({
                 <FormItem>
                   <FormLabel>Designation</FormLabel>
                   <FormControl>
-                    <Input placeholder="Designation" {...field} />
+                    <Input placeholder="MBBS, FCPS" {...field} />
                   </FormControl>
                   <FormMessage>{errors.designation?.message}</FormMessage>
                 </FormItem>
