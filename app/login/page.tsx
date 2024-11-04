@@ -169,9 +169,7 @@ export default function LoginPage() {
               <Button type="submit" className="w-full mt-4">
                 Login
               </Button>
-              <Button variant="outline" className="w-full">
-                Login with Google
-              </Button>
+           
             </form>
           </FormProvider>
 
