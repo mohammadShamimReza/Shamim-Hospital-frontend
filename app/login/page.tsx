@@ -137,12 +137,12 @@ export default function LoginPage() {
                   <FormItem>
                     <div className="flex items-center justify-between">
                       <FormLabel>Password</FormLabel>
-                      <Link
+                      {/* <Link
                         href="/forgot-password"
                         className="text-sm underline"
                       >
                         Forgot your password?
-                      </Link>
+                      </Link> */}
                     </div>
                     <FormControl>
                       <div className="relative">
