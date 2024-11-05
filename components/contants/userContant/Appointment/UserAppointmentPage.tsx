@@ -64,12 +64,12 @@ const TodayAppointments = () => {
                     <DialogHeader>
                       <DialogTitle>Prescription</DialogTitle>
                     </DialogHeader>
-                    <div className="p-4">
+                    <div className="">
                       {selectedPrescription ? (
-                        <p>{selectedPrescription}</p>
+                        <p className="p-20 border rounded">{selectedPrescription}</p>
                       ) : (
-                        <p className="text-gray-500">
-                          No prescription available.
+                        <p className="">
+                          No prescription available!!!!
                         </p>
                       )}
                     </div>

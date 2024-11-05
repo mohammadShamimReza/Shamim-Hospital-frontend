@@ -22,14 +22,25 @@ const DoctorApi = baseApi.injectEndpoints({
       }),
       providesTags: ["createUser"],
     }),
-    updateDoctor: builder.mutation<void, { id: number; body: Partial<Doctor> }>({
-      query: ({ id, body }) => ({
-        url: `${DOCTOR}/${id}`, // Include the id in the URL
-        method: "PATCH",
-        body,
+    getDoctorById: builder.query<
+      { statusCode: number; success: boolean; message: string; data: Doctor },
+      { id: number }
+    >({
+      query: ({ id }) => ({
+        url: `${DOCTOR}/${id}`,
       }),
-      invalidatesTags: ["createUser"],
+      providesTags: ["createUser"],
     }),
+    updateDoctor: builder.mutation<void, { id: number; body: Partial<Doctor> }>(
+      {
+        query: ({ id, body }) => ({
+          url: `${DOCTOR}/${id}`, // Include the id in the URL
+          method: "PATCH",
+          body,
+        }),
+        invalidatesTags: ["createUser"],
+      }
+    ),
     deleteDoctor: builder.mutation<void, number>({
       query: (id) => ({
         url: `${DOCTOR}/${id}`, // Specify the ID in the URL
@@ -42,6 +53,7 @@ const DoctorApi = baseApi.injectEndpoints({
 export const {
   useCreateDoctorMutation,
   useGetAllDoctorQuery,
+  useGetDoctorByIdQuery,
   useUpdateDoctorMutation,
   useDeleteDoctorMutation,
 } = DoctorApi;

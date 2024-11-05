@@ -56,7 +56,7 @@ export default function MySidebarFooter() {
        })
      );
     removeToken()
-    setSelectedMenu('overview');
+    setSelectedMenu('Overview');
     router.push("/login");
     window.location.reload();
   }

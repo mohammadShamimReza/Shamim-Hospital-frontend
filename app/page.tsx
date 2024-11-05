@@ -44,7 +44,7 @@ export default function Page() {
  if (!isMounted) {
    return (
      <div className="flex items-center justify-center min-h-screen">
-       <h2 className="text-2xl font-semibold text-gray-700 animate-pulse">
+       <h2 className="text-2xl font-semibold  animate-pulse">
          Loading...
        </h2>
      </div>

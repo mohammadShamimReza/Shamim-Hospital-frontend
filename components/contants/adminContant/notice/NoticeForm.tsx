@@ -32,7 +32,6 @@ export default function NoticeForm({
     defaultValues: initialData || {
       title: "",
       content: "",
-      authorId: 0,
     },
   });
 
@@ -93,27 +92,7 @@ export default function NoticeForm({
               )}
             />
 
-            <FormField
-              control={control}
-              name="authorId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>authorId</FormLabel>
-                  <FormControl>
-                    <input
-                      type="number"
-                      placeholder="Notice Content"
-                      {...field}
-                      onChange={(e) =>
-                        field.onChange(parseInt(e.target.value, 10) || "")
-                      }
-                      className="form-textarea w-full px-3 py-2 border rounded"
-                    />
-                  </FormControl>
-                  <FormMessage>{errors.content?.message}</FormMessage>
-                </FormItem>
-              )}
-            />
+          
 
             <div className="flex gap-4">
               <Button type="submit">

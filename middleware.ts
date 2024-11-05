@@ -14,11 +14,18 @@ export function middleware(request: NextRequest) {
   }
 
   if (
-    (token && request.nextUrl.pathname === "/login") ||
-    request.nextUrl.pathname === "/signup"
+    (token && request.nextUrl.pathname === "/login")
   ) {
     return NextResponse.redirect(new URL("/", request.url));
   }
+
+   if (
+    (token && request.nextUrl.pathname === "/signup")
+  ) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
+
+
 
   return NextResponse.next();
 }
