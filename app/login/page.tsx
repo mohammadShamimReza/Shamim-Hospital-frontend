@@ -95,7 +95,7 @@ export default function LoginPage() {
         console.log(error)
       }
     } else {
-      alert("Invalid email or password.");
+      toast("Invalid email or password.");
     }
   };
 

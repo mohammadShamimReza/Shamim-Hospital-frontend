@@ -11,18 +11,19 @@ export default function StaffRoom() {
   if (isLoading) {
     return <p>Loading room data...</p>;
   }
+  console.log(data?.data.room)
 
   return (
     <Card className="max-w-lg mx-auto my-8">
       <CardHeader>
         <CardTitle>
           {" "}
-          {data?.data?.room === null
+          {!data?.data?.room 
             ? "You are not assigned any where"
             : "Assigned Room Details"}
         </CardTitle>
       </CardHeader>
-      {data?.data?.room === null ? (
+      {!data?.data?.room  ? (
         ""
       ) : (
         <CardContent className="space-y-4">

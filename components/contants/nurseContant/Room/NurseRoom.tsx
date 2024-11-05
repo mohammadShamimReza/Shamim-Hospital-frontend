@@ -17,12 +17,12 @@ export default function NurseRoom() {
         <CardHeader>
           <CardTitle>
             {" "}
-            {data?.data?.room === null
+            {!data?.data?.room 
               ? "You are not assigned any where"
               : "Assigned Room Details"}
           </CardTitle>
         </CardHeader>
-        {data?.data?.room === null ? (
+        {!data?.data?.room  ? (
           ""
         ) : (
           <CardContent className="space-y-4">

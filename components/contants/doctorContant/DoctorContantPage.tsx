@@ -5,9 +5,10 @@ import DoctorOverview from "./DoctorOverview";
 
 
 import DoctorAccountPage from "./DoctorAccount/DoctorAccountPage";
-import DoctorAppointmenPage from "./DoctorAppointment/DoctorAppointmenPage";
+
 import DoctorInboxPage from "./DoctorInbox/DoctorInboxPage";
 import DoctorNoticePage from "./DoctorNotice/DoctorNoticePage";
+import DoctorAppointmentsPage from "./DoctorAppointment/DoctorAppointmenPage";
 
 export default function DoctorContantPage() {
   const { selectedMenu } = useNavigation();
@@ -16,7 +17,7 @@ export default function DoctorContantPage() {
     <SidebarInset>
       <Header />
       {selectedMenu === "Overview" && <DoctorOverview />}
-      {selectedMenu === "Appointments" && <DoctorAppointmenPage />}
+      {selectedMenu === "Appointments" && <DoctorAppointmentsPage />}
 
       {selectedMenu === "Notice" && <DoctorNoticePage />}
       {selectedMenu === "Inbox" && <DoctorInboxPage />}

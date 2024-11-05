@@ -25,7 +25,7 @@ const TodayAppointments = () => {
       <h2 className="text-lg font-semibold mb-4">
         You have taken {appointments?.data.length} appointment
       </h2>
-      <table className="min-w-full shadow-sm rounded-lg border border-gray-200 text-center">
+      <table className="min-w-full shadow-sm rounded-lg border  text-center">
         <thead>
           <tr>
             <th className="py-2 px-4 border-b">Doctor</th>
