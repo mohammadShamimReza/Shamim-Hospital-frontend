@@ -9,6 +9,7 @@ import { Service } from "@/schemas/serviceSchema";
 import ServiceDeleteConfirmationModal from "./ServiceDeleteConfirmationModal";
 import ServiceDetailsModal from "./ServiceDetailsModal";
 import { useCreateServiceMutation, useDeleteServiceMutation, useGetAllServiceQuery, useUpdateServiceMutation } from "@/redux/api/serviceApi";
+import { toast } from "sonner";
 
 export default function ServicesPage() {
     const [services, setServices] = useState<Service[]>([]);
@@ -41,12 +42,33 @@ const filteredServices = services.filter((service) =>
     try {
       if (isEditing && selectedService !== null) {
         if (service.id) {
-          await updateService({ id: service.id, body: service });
-          setIsEditing(false);
-          setIsFormVisible(false);
+         const result = await updateService({ id: service.id, body: service });
+         if (result?.error) {
+           toast("something went wrong", {
+             style: {
+               backgroundColor: "red",
+               color: "white",
+             },
+           });
+         } else {
+           toast("Updated successfully");
+
+           setIsEditing(false);
+           setIsFormVisible(false);
+         }
         }
       } else {
         const result = await createService(service);
+           if (result?.error) {
+             toast("something went wrong, please provice correct info", {
+               style: {
+                 backgroundColor: "red",
+                 color: "white",
+               },
+             });
+           } else {
+             toast("Created successfully");
+           }
         setIsFormVisible(false);
         console.log("Service Added:", result);
       }

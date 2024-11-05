@@ -1,18 +1,17 @@
 import { SidebarInset } from '@/components/ui/sidebar';
 import { useNavigation } from "@/contexts/NavigatoinContext";
+import AdminAppointmentPage from "../doctorContant/DoctorAppointment/DoctorAppointmenPage";
+import Header from "../Header";
 import AccountPage from "./account/AccountPage";
 import DoctorPage from "./doctor/DoctorPage";
-import DoctorAppointmentsPage from "./DoctorAppointment";
-import Header from '../Header';
 import InboxPage from "./Inbox/Inbox";
 import NoticePage from "./notice/NoticePage";
 import NursePage from "./nurse/NursePage";
 import Overview from "./Overview";
-import ServicesPage from './service/ServicesPage';
+import RoomPage from "./room/RoomPage";
+import ServicesPage from "./service/ServicesPage";
 import StaffPage from "./staff/StaffPage";
 import UserPage from "./user/UserPage";
-import UserAppointmentsPage from "./UserAppointment";
-import RoomPage from './room/RoomPage';
 
 export default function AdminContantPage() {
       const { selectedMenu } = useNavigation();
@@ -29,8 +28,7 @@ export default function AdminContantPage() {
       {selectedMenu === "Notice" && <NoticePage />}
       {selectedMenu === "Inbox" && <InboxPage />}
       {selectedMenu === "Services" && <ServicesPage />}
-      {selectedMenu === "Appointments" && <UserAppointmentsPage />}
-      {selectedMenu === "Appointments" && <DoctorAppointmentsPage />}
+      {selectedMenu === "Appointments" && <AdminAppointmentPage />}
       {selectedMenu === "Account" && <AccountPage />}
     </SidebarInset>
   );

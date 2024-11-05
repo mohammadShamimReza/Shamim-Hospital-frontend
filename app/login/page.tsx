@@ -22,6 +22,8 @@ import { toast } from "sonner";
 import { storeTokenInCookie } from "@/lib/auth/token";
 import { storeAuthToken, storeUserInfo } from "@/redux/slice/authSlice";
 import { useNavigation } from "@/contexts/NavigatoinContext";
+import { Eye, EyeOff } from "lucide-react";
+import { useState } from "react";
 
 // Define the validation schema using Zod
 const loginSchema = z.object({
@@ -54,16 +56,23 @@ export default function LoginPage() {
     formState: { errors },
   } = formMethods;
 
+    const [showPassword, setShowPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
+
+
   const onSubmit = async (data: LoginFormData) => {
     console.log(data);
     if (data.email !== "" && data.password !== "") {
       try {
         
         const result = await loginUser(data);
-        console.log(result)
+        console.log(result, "this is login result");
         
        if (result?.error) {
-         toast("User is not valid", {
+         toast("User is not valid, please give the valid crediantials", {
            style: {
              backgroundColor: "red",
              color: "white",
@@ -133,11 +142,27 @@ export default function LoginPage() {
                       </Link>
                     </div>
                     <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="At least 8 characters, one special character, and one number"
-                        {...field}
-                      />
+                      <div className="relative">
+                        <Input
+                          type={showPassword ? "text" : "password"}
+                          placeholder="name123$#"
+                          {...field}
+                        />
+                        <button
+                          type="button"
+                          onClick={togglePasswordVisibility}
+                          className="absolute inset-y-0 right-0 px-2 flex items-center"
+                          aria-label={
+                            showPassword ? "Hide password" : "Show password"
+                          }
+                        >
+                          {showPassword ? (
+                            <EyeOff size={16} />
+                          ) : (
+                            <Eye size={16} />
+                          )}
+                        </button>
+                      </div>
                     </FormControl>
                     <FormMessage>{errors.password?.message}</FormMessage>
                   </FormItem>
@@ -161,7 +186,7 @@ export default function LoginPage() {
                         <option value="nurse">Nurse</option>
                       </select>
                     </FormControl>
-                    <FormMessage>{errors.password?.message}</FormMessage>
+                    <FormMessage>{errors.role?.message}</FormMessage>
                   </FormItem>
                 )}
               />
@@ -169,7 +194,6 @@ export default function LoginPage() {
               <Button type="submit" className="w-full mt-4">
                 Login
               </Button>
-           
             </form>
           </FormProvider>
 

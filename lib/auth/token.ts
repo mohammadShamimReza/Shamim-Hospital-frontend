@@ -13,7 +13,6 @@ export const storeTokenInCookie = (jwt: string) => {
 
 export const getTokenFromCookie = () => {
   // Check cookies first, then fallback to localStorage
-  console.log(Cookies.get("jwt"), ' thi is c');
   return Cookies.get("jwt") ;
 };
 

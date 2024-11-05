@@ -8,6 +8,7 @@ import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import { Notice } from "@/schemas/noticeSchema";
 import NoticeDetailsModal from "./NoticeDetailsModal";
 import { useCreateNoticeMutation, useDeleteNoticeMutation, useGetAllNoticeQuery, useUpdateNoticeMutation } from "@/redux/api/noticeApi";
+import { toast } from "sonner";
 
 export default function NoticePage() {
   const [notices, setNotices] = useState<Notice[]>([]);
@@ -39,12 +40,33 @@ export default function NoticePage() {
         if (notice.id) {
           const result = await updateNotice({ id: notice.id, body: notice });
           console.log("notice Updated:", result);
-          setIsEditing(false);
-          setIsFormVisible(false);
+         if (result?.error) {
+           toast("something went wrong", {
+             style: {
+               backgroundColor: "red",
+               color: "white",
+             },
+           });
+         } else {
+           toast("Updated successfully");
+
+           setIsEditing(false);
+           setIsFormVisible(false);
+         }
         }
       } else {
         const result = await createNotice(notice);
         console.log("notice Added:", result);
+         if (result?.error) {
+           toast("something went wrong, please provice correct info", {
+             style: {
+               backgroundColor: "red",
+               color: "white",
+             },
+           });
+         } else {
+           toast("Created successfully");
+         }
       }
       //  setIsFormVisible(false);
       //  setIsEditing(false);
