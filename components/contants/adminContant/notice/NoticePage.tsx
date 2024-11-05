@@ -23,7 +23,7 @@ export default function NoticePage() {
 
 
 
-   const { data: noticeData } = useGetAllNoticeQuery();
+   const { data: noticeData, isLoading } = useGetAllNoticeQuery();
 
    const [createNotice] = useCreateNoticeMutation();
    const [updateNotice] = useUpdateNoticeMutation();
@@ -135,6 +135,7 @@ export default function NoticePage() {
         onEdit={handleEdit}
         onDelete={handleDeleteModal}
         onView={handleDetailsModal}
+        isLoading={isLoading}
       />
 
       <DeleteConfirmationModal

@@ -27,7 +27,7 @@ export default function NursePage() {
     nurseDetails: false,
   });
 
-  const { data: nurseData } = useGetAllNurseQuery();
+  const { data: nurseData, isLoading } = useGetAllNurseQuery();
   const [createNurse] = useCreateNurseMutation();
   const [updateNurse] = useUpdateNurseMutation();
   const [deleteNurse] = useDeleteNurseMutation();
@@ -133,6 +133,7 @@ export default function NursePage() {
           setFormState((prev) => ({ ...prev, selectedNurse: nurse }));
           setModals((prev) => ({ ...prev, nurseDetails: true }));
         }}
+        isLoading={isLoading}
       />
 
       <DeleteConfirmationModal

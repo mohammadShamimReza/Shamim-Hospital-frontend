@@ -16,6 +16,7 @@ interface StaffTableProps {
   onEdit: (staff: Staff) => void;
   onDelete: (staff: Staff) => void;
   onView: (staff: Staff) => void;
+  isLoading: boolean;
 }
 
 export default function StaffTable({
@@ -23,8 +24,17 @@ export default function StaffTable({
   onEdit,
   onDelete,
   onView,
+  isLoading
 }: StaffTableProps) {
+      if (isLoading) {
+        return (
+          <div className="flex items-center justify-center py-4">
+            <h2 className="text-xl font-semibold animate-pulse">Loading...</h2>
+          </div>
+        );
+      }
   return (
+    
     <Table>
       <TableHeader>
         <TableRow>

@@ -4,7 +4,15 @@ import { format } from "date-fns";
 
 const AdminAppointmentPage = () => {
   const UserInfo = useAppSelector((state) => state.auth.userInfo);
-  const { data: appointments } = useGetAllAppointmentQuery();
+  const { data: appointments, isLoading } = useGetAllAppointmentQuery();
+
+    if (isLoading) {
+      return (
+        <div className="flex items-center justify-center py-4">
+          <h2 className="text-xl font-semibold animate-pulse">Loading...</h2>
+        </div>
+      );
+    }
 
   return (
     <div className=" rounded-lg p-4">

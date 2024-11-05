@@ -5,7 +5,7 @@ import { Modal } from "@/components/ui/modal";
 import { Doctor } from "@/schemas/doctorSchema";
 
 export default function UserDoctorPage() {
-  const { data: doctorData } = useGetAllDoctorQuery();
+  const { data: doctorData, isLoading } = useGetAllDoctorQuery();
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
 
   const handleDetailsClick = (doctor: Doctor) => {
@@ -15,6 +15,13 @@ export default function UserDoctorPage() {
   const handleCloseModal = () => {
     setSelectedDoctor(null);
   };
+      if (isLoading) {
+        return (
+          <div className="flex items-center justify-center py-4">
+            <h2 className="text-xl font-semibold animate-pulse">Loading...</h2>
+          </div>
+        );
+      }
 
   return (
     <div className="p-4">

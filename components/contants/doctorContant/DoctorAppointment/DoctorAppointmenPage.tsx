@@ -15,7 +15,7 @@ import { toast } from "sonner";
 
 const AppointmentsTable = () => {
   const UserInfo = useAppSelector((state) => state.auth.userInfo);
-  const { data: appointments } = useGetDoctorByIdQuery({
+  const { data: appointments, isLoading } = useGetDoctorByIdQuery({
     id: Number(UserInfo.id),
   });
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -59,6 +59,14 @@ const AppointmentsTable = () => {
       console.log(error);
     }
   };
+
+      if (isLoading) {
+        return (
+          <div className="flex items-center justify-center py-4">
+            <h2 className="text-xl font-semibold animate-pulse">Loading...</h2>
+          </div>
+        );
+      }
 
   return (
     <div className="shadow-md rounded-lg p-4">

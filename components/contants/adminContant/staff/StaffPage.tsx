@@ -27,7 +27,7 @@ export default function StaffPage() {
     staffDetails: false,
   });
 
-  const { data: staffData } = useGetAllStaffQuery();
+  const { data: staffData, isLoading } = useGetAllStaffQuery();
   const [createStaff] = useCreateStaffMutation();
   const [updateStaff] = useUpdateStaffMutation();
   const [deleteStaff] = useDeleteStaffMutation();
@@ -140,6 +140,7 @@ export default function StaffPage() {
           setFormState((prev) => ({ ...prev, selectedStaff: staff }));
           setModals((prev) => ({ ...prev, staffDetails: true }));
         }}
+        isLoading={isLoading}
       />
 
       <DeleteConfirmationModal

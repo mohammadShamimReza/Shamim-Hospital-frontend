@@ -23,7 +23,7 @@ export default function ServicesPage() {
   
   const [serviceName, setServicesName] = useState("");
 
-  const { data: serviceData } = useGetAllServiceQuery();
+  const { data: serviceData, isLoading } = useGetAllServiceQuery();
 
 const filteredServices = services.filter((service) =>
   service.serviceName.toLowerCase().includes(serviceName.toLowerCase())
@@ -150,6 +150,7 @@ const filteredServices = services.filter((service) =>
         onEdit={handleEdit}
         onDelete={handleDeleteModal}
         onView={handleDetailsModal}
+        isLoading={isLoading} 
       />
 
       <ServiceDeleteConfirmationModal

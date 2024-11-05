@@ -18,7 +18,7 @@ export default function UserPage() {
   const [searchEmail, setSearchEmail] = useState("");
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
 
-  const { data: userData } = useGetAllUserQuery();
+  const { data: userData, isLoading } = useGetAllUserQuery();
 
   useEffect(() => {
     if (userData) {
@@ -114,6 +114,7 @@ export default function UserPage() {
           setSelectedUser(user);
           setIsDetailsModalOpen(true);
         }}
+        isLoading={isLoading}
       />
       <DeleteConfirmationModal
         isOpen={isDeleteModalOpen}

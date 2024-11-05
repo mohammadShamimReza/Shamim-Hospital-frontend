@@ -26,7 +26,7 @@ export default function DoctorPage() {
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
 
 
-  const { data: doctorData } = useGetAllDoctorQuery();
+  const { data: doctorData, isLoading } = useGetAllDoctorQuery();
 
   const [createDoctor] = useCreateDoctorMutation();
   const [updateDoctor] = useUpdateDoctorMutation();
@@ -146,6 +146,7 @@ setSelectedDoctor(doctor)
         onEdit={handleEdit}
         onDelete={handleDeleteModal}
         onView={handleDetailsModal}
+        isLoading={isLoading}
       />
 
       <DeleteConfirmationModal

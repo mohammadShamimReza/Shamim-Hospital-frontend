@@ -8,9 +8,13 @@ export default function NurseRoom() {
   const nurseInfo = useAppSelector(state => state.auth.userInfo)
   const { data, isLoading } = useGetNurseByIdQuery({ id: Number(nurseInfo.id) })
   console.log(data)
-    if (isLoading) {
-      return <p>Loading room data...</p>;
-    }
+      if (isLoading) {
+        return (
+          <div className="flex items-center justify-center py-4">
+            <h2 className="text-xl font-semibold animate-pulse">Loading...</h2>
+          </div>
+        );
+      }
 
     return (
       <Card className="max-w-lg mx-auto my-8">

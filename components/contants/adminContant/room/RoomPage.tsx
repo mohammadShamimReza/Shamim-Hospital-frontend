@@ -27,7 +27,7 @@ export default function RoomPage() {
 
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
 
-  const { data: roomData } = useGetAllRoomQuery();
+  const { data: roomData, isLoading } = useGetAllRoomQuery();
   console.log(roomData);
 
   const [createRoom] = useCreateRoomMutation();
@@ -147,6 +147,7 @@ export default function RoomPage() {
         onEdit={handleEdit}
         onDelete={handleDeleteModal}
         onView={handleDetailsModal}
+        isLoading={isLoading}
       />
 
       <RoomDeleteConfirmationModal

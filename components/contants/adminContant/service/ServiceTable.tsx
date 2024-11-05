@@ -14,6 +14,7 @@ interface ServiceTableProps {
   onEdit: (notice: Service) => void;
   onDelete: (notice: Service) => void;
   onView: (notice: Service) => void;
+  isLoading: boolean;
 }
 
 export default function ServiceTable({
@@ -21,7 +22,15 @@ export default function ServiceTable({
   onEdit,
   onDelete,
   onView,
+  isLoading,
 }: ServiceTableProps) {
+      if (isLoading) {
+        return (
+          <div className="flex items-center justify-center py-4">
+            <h2 className="text-xl font-semibold animate-pulse">Loading...</h2>
+          </div>
+        );
+      }
   return (
     <Table>
       <TableHeader>

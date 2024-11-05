@@ -16,9 +16,17 @@ interface UserTableProps {
   onEdit: (user: User) => void;
   onDelete: (user:User) => void;
   onView: (user: User) => void;
+  isLoading: boolean;
 }
 
-export default function UserTable({ users, onEdit, onDelete, onView }: UserTableProps) {
+export default function UserTable({ users, onEdit, onDelete, onView, isLoading }: UserTableProps) {
+      if (isLoading) {
+        return (
+          <div className="flex items-center justify-center py-4">
+            <h2 className="text-xl font-semibold animate-pulse">Loading...</h2>
+          </div>
+        );
+      }
   return (
     <Table>
       <TableHeader>

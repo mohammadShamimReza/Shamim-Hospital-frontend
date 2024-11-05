@@ -14,6 +14,7 @@ interface RoomTableProps {
   onEdit: (notice: Room) => void;
   onDelete: (notice: Room) => void;
   onView: (notice: Room) => void;
+  isLoading: boolean;
 }
 
 export default function RoomTable({
@@ -21,7 +22,14 @@ export default function RoomTable({
   onEdit,
   onDelete,
   onView,
-}: RoomTableProps) {
+  isLoading,
+}: RoomTableProps) {    if (isLoading) {
+  return (
+    <div className="flex items-center justify-center py-4">
+      <h2 className="text-xl font-semibold animate-pulse">Loading...</h2>
+    </div>
+  );
+}
   return (
     <Table>
       <TableHeader>

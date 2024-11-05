@@ -12,14 +12,19 @@ import { format } from "date-fns";
 import { useState } from "react";
 
 const TodayAppointments = () => {
-  const { data: appointments } = useGetAllAppointmentQuery();
+  const { data: appointments, isLoading } = useGetAllAppointmentQuery();
 
   const [selectedPrescription, setSelectedPrescription] = useState<
     string | null
     >(null);
   
-  console.log(appointments)
-
+    if (isLoading) {
+      return (
+        <div className="flex items-center justify-center py-4">
+          <h2 className="text-xl font-semibold animate-pulse">Loading...</h2>
+        </div>
+      );
+    }
   return (
     <div className=" rounded-lg p-4">
       <h2 className="text-lg font-semibold mb-4">

@@ -3,9 +3,14 @@ import React from "react";
 import { format } from "date-fns";
 
 export default function StaffNoticePage() {
-  const { data: notices } = useGetAllNoticeQuery();
-  console.log(notices);
-  return (
+  const { data: notices, isLoading } = useGetAllNoticeQuery();
+    if (isLoading) {
+      return (
+        <div className="flex items-center justify-center py-4">
+          <h2 className="text-xl font-semibold animate-pulse">Loading...</h2>
+        </div>
+      );
+    }  return (
     <div>
       {" "}
       <div className="p-4">

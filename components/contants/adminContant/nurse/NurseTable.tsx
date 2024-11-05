@@ -16,6 +16,7 @@ interface NurseTableProps {
   onEdit: (nurse: Nurse) => void;
   onDelete: (nurse: Nurse) => void;
   onView: (nurse: Nurse) => void;
+  isLoading: boolean;
 }
 
 export default function NurseTable({
@@ -23,7 +24,15 @@ export default function NurseTable({
   onEdit,
   onDelete,
   onView,
+  isLoading
 }: NurseTableProps) {
+      if (isLoading) {
+        return (
+          <div className="flex items-center justify-center py-4">
+            <h2 className="text-xl font-semibold animate-pulse">Loading...</h2>
+          </div>
+        );
+      }
   return (
     <Table>
       <TableHeader>
