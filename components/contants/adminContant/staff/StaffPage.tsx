@@ -53,10 +53,32 @@ export default function StaffPage() {
         if (staff.id) {
           const result = await updateStaff({ id: staff.id, body: staff });
           console.log("Staff Updated:", result);
+           if (result?.error) {
+             toast("something went wrong", {
+               style: {
+                 backgroundColor: "red",
+                 color: "white",
+               },
+             });
+           } else {
+             toast("Updated successfully");
+
+         
+           }
         }
       } else {
         const result = await createStaff(staff);
         console.log("Staff Added:", result);
+          if (result?.error) {
+            toast("something went wrong, please provice correct info", {
+              style: {
+                backgroundColor: "red",
+                color: "white",
+              },
+            });
+          } else {
+            toast("Created successfully");
+          }
         setStaffList((prev) => [...prev, staff]);
       }
       toggleFormVisibility(false);

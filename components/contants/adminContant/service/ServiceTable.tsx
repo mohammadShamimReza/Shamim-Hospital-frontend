@@ -27,8 +27,8 @@ export default function ServiceTable({
       <TableHeader>
         <TableRow>
           <TableHead>Service Name</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>Price</TableHead>
+          <TableHead>price</TableHead>
+          <TableHead>Actions</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>

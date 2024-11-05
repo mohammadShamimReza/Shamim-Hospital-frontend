@@ -95,7 +95,7 @@ export default function InboxPage() {
             {filteredChats.map((chat) => (
               <li
                 key={chat.id}
-                className="p-2 rounded-md cursor-pointer hover:bg-gray-100"
+                className="p-2 rounded-md cursor-pointer hover:border"
                 onClick={() => openChat(chat)}
               >
                 {chat.name}
@@ -112,14 +112,14 @@ export default function InboxPage() {
             <CardTitle>Chat with {selectedChat.name}</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col h-[500px] justify-between">
-            <div className="overflow-y-auto p-2 border rounded-md bg-gray-50 h-[400px]">
+            <div className="overflow-y-auto p-2 border rounded-md  h-[400px]">
               {selectedChat.messages.map((msg, index) => (
                 <div
                   key={index}
                   className={`mb-2 p-2 rounded-md ${
                     msg.from === "You"
-                      ? "bg-blue-100 text-right"
-                      : "bg-gray-200 text-left"
+                      ? "border text-right"
+                      : "border text-left"
                   }`}
                 >
                   <strong>{msg.from}: </strong>

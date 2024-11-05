@@ -73,29 +73,24 @@ export const SidebarNavMenus = {
       isActive: true,
     },
 
-
+    {
+      title: "Notice",
+      url: "#",
+      icon: Shell,
+    },
 
     {
       title: "Appointments",
       url: "#",
       icon: Signature,
     },
-    {
-      title: "Notice",
-      url: "#",
-      icon: Shell,
-    },
+
     {
       title: "Inbox",
       url: "#",
       icon: Inbox,
     },
 
-    {
-      title: "Services",
-      url: "#",
-      icon: HandPlatter,
-    },
     {
       title: "Account",
       url: "#",
@@ -110,6 +105,11 @@ export const SidebarNavMenus = {
       isActive: true,
     },
     {
+      title: "Notice",
+      url: "#",
+      icon: Shell,
+    },
+    {
       title: "Doctors",
       url: "#",
       icon: BriefcaseMedical,
@@ -120,11 +120,7 @@ export const SidebarNavMenus = {
       url: "#",
       icon: Signature,
     },
-    {
-      title: "Notice",
-      url: "#",
-      icon: Shell,
-    },
+
     {
       title: "Inbox",
       url: "#",
@@ -149,18 +145,17 @@ export const SidebarNavMenus = {
       icon: FolderKanban,
       isActive: true,
     },
-
+    {
+      title: "Notice",
+      url: "#",
+      icon: Shell,
+    },
     {
       title: "Room",
       url: "#",
       icon: School,
     },
 
-    {
-      title: "Notice",
-      url: "#",
-      icon: Shell,
-    },
     {
       title: "Inbox",
       url: "#",
@@ -179,6 +174,11 @@ export const SidebarNavMenus = {
       url: "#",
       icon: FolderKanban,
       isActive: true,
+    },
+    {
+      title: "Notice",
+      url: "#",
+      icon: Shell,
     },
     {
       title: "Doctors",
@@ -210,11 +210,7 @@ export const SidebarNavMenus = {
       url: "#",
       icon: Signature,
     },
-    {
-      title: "Notice",
-      url: "#",
-      icon: Shell,
-    },
+    
     {
       title: "Inbox",
       url: "#",

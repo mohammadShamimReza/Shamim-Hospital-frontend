@@ -13,6 +13,7 @@ import {
 } from "@/redux/api/nurseApi";
 import NurseDetailsModal from "./NurseDetailsModal";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
+import { toast } from "sonner";
 
 export default function NursePage() {
   const [formState, setFormState] = useState({
@@ -53,11 +54,31 @@ export default function NursePage() {
         if (nurse.id) {
           const result = await updateNurse({ id: nurse.id, body: nurse });
           console.log("Nurse Updated:", result);
+            if (result?.error) {
+              toast("something went wrong", {
+                style: {
+                  backgroundColor: "red",
+                  color: "white",
+                },
+              });
+            } else {
+              toast("Updated successfully");
+            }
         }
       } else {
         const result = await createNurse(nurse);
         console.log("Nurse Added:", result);
         setNurses((prev) => [...prev, nurse]);
+         if (result?.error) {
+           toast("something went wrong, please provice correct info", {
+             style: {
+               backgroundColor: "red",
+               color: "white",
+             },
+           });
+         } else {
+           toast("Created successfully");
+         }
       }
       toggleFormVisibility(false);
     } catch (error) {

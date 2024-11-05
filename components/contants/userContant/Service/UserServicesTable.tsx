@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/popover";
 import { useCreateAppointmentMutation } from "@/redux/api/appointment";
 import { useAppSelector } from "@/redux/hooks";
+import { toast } from "sonner";
 
 interface UserServicesTableProps {
   setSelectedService: React.Dispatch<React.SetStateAction<Service | null>>;
@@ -62,13 +63,29 @@ export default function UserServicesTable({
         alert("are you sure you want to book this appointment?");
         try {
             const result = await createAppointment(appointmentData);
-            console.log(result, 'making appointment')
+          console.log(result, 'making appointment')
+            if (result?.error) {
+              toast("Something went wront please try again", {
+                style: {
+                  backgroundColor: "red",
+                  color: "white",
+                },
+              });
+            } else {
+              toast("Appointment successful");
+            }
             setDate(undefined);
             setSelectedDoctor(null);
             setSelectServiceForDoctor(null);
             setIsDrawerOpen(false);
         } catch (error) {
-            console.log(error)
+            toast("Something went wront please try again", {
+                style: {
+                  backgroundColor: "red",
+                  color: "white",
+                },
+              });
+            console.error(error);
         }
     }
   

@@ -25,7 +25,7 @@ const TodayAppointments = () => {
       <h2 className="text-lg font-semibold mb-4">
         You have taken {appointments?.data.length} appointment
       </h2>
-      <table className="min-w-full shadow-sm rounded-lg border border-gray-200 text-center">
+      <table className="min-w-full shadow-sm rounded-lg border  text-center">
         <thead>
           <tr>
             <th className="py-2 px-4 border-b">Doctor</th>
@@ -64,12 +64,12 @@ const TodayAppointments = () => {
                     <DialogHeader>
                       <DialogTitle>Prescription</DialogTitle>
                     </DialogHeader>
-                    <div className="p-4">
+                    <div className="">
                       {selectedPrescription ? (
-                        <p>{selectedPrescription}</p>
+                        <p className="p-20 border rounded">{selectedPrescription}</p>
                       ) : (
-                        <p className="text-gray-500">
-                          No prescription available.
+                        <p className="">
+                          No prescription available!!!!
                         </p>
                       )}
                     </div>

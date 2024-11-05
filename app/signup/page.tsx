@@ -97,14 +97,15 @@ const SignupPage: React.FC = () => {
              });
            } else {
              toast("User created successfully");
-             console.log(result);
-             console.log(result.data?.data.accessToken);
+       
              storeTokenInCookie(result?.data?.data.accessToken);
              dispatch(storeAuthToken(result?.data?.data.accessToken));
              localStorage.setItem("jwt", result?.data?.data.accessToken);
 
              dispatch(storeUserInfo(result?.data?.user));
              router.push("/");
+                      window.location.reload();
+
            }
          } catch (error) {
            console.log(error);
@@ -250,9 +251,7 @@ const SignupPage: React.FC = () => {
               <Button type="submit" className="w-full">
                 Create an Account
               </Button>
-              <Button variant="outline" className="w-full">
-                Sign up with GitHub
-              </Button>
+              
             </form>
           </FormProvider>
           <div className="mt-4 text-center text-sm">

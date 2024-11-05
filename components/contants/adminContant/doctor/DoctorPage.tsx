@@ -13,6 +13,7 @@ import {
 } from "@/redux/api/doctorApi";
 import DoctorDetailModals from "./DoctorDetailsModal";
 import { Doctor } from "@/schemas/doctorSchema";
+import { toast } from "sonner";
 
 export default function DoctorPage() {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
@@ -42,13 +43,34 @@ export default function DoctorPage() {
       if (isEditing && selectedDoctor !== null) {
          if (doctor.id) {
            const result = await updateDoctor({ id: doctor.id, body: doctor });
+
            console.log("Doctor Updated:", result);
-            setIsEditing(false);
-            setIsFormVisible(false);
+           if (result?.error) {
+             toast("something went wrong", {
+               style: {
+                 backgroundColor: "red",
+                 color: "white",
+               },
+             });
+           } else {
+             toast("Doctor updated successfully")
+             setIsEditing(false);
+             setIsFormVisible(false);
+           }
          }
        } else {
          const result = await createDoctor(doctor);
-         console.log("Doctor Added:", result);
+        console.log("Doctor Added:", result);
+        if (result?.error) {
+          toast("something went wrong, please provice correct info", {
+            style: {
+              backgroundColor: "red",
+              color: "white",
+            },
+          });
+        } else {
+          toast("Created successfully")
+        }
        }
       //  setIsFormVisible(false);
       //  setIsEditing(false);

@@ -15,9 +15,9 @@ const authApi = baseApi.injectEndpoints({
       // transformResponse: (rawResult: UserData | Error) => {
       //   return rawResult;
       // },
-      // transformErrorResponse(baseQueryReturnValue, meta, arg) {
-      //   return baseQueryReturnValue.data;
-      // },
+      transformErrorResponse(baseQueryReturnValue) {
+        return baseQueryReturnValue.data;
+      },
     }),
     createUser: builder.mutation({
       query: (body) => ({

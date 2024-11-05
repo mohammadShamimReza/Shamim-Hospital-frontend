@@ -63,6 +63,7 @@ export interface Doctor {
   role: string;
   designation: string;
   passingYear: string;
+  appointments?: Appointment[];
 }
 
 
@@ -70,7 +71,8 @@ export interface Notice {
   id: number;
   title: string;
   content: string;
-  authorId: number;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 
