@@ -19,7 +19,7 @@ export default function Page() {
     return null;
   }, []);
 
-  const { data: userData } = useGetUserInfoQuery({ undefined });
+  const { data: userData, isLoading } = useGetUserInfoQuery({ undefined });
 
   // Set initial mount state
   useEffect(() => {
@@ -41,7 +41,7 @@ export default function Page() {
   }, [userData, dispatch]);
 
   // Render a loading message if not mounted
- if (!isMounted) {
+ if (!isMounted && isLoading) {
    return (
      <div className="flex items-center justify-center min-h-screen">
        <h2 className="text-2xl font-semibold  animate-pulse">

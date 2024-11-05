@@ -41,11 +41,13 @@ const loginSchema = z.object({
 type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
-      const { setSelectedMenu } = useNavigation();
+  const { setSelectedMenu } = useNavigation();
 
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const [ loginUser ] = useLoginUserMutation();
+  const [loginUser] = useLoginUserMutation();
+  const [loading, setLoading] = useState(false); // Local loading state
+
   const formMethods = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: { email: "", password: "", role: "patient" },
@@ -56,43 +58,44 @@ export default function LoginPage() {
     formState: { errors },
   } = formMethods;
 
-    const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };
 
-
   const onSubmit = async (data: LoginFormData) => {
     console.log(data);
     if (data.email !== "" && data.password !== "") {
       try {
-        
+        setLoading(true);
         const result = await loginUser(data);
         console.log(result, "this is login result");
-        
-       if (result?.error) {
-         toast("User is not valid, please give the valid crediantials", {
-           style: {
-             backgroundColor: "red",
-             color: "white",
-           },
-         });
-       } else {
-         toast("Login successfully");
-       
-         storeTokenInCookie(result?.data?.data.accessToken);
-         dispatch(storeAuthToken(result?.data?.data.accessToken));
-         localStorage.setItem("jwt", result?.data?.data.accessToken);
 
-         dispatch(storeUserInfo(result?.data?.user));
-           setSelectedMenu("Overview");
+        if (result?.error) {
+          toast("User is not valid, please give the valid crediantials", {
+            style: {
+              backgroundColor: "red",
+              color: "white",
+            },
+          });
+        } else {
+          toast("Login successfully");
 
-         router.push("/");
-         window.location.reload();
-       }
+          storeTokenInCookie(result?.data?.data.accessToken);
+          dispatch(storeAuthToken(result?.data?.data.accessToken));
+          localStorage.setItem("jwt", result?.data?.data.accessToken);
+
+          dispatch(storeUserInfo(result?.data?.user));
+          setSelectedMenu("Overview");
+
+          router.push("/");
+          window.location.reload();
+        }
       } catch (error) {
-        console.log(error)
+        console.log(error);
+      } finally {
+        setLoading(false); // End loading
       }
     } else {
       toast("Invalid email or password.");
@@ -191,8 +194,8 @@ export default function LoginPage() {
                 )}
               />
 
-              <Button type="submit" className="w-full mt-4">
-                Login
+              <Button type="submit" className="w-full mt-4" disabled={loading}>
+                {loading ? "Logging in..." : "Login"}
               </Button>
             </form>
           </FormProvider>
