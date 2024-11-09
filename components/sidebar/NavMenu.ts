@@ -1,4 +1,16 @@
-import { BookA, BriefcaseMedical, CircleDollarSign, FolderKanban, HandPlatter, Inbox, PersonStanding, School, Shell, Signature, SquareUserRound, UserRoundMinusIcon } from "lucide-react";
+import {
+  BookA,
+  BriefcaseMedical,
+  CircleDollarSign,
+  FolderKanban,
+  HandPlatter,
+  PersonStanding,
+  School,
+  Shell,
+  Signature,
+  SquareUserRound,
+  UserRoundMinusIcon,
+} from "lucide-react";
 
 export const SidebarNavMenus = {
   navSuperAdmin: [
@@ -48,11 +60,11 @@ export const SidebarNavMenus = {
       url: "#",
       icon: Shell,
     },
-    {
-      title: "Inbox",
-      url: "#",
-      icon: Inbox,
-    },
+    // {
+    //   title: "Inbox",
+    //   url: "#",
+    //   icon: Inbox,
+    // },
 
     {
       title: "Services",
@@ -85,11 +97,11 @@ export const SidebarNavMenus = {
       icon: Signature,
     },
 
-    {
-      title: "Inbox",
-      url: "#",
-      icon: Inbox,
-    },
+    // {
+    //   title: "Inbox",
+    //   url: "#",
+    //   icon: Inbox,
+    // },
 
     {
       title: "Account",
@@ -121,11 +133,11 @@ export const SidebarNavMenus = {
       icon: Signature,
     },
 
-    {
-      title: "Inbox",
-      url: "#",
-      icon: Inbox,
-    },
+    // {
+    //   title: "Inbox",
+    //   url: "#",
+    //   icon: Inbox,
+    // },
 
     {
       title: "Services",
@@ -156,11 +168,11 @@ export const SidebarNavMenus = {
       icon: School,
     },
 
-    {
-      title: "Inbox",
-      url: "#",
-      icon: Inbox,
-    },
+    // {
+    //   title: "Inbox",
+    //   url: "#",
+    //   icon: Inbox,
+    // },
 
     {
       title: "Account",
@@ -210,12 +222,12 @@ export const SidebarNavMenus = {
       url: "#",
       icon: Signature,
     },
-    
-    {
-      title: "Inbox",
-      url: "#",
-      icon: Inbox,
-    },
+
+    // {
+    //   title: "Inbox",
+    //   url: "#",
+    //   icon: Inbox,
+    // },
 
     {
       title: "Services",
