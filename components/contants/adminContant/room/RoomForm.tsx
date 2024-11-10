@@ -8,7 +8,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Room, roomSchema } from "@/schemas/roomSchema";
+import {  roomSchema } from "@/schemas/roomSchema";
+import { Room } from "@/type/Index";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormProvider, useForm } from "react-hook-form";
 

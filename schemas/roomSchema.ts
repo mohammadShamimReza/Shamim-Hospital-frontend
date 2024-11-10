@@ -6,6 +6,8 @@ export const roomSchema = z.object({
   needNurseAndStaff: z.number({
     message: '"Content must be at least 10 characters"',
   }),
+  
 });
+
 
 export type Room = z.infer<typeof roomSchema>;

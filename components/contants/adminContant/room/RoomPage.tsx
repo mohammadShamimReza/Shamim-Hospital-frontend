@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import RoomForm from "./RoomForm";
 import RoomTable from "./RoomTable";
-import { Room } from "@/schemas/roomSchema";
 import RoomDeleteConfirmationModal from "./RoomDeleteConfirmationModal";
 import RoomDetailsModal from "./RoomDetailsModal";
 
@@ -16,6 +15,7 @@ import {
   useUpdateRoomMutation,
 } from "@/redux/api/roomApi";
 import { toast } from "sonner";
+import { Room } from "@/type/Index";
 
 export default function RoomPage() {
   const [rooms, setRooms] = useState<Room[]>([]);
@@ -28,7 +28,6 @@ export default function RoomPage() {
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
 
   const { data: roomData, isLoading } = useGetAllRoomQuery();
-  console.log(roomData);
 
   const [createRoom] = useCreateRoomMutation();
   const [updateRoom] = useUpdateRoomMutation();

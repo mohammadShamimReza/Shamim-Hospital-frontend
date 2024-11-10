@@ -90,7 +90,10 @@ export interface Room {
   id: number;
   roomNumber: string;
   needNurseAndStaff: number;
+  nurses: Nurse[] | [];
+  staff: Staff[] | [];
 }
+
 
 export interface Appointment {
   id: number;
