@@ -93,39 +93,47 @@ export default function RoomTable({
                 <HoverCardContent>
                   <div className="space-y-2">
                     <h4 className="font-semibold">Nurses</h4>
-                    {room.nurses.map((nurse) => (
-                      <div
-                        key={nurse.id}
-                        className="flex justify-between items-center"
-                      >
-                        <span>{nurse.name}</span>
-                        <Button
-                          variant="destructive"
-                          onClick={() =>
-                            handleRemovePerson(room.id, nurse.id, "nurse")
-                          }
+                    {room.nurses.length > 0 ? (
+                      room.nurses.map((nurse) => (
+                        <div
+                          key={nurse.id}
+                          className="flex justify-between items-center"
                         >
-                          Remove
-                        </Button>
-                      </div>
-                    ))}
+                          <span>{nurse.name}</span>
+                          <Button
+                            variant="destructive"
+                            onClick={() =>
+                              handleRemovePerson(room.id, nurse.id, "nurse")
+                            }
+                          >
+                            Remove
+                          </Button>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-gray-500">No nurse assigned</p>
+                    )}
                     <h4 className="font-semibold mt-4">Staff</h4>
-                    {room.staff.map((staff) => (
-                      <div
-                        key={staff.id}
-                        className="flex justify-between items-center"
-                      >
-                        <span>{staff.name}</span>
-                        <Button
-                          variant="destructive"
-                          onClick={() =>
-                            handleRemovePerson(room.id, staff.id, "staff")
-                          }
+                    {room.staff.length > 0 ? (
+                      room.staff.map((staff) => (
+                        <div
+                          key={staff.id}
+                          className="flex justify-between items-center"
                         >
-                          Remove
-                        </Button>
-                      </div>
-                    ))}
+                          <span>{staff.name}</span>
+                          <Button
+                            variant="destructive"
+                            onClick={() =>
+                              handleRemovePerson(room.id, staff.id, "staff")
+                            }
+                          >
+                            Remove
+                          </Button>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-gray-500">No staff assigned</p>
+                    )}
                   </div>
                 </HoverCardContent>
               </HoverCard>
