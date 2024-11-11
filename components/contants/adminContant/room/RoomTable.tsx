@@ -84,10 +84,12 @@ export default function RoomTable({
         {rooms.map((room, index) => (
           <TableRow key={index}>
             <TableCell>{room.roomNumber}</TableCell>
-            <TableCell>{room.needNurseAndStaff}</TableCell>
+            <TableCell className="text-lg font-semibold">
+              {room.needNurseAndStaff}
+            </TableCell>
             <TableCell className="flex justify-center items-center gap-4">
               <HoverCard>
-                <HoverCardTrigger>
+                <HoverCardTrigger className="text-lg font-semibold underline">
                   {room.nurses?.length + room.staff?.length}
                 </HoverCardTrigger>
                 <HoverCardContent>

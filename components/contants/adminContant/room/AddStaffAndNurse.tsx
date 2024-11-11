@@ -27,16 +27,15 @@ interface PersonType {
   id: number;
   name: string;
   role: string;
+  roomId?: string | number | null; // Allow both string and number types for roomId
 }
 
-
-export default function AddStaffAndNurse({roomId}:{ roomId: number; }) {
+export default function AddStaffAndNurse({ roomId }: { roomId: number }) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
   const { data: nurseData } = useGetAllNurseQuery();
   const { data: staffData } = useGetAllStaffQuery();
   const [updateRoom] = useUpdateRoomMutation();
-
 
   const combinedData = [
     ...(nurseData?.data?.map((nurse) => ({
@@ -50,19 +49,24 @@ export default function AddStaffAndNurse({roomId}:{ roomId: number; }) {
   ];
 
   const handleAddNurseAndStaff = async (person: PersonType) => {
-    console.log(person, "person");
+    if (person.roomId && person.roomId !== roomId) {
+      toast.error(
+        `This ${person.role} is already assigned to room ${person.roomId}`
+      );
+      return;
+    }
     try {
-      
+      // Determine whether to add as nurse or staff based on the role
       const body =
         person.role === "nurse"
-          ? { addNurses: [person.id] } 
-          : { addStaff: [person.id] };
+          ? { addNurses: [person.id] } // Directly set addNurses for nurses
+          : { addStaff: [person.id] }; // Directly set addStaff for staff
 
       const result = await updateRoom({ id: roomId, body }).unwrap();
-      if (result?.error) { 
-        toast('Something went wrong')
+      if (result?.error) {
+        toast("Something went wrong");
       } else {
-        toast('Added successfully')
+        toast("Added successfully");
         setOpen(false);
         setValue(""); // Clear the input field after successful addition
       }
@@ -82,7 +86,7 @@ export default function AddStaffAndNurse({roomId}:{ roomId: number; }) {
           aria-expanded={open}
           className="w-[200px] justify-between"
         >
-           Select Staff or Nurse...
+          Select Staff or Nurse...
           <ChevronsUpDown className="opacity-50" />
         </Button>
       </PopoverTrigger>
