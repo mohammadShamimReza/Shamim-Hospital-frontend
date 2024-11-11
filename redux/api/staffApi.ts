@@ -11,7 +11,7 @@ const StaffApi = baseApi.injectEndpoints({
         method: "POST",
         body,
       }),
-      invalidatesTags: ["createUser"],
+      invalidatesTags: ["getStaff"], // Invalidate staff list to refetch
     }),
     getAllStaff: builder.query<
       { statusCode: number; success: boolean; message: string; data: Staff[] },
@@ -20,7 +20,7 @@ const StaffApi = baseApi.injectEndpoints({
       query: () => ({
         url: `${STAFF}/`,
       }),
-      providesTags: ["createUser"],
+      providesTags: ["getStaff"], // Provides tag for staff list refetch
     }),
     getStaffById: builder.query<
       { statusCode: number; success: boolean; message: string; data: Staff },
@@ -29,7 +29,7 @@ const StaffApi = baseApi.injectEndpoints({
       query: ({ id }) => ({
         url: `${STAFF}/${id}`,
       }),
-      providesTags: ["createUser"],
+      providesTags: (result, error, { id }) => [{ type: "Staff", id }], // Tag specific to staff ID
     }),
     updateStaff: builder.mutation<void, { id: number; body: Partial<Staff> }>({
       query: ({ id, body }) => ({
@@ -37,22 +37,29 @@ const StaffApi = baseApi.injectEndpoints({
         method: "PATCH",
         body,
       }),
-      invalidatesTags: ["createUser"],
+      invalidatesTags: (result, error, { id }) => [
+        "getStaff",
+        { type: "Staff", id },
+      ], // Invalidate both list and specific staff entry
     }),
     deleteStaff: builder.mutation<void, number>({
       query: (id) => ({
         url: `${STAFF}/${id}`, // Specify the ID in the URL
         method: "DELETE",
       }),
+      invalidatesTags: (result, error, id) => [
+        "getStaff",
+        { type: "Staff", id },
+      ], // Invalidate both list and specific staff entry
     }),
   }),
+  overrideExisting: false,
 });
 
 export const {
   useCreateStaffMutation,
   useGetAllStaffQuery,
   useGetStaffByIdQuery,
-
   useUpdateStaffMutation,
   useDeleteStaffMutation,
 } = StaffApi;

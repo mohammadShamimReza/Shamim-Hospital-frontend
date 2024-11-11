@@ -11,7 +11,7 @@ const NoticeApi = baseApi.injectEndpoints({
         method: "POST",
         body,
       }),
-      invalidatesTags: ["createUser"],
+      invalidatesTags: ["getNotices"], // Invalidate notice list to refetch
     }),
     getAllNotice: builder.query<
       { statusCode: number; success: boolean; message: string; data: Notice[] },
@@ -20,7 +20,7 @@ const NoticeApi = baseApi.injectEndpoints({
       query: () => ({
         url: `${NOTICE}/`,
       }),
-      providesTags: ["createUser"],
+      providesTags: ["getNotices"], // Provides tag for notice list refetch
     }),
     updateNotice: builder.mutation<void, { id: number; body: Partial<Notice> }>(
       {
@@ -29,7 +29,10 @@ const NoticeApi = baseApi.injectEndpoints({
           method: "PATCH",
           body,
         }),
-        invalidatesTags: ["createUser"],
+        invalidatesTags: (result, error, { id }) => [
+          "getNotices",
+          { type: "Notice", id },
+        ], // Invalidate both list and specific notice entry
       }
     ),
     deleteNotice: builder.mutation<void, number>({
@@ -37,8 +40,13 @@ const NoticeApi = baseApi.injectEndpoints({
         url: `${NOTICE}/${id}`, // Specify the ID in the URL
         method: "DELETE",
       }),
+      invalidatesTags: (result, error, id) => [
+        "getNotices",
+        { type: "Notice", id },
+      ], // Invalidate both list and specific notice entry
     }),
   }),
+  overrideExisting: false,
 });
 
 export const {

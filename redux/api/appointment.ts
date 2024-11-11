@@ -11,34 +11,42 @@ const AppointmentApi = baseApi.injectEndpoints({
         method: "POST",
         body,
       }),
-      invalidatesTags: ["createUser"],
+      invalidatesTags: ["getAppointments"], // Invalidate the appointments list
     }),
     getAllAppointment: builder.query<
-      { statusCode: number; success: boolean; message: string; data: Appointment[] },
+      {
+        statusCode: number;
+        success: boolean;
+        message: string;
+        data: Appointment[];
+      },
       void
     >({
       query: () => ({
         url: `${APPOINTMENT}/`,
       }),
-      providesTags: ["createUser"],
+      providesTags: ["getAppointments"], // Provide the appointments list tag
     }),
-    updateAppointment: builder.mutation<void, { id: number; body: Partial<Appointment> }>(
-      {
-        query: ({ id, body }) => ({
-          url: `${APPOINTMENT}/${id}`, // Include the id in the URL
-          method: "PATCH",
-          body,
-        }),
-        invalidatesTags: ["createUser"],
-      }
-    ),
+    updateAppointment: builder.mutation<
+      void,
+      { id: number; body: Partial<Appointment> }
+    >({
+      query: ({ id, body }) => ({
+        url: `${APPOINTMENT}/${id}`, // Include the id in the URL
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: ["getAppointments"], // Invalidate the appointments list
+    }),
     deleteAppointment: builder.mutation<void, number>({
       query: (id) => ({
         url: `${APPOINTMENT}/${id}`, // Specify the ID in the URL
         method: "DELETE",
       }),
+      invalidatesTags: ["getAppointments"], // Invalidate the appointments list
     }),
   }),
+  overrideExisting: false,
 });
 
 export const {

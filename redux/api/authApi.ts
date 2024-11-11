@@ -1,8 +1,6 @@
 import { baseApi } from "./baseApi";
 
-
 const AUTH = "/auth";
-
 
 const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -12,9 +10,6 @@ const authApi = baseApi.injectEndpoints({
         method: "POST",
         body,
       }),
-      // transformResponse: (rawResult: UserData | Error) => {
-      //   return rawResult;
-      // },
       transformErrorResponse(baseQueryReturnValue) {
         return baseQueryReturnValue.data;
       },
@@ -25,21 +20,17 @@ const authApi = baseApi.injectEndpoints({
         method: "POST",
         body,
       }),
-      // transformResponse: (rawResult: UserData | Error) => {
-      //   return rawResult;
-      // },
-      // transformErrorResponse(baseQueryReturnValue, meta, arg) {
-      //   return baseQueryReturnValue.data;
-      // },
+      transformErrorResponse(baseQueryReturnValue) {
+        return baseQueryReturnValue.data;
+      },
     }),
     getUserInfo: builder.query({
       query: () => ({
         url: `${AUTH}/me`,
       }),
-      // transformResponse: (rawResult: UserDataWithDay) => {
-      //   return rawResult;
-      // },
-      // providesTags: ["updateUserDay", "updateUser"],
+      transformErrorResponse(baseQueryReturnValue) {
+        return baseQueryReturnValue.data;
+      },
     }),
     forgetPassword: builder.mutation({
       query: (body) => ({
@@ -47,20 +38,27 @@ const authApi = baseApi.injectEndpoints({
         method: "POST",
         body,
       }),
-
-      // invalidatesTags: [tagTypes.user],
+      transformErrorResponse(baseQueryReturnValue) {
+        return baseQueryReturnValue.data;
+      },
     }),
     resetPassword: builder.mutation({
       query: (newPassword) => ({
         url: `${AUTH}/reset-password`,
         method: "POST",
-        data: newPassword,
+        body: newPassword, // Changed `data` to `body` for consistency
       }),
-
-      // invalidatesTags: [tagTypes.user],
+      transformErrorResponse(baseQueryReturnValue) {
+        return baseQueryReturnValue.data;
+      },
     }),
   }),
 });
 
-
-export const {useLoginUserMutation, useGetUserInfoQuery, useCreateUserMutation, useForgetPasswordMutation, useResetPasswordMutation} = authApi;
+export const {
+  useLoginUserMutation,
+  useGetUserInfoQuery,
+  useCreateUserMutation,
+  useForgetPasswordMutation,
+  useResetPasswordMutation,
+} = authApi;

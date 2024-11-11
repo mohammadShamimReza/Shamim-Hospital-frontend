@@ -11,7 +11,7 @@ const nurseApi = baseApi.injectEndpoints({
         method: "POST",
         body,
       }),
-      invalidatesTags: ["createUser"],
+      invalidatesTags: ["getNurses"], // Invalidate nurse list to refetch
     }),
     getAllNurse: builder.query<
       { statusCode: number; success: boolean; message: string; data: Nurse[] },
@@ -20,33 +20,47 @@ const nurseApi = baseApi.injectEndpoints({
       query: () => ({
         url: `${NURSE}/`,
       }),
-      providesTags: ["createUser"],
+      providesTags: ["getNurses"], // Provides tag for nurse list refetch
     }),
     getNurseById: builder.query<
       { statusCode: number; success: boolean; message: string; data: Nurse },
-      {id: number}
+      { id: number }
     >({
-      query: ({id}) => ({
+      query: ({ id }) => ({
         url: `${NURSE}/${id}`,
       }),
-      providesTags: ["createUser"],
+      providesTags: (result, error, { id }) => [{ type: "Nurse", id }], // Tag specific to nurse ID
     }),
 
     updateNurse: builder.mutation<void, { id: number; body: Partial<Nurse> }>({
       query: ({ id, body }) => ({
-        url: `${NURSE}/${id}`, // Include the id in the URL
+        url: `${NURSE}/${id}`,
         method: "PATCH",
         body,
       }),
-      invalidatesTags: ["createUser"],
+      invalidatesTags: (result, error, { id }) => [
+        "getNurses",
+        { type: "Nurse", id },
+      ], // Invalidate both list and specific nurse entry
     }),
     deleteNurse: builder.mutation<void, number>({
       query: (id) => ({
-        url: `${NURSE}/${id}`, // Specify the ID in the URL
+        url: `${NURSE}/${id}`,
         method: "DELETE",
       }),
+      invalidatesTags: (result, error, id) => [
+        "getNurses",
+        { type: "Nurse", id },
+      ], // Invalidate both list and specific nurse entry
     }),
   }),
+  overrideExisting: false,
 });
 
-export const { useCreateNurseMutation, useGetAllNurseQuery, useGetNurseByIdQuery, useUpdateNurseMutation, useDeleteNurseMutation } = nurseApi;
+export const {
+  useCreateNurseMutation,
+  useGetAllNurseQuery,
+  useGetNurseByIdQuery,
+  useUpdateNurseMutation,
+  useDeleteNurseMutation,
+} = nurseApi;

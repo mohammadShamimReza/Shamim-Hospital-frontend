@@ -12,7 +12,7 @@ const AdminApi = baseApi.injectEndpoints({
       query: () => ({
         url: `${ADMIN}/`,
       }),
-      // providesTags: ["createAdmin"],
+      providesTags: ["getAdmins"], // Cache and provide 'getAdmins' tag
     }),
     updateAdmin: builder.mutation<void, { id: number; body: Partial<Admin> }>({
       query: ({ id, body }) => ({
@@ -20,15 +20,17 @@ const AdminApi = baseApi.injectEndpoints({
         method: "PATCH",
         body,
       }),
-      // invalidatesTags: ["createAdmin"],
+      invalidatesTags: ["getAdmins", "updateAdmin"], // Invalidate 'getAdmins' and 'updateAdmin' tags
     }),
     deleteAdmin: builder.mutation<void, number>({
       query: (id) => ({
         url: `${ADMIN}/${id}`, // Specify the ID in the URL
         method: "DELETE",
       }),
+      invalidatesTags: ["getAdmins", "deleteAdmin"], // Invalidate 'getAdmins' and 'deleteAdmin' tags
     }),
   }),
+  overrideExisting: false,
 });
 
 export const {

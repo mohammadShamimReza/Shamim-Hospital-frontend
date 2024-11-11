@@ -11,7 +11,7 @@ const DoctorApi = baseApi.injectEndpoints({
         method: "POST",
         body,
       }),
-      invalidatesTags: ["createUser"],
+      invalidatesTags: ["getDoctors"], // Invalidate the list to refetch doctors
     }),
     getAllDoctor: builder.query<
       { statusCode: number; success: boolean; message: string; data: Doctor[] },
@@ -20,7 +20,7 @@ const DoctorApi = baseApi.injectEndpoints({
       query: () => ({
         url: `${DOCTOR}/`,
       }),
-      providesTags: ["createUser"],
+      providesTags: ["getDoctors"], // Provides tag for refetching when invalidated
     }),
     getDoctorById: builder.query<
       { statusCode: number; success: boolean; message: string; data: Doctor },
@@ -29,25 +29,33 @@ const DoctorApi = baseApi.injectEndpoints({
       query: ({ id }) => ({
         url: `${DOCTOR}/${id}`,
       }),
-      providesTags: ["createUser"],
+      providesTags: (result, error, { id }) => [{ type: "Doctor", id }], // Tag specific to doctor ID
     }),
     updateDoctor: builder.mutation<void, { id: number; body: Partial<Doctor> }>(
       {
         query: ({ id, body }) => ({
-          url: `${DOCTOR}/${id}`, // Include the id in the URL
+          url: `${DOCTOR}/${id}`,
           method: "PATCH",
           body,
         }),
-        invalidatesTags: ["createUser"],
+        invalidatesTags: (result, error, { id }) => [
+          "getDoctors",
+          { type: "Doctor", id },
+        ], // Invalidate both the list and the specific doctor entry
       }
     ),
     deleteDoctor: builder.mutation<void, number>({
       query: (id) => ({
-        url: `${DOCTOR}/${id}`, // Specify the ID in the URL
+        url: `${DOCTOR}/${id}`,
         method: "DELETE",
       }),
+      invalidatesTags: (result, error, id) => [
+        "getDoctors",
+        { type: "Doctor", id },
+      ], // Invalidate both the list and the specific doctor entry
     }),
   }),
+  overrideExisting: false,
 });
 
 export const {

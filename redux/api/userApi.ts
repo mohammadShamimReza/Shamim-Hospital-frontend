@@ -12,7 +12,7 @@ const UserApi = baseApi.injectEndpoints({
       query: () => ({
         url: `${USER}/`,
       }),
-      providesTags: ["createUser"],
+      providesTags: ["getUsers"], // Provides tag for user list refetch
     }),
     updateUser: builder.mutation<void, { id: number; body: Partial<User> }>({
       query: ({ id, body }) => ({
@@ -20,15 +20,23 @@ const UserApi = baseApi.injectEndpoints({
         method: "PATCH",
         body,
       }),
-      invalidatesTags: ["createUser"],
+      invalidatesTags: (result, error, { id }) => [
+        "getUsers",
+        { type: "User", id },
+      ], // Invalidate both list and specific user entry
     }),
     deleteUser: builder.mutation<void, number>({
       query: (id) => ({
         url: `${USER}/${id}`, // Specify the ID in the URL
         method: "DELETE",
       }),
+      invalidatesTags: (result, error, id) => [
+        "getUsers",
+        { type: "User", id },
+      ], // Invalidate both list and specific user entry
     }),
   }),
+  overrideExisting: false,
 });
 
 export const {
