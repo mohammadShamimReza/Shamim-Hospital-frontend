@@ -9,15 +9,19 @@ import {
 import { Button } from "@/components/ui/button";
 import AddStaffAndNurse from "./AddStaffAndNurse";
 import { Room } from "@/type/Index";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 import { useUpdateRoomMutation } from "@/redux/api/roomApi";
 import { toast } from "sonner";
 
 interface RoomTableProps {
   rooms: Room[];
-  onEdit: (notice: Room) => void;
-  onDelete: (notice: Room) => void;
-  onView: (notice: Room) => void;
+  onEdit: (room: Room) => void;
+  onDelete: (room: Room) => void;
+  onView: (room: Room) => void;
   isLoading: boolean;
 }
 
@@ -28,61 +32,54 @@ export default function RoomTable({
   onView,
   isLoading,
 }: RoomTableProps) {
+  const [updateRoom] = useUpdateRoomMutation();
 
-    const [updateRoom] = useUpdateRoomMutation();
+  const handleRemovePerson = async (
+    roomId: number,
+    personId: number,
+    role: "nurse" | "staff"
+  ) => {
+    try {
+      const payload =
+        role === "nurse"
+          ? { removeNurses: [personId] }
+          : { removeStaff: [personId] };
 
-    const handleRemovePerson = async (
-      roomId: number,
-      personId: number,
-      role: "nurse" | "staff"
-    ) => {
-      try {
-        const payload =
-          role === "nurse"
-            ? { removeNurses: [personId] }
-            : { removeStaff: [personId] };
+      const result = await updateRoom({ id: roomId, body: payload }).unwrap();
 
-        const result = await updateRoom({
-          id: roomId,
-          body: payload,
-        }).unwrap();
-        if (result?.error) {
-          toast("Something went wrong");
-        } else {
-          toast("Remove successfully");
-        }
-        console.log("Person removed from room:", result);
-      } catch (error) {
-        console.error("Error removing person:", error);
+      if (result?.error) {
+        toast("Something went wrong");
+      } else {
+        toast("Removed successfully");
       }
-    };
+      console.log("Person removed from room:", result);
+    } catch (error) {
+      console.error("Error removing person:", error);
+      toast("Error removing person");
+    }
+  };
 
   if (isLoading) {
-  
-
-  return (
-    <div className="flex items-center justify-center py-4">
-      <h2 className="text-xl font-semibold animate-pulse">Loading...</h2>
-    </div>
-  );
-}
-  
-  
+    return (
+      <div className="flex items-center justify-center py-4">
+        <h2 className="text-xl font-semibold animate-pulse">Loading...</h2>
+      </div>
+    );
+  }
 
   return (
     <Table>
       <TableHeader className="text-center">
         <TableRow>
           <TableHead>Room Name / Number</TableHead>
-          <TableHead>Room Nurse and staff needed</TableHead>
-          <TableHead>Added Nurse and staff </TableHead>
-
+          <TableHead>Room Nurse and Staff Needed</TableHead>
+          <TableHead>Added Nurse and Staff</TableHead>
           <TableHead>Options</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {rooms.map((room, index) => (
-          <TableRow key={index}>
+        {rooms.map((room) => (
+          <TableRow key={room.id}>
             <TableCell>{room.roomNumber}</TableCell>
             <TableCell className="text-lg font-semibold">
               {room.needNurseAndStaff}
@@ -90,12 +87,12 @@ export default function RoomTable({
             <TableCell className="flex justify-center items-center gap-4">
               <HoverCard>
                 <HoverCardTrigger className="text-lg font-semibold underline">
-                  {room.nurses?.length + room.staff?.length}
+                  {room.nurses?.length + room.staff?.length || 0}
                 </HoverCardTrigger>
                 <HoverCardContent>
                   <div className="space-y-2">
                     <h4 className="font-semibold">Nurses</h4>
-                    {room.nurses.length > 0 ? (
+                    {room.nurses?.length ? (
                       room.nurses.map((nurse) => (
                         <div
                           key={nurse.id}
@@ -116,7 +113,7 @@ export default function RoomTable({
                       <p className="text-gray-500">No nurse assigned</p>
                     )}
                     <h4 className="font-semibold mt-4">Staff</h4>
-                    {room.staff.length > 0 ? (
+                    {room.staff?.length ? (
                       room.staff.map((staff) => (
                         <div
                           key={staff.id}
