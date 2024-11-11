@@ -22,7 +22,7 @@ const RoomApi = baseApi.injectEndpoints({
       }),
       providesTags: ["getRooms"], // Provides tag for room list refetch
     }),
-    updateRoom: builder.mutation<void, { id: number; body: Partial<Room> }>({
+    updateRoom: builder.mutation({
       query: ({ id, body }) => ({
         url: `${ROOM}/${id}`, // Include the id in the URL
         method: "PATCH",
