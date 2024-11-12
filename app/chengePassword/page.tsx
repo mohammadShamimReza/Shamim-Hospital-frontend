@@ -2,6 +2,7 @@
 
 import { Suspense, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Eye, EyeOff } from "lucide-react";
 import { decodedToken } from "@/lib/auth/jwt";
 import { useResetPasswordMutation } from "@/redux/api/authApi";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -24,6 +25,8 @@ function ResetPass() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
 
   const token = searchParams.get("token");
   const userInfo = decodedToken(token as string) as UserInfo;
@@ -36,6 +39,7 @@ function ResetPass() {
       newPassword: "",
       id: id,
       role: role,
+      token: token || "",
     },
   });
 
@@ -43,23 +47,42 @@ function ResetPass() {
   const password = watch("password");
   const newPassword = watch("newPassword");
 
+  if (!token) {
+    toast.error("Invalid token");
+    router.push("/login");
+    return null;
+  }
+
   const onSubmit = async (data: {
     password: string;
     newPassword: string;
     id: string;
     role: string;
+    token: string;
   }) => {
     data.id = id;
     data.role = role;
+    data.token = token || "";
     setLoading(true);
-    toast.loading("Sending...");
     try {
       if (password !== newPassword) {
         toast.error("Passwords do not match");
         return;
       }
-      const res = await resetPassword({ ...data }).unwrap();
-      console.log(res)
+      const result = await resetPassword({ ...data }).unwrap();
+      console.log(result);
+      if (result?.error) {
+        toast("Something went wrong", {
+          style: {
+            backgroundColor: "red",
+            color: "white",
+          },
+        });
+      } else {
+        toast(
+          "Account recovered successfully! Please login with your new password."
+        );
+      }
       reset({ newPassword: "", password: "" });
       router.push("/login");
       toast.success("Password reset successfully!");
@@ -81,25 +104,38 @@ function ResetPass() {
         >
           Password
         </label>
-        <input
-          className={`w-full p-2 border rounded-lg ${
-            errors.password ? "border-red-500" : "border-gray-300"
-          }`}
-          type="password"
-          id="password"
-          {...register("password", {
-            required: "Password is required",
-            minLength: {
-              value: 8,
-              message: "Password must be at least 8 characters long",
-            },
-            pattern: {
-              value: /(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/,
-              message:
-                "Password must contain a letter, a number, and a special character",
-            },
-          })}
-        />
+        <div className="relative">
+          <input
+            className={`w-full p-2 border rounded-lg ${
+              errors.password ? "border-red-500" : "border-gray-300"
+            }`}
+            type={showPassword ? "text" : "password"}
+            id="password"
+            {...register("password", {
+              required: "Password is required",
+              minLength: {
+                value: 8,
+                message: "Password must be at least 8 characters long",
+              },
+              pattern: {
+                value: /(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/,
+                message:
+                  "Password must contain a letter, a number, and a special character",
+              },
+            })}
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute inset-y-0 right-2 flex items-center"
+          >
+            {showPassword ? (
+              <EyeOff className="w-5 h-5" />
+            ) : (
+              <Eye className="w-5 h-5" />
+            )}
+          </button>
+        </div>
         {errors.password && (
           <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
         )}
@@ -110,17 +146,31 @@ function ResetPass() {
         >
           Confirm Password
         </label>
-        <input
-          className={`w-full p-2 border rounded-lg ${
-            errors.newPassword ? "border-red-500" : "border-gray-300"
-          }`}
-          type="password"
-          id="newPassword"
-          {...register("newPassword", {
-            required: "Confirm Password is required",
-            validate: (value) => value === password || "Passwords do not match",
-          })}
-        />
+        <div className="relative">
+          <input
+            className={`w-full p-2 border rounded-lg ${
+              errors.newPassword ? "border-red-500" : "border-gray-300"
+            }`}
+            type={showNewPassword ? "text" : "password"}
+            id="newPassword"
+            {...register("newPassword", {
+              required: "Confirm Password is required",
+              validate: (value) =>
+                value === password || "Passwords do not match",
+            })}
+          />
+          <button
+            type="button"
+            onClick={() => setShowNewPassword(!showNewPassword)}
+            className="absolute inset-y-0 right-2 flex items-center"
+          >
+            {showNewPassword ? (
+              <EyeOff className="w-5 h-5" />
+            ) : (
+              <Eye className="w-5 h-5" />
+            )}
+          </button>
+        </div>
         {errors.newPassword && (
           <p className="text-red-500 text-sm mt-1">
             {errors.newPassword.message}

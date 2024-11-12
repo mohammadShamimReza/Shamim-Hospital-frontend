@@ -199,7 +199,11 @@ export default function LoginPage() {
               </Button>
             </form>
           </FormProvider>
-
+          <div className=" text-right text-sm">
+            <Link href="/forgetPassword" className="underline">
+             Forget Password
+            </Link>
+          </div>
           <div className="mt-4 text-center text-sm">
             Don&apos;t have an account?{" "}
             <Link href="/signup" className="underline">
