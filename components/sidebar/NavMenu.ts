@@ -2,11 +2,15 @@ import {
   BookA,
   BriefcaseMedical,
   CircleDollarSign,
+  FlaskConical,
   FolderKanban,
   HandPlatter,
+  HeartPulse,
   PersonStanding,
+  Pill,
   School,
   Shell,
+  Shield,
   Signature,
   SquareUserRound,
   UserRoundMinusIcon,
@@ -221,6 +225,26 @@ export const SidebarNavMenus = {
       title: "Appointments",
       url: "#",
       icon: Signature,
+    },
+    {
+      title: "Pharmacy",
+      url: "#",
+      icon: Pill,
+    },
+    {
+      title: "Laboratory",
+      url: "#",
+      icon: FlaskConical,
+    },
+    {
+      title: "Diagonostic",
+      url: "#",
+      icon: HeartPulse,
+    },
+    {
+      title: "Inventory",
+      url: "#",
+      icon: Shield,
     },
 
     // {
