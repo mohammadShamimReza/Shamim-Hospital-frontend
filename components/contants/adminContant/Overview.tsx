@@ -5,9 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Bell, Calendar, MessageSquare, UserIcon } from "lucide-react"; // Icons for illustration
 
 import { useNavigation } from "@/contexts/NavigatoinContext";
+import AdminOverview from "./ChartOverview";
 
 export default function Overview() {
-  const {  setSelectedMenu } = useNavigation();
+  const { setSelectedMenu } = useNavigation();
   return (
     <>
       {/* Header with Breadcrumbs */}
@@ -23,7 +24,7 @@ export default function Overview() {
             overview of each section.
           </p>
         </header>
-
+        <AdminOverview />
         <main className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {/* Doctors Section */}
           <Card className="p-4">
