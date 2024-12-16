@@ -108,3 +108,15 @@ export interface Appointment {
   Service: Service;
   prescription: string;
 }
+
+export interface Pharmacy {
+  id: number;
+  name: string;
+  stockQuantity: number;
+  unitPrice: number;
+  image: string;
+  expiryDate: string; // ISO date string, corresponds to DateTime in Prisma
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
+  appointments?: Appointment[]; // Optional, linked appointments
+}

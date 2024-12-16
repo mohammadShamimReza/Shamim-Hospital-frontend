@@ -62,6 +62,8 @@ export const baseApi = createApi({
     "Room",
     "Service",
     "Staff",
-    "User"
+    "User",
+    "Pharmacy",
+    "getPharmacys",
   ],
 });
