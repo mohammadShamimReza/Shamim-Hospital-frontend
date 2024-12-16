@@ -1,52 +1,42 @@
 "use client";
 
-import { useForm, FormProvider } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Doctor, doctorSchema } from "@/schemas/doctorSchema";
-import { Eye, EyeOff } from "lucide-react";
-import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Inventory, inventorySchema } from "@/schemas/inventorySchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { FormProvider, useForm } from "react-hook-form";
 
-
-interface DoctorFormProps {
-  onSubmit: (data: Doctor) => void;
+interface InventoryFormProps {
+  onSubmit: (data: Inventory) => void;
   onCancel: () => void;
-  initialData?: Doctor | null;
+  initialData?: Inventory | null;
   isEditing: boolean;
 }
 
-export default function DoctorForm({
+export default function InventoryForm({
   onSubmit,
   onCancel,
-  initialData ,
+  initialData,
   isEditing,
-}: DoctorFormProps) {
-  const [showPassword, setShowPassword] = useState(false);
-
-  const togglePasswordVisibility = () => {
-    setShowPassword((prev) => !prev);
-  };
-  const methods = useForm<Doctor>({
-    resolver: zodResolver(doctorSchema),
+}: InventoryFormProps) {
+  const methods = useForm<Inventory>({
+    resolver: zodResolver(inventorySchema),
     defaultValues: initialData || {
-      name: "",
-      email: "",
-      password: "",
-      phone: 0,
-      address: "",
-      role: "doctor",
-      designation: "",
-      passingYear: "",
-    } ,
+      itemName: "",
+      quantity: 0,
+      price: 0,
+      category: "Medicine", // Set a valid default value from the union type
+      purchaseDate: "",
+      status: "Available", // Set a valid default value from the union type
+    },
   });
 
   const {
@@ -56,10 +46,19 @@ export default function DoctorForm({
     formState: { errors },
   } = methods;
 
+  const categories: Inventory["category"][] = [
+    "Medicine",
+    "Equipment",
+    "Consumables",
+  ];
+  const statuses: Inventory["status"][] = ["Available", "In Use", "Damaged"];
+
   return (
     <Card className="mb-8">
       <CardHeader>
-        <CardTitle>{isEditing ? "Edit Doctor" : "Add New Doctor"}</CardTitle>
+        <CardTitle>
+          {isEditing ? "Edit Inventory" : "Add New Inventory"}
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <FormProvider {...methods}>
@@ -70,173 +69,133 @@ export default function DoctorForm({
             })}
             className="grid gap-4"
           >
-            {/* Name Field */}
+            {/* Item Name Field */}
             <FormField
               control={control}
-              name="name"
+              name="itemName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>Item Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Doctor's Name" {...field} />
+                    <Input placeholder="Item Name" {...field} />
                   </FormControl>
-                  <FormMessage>{errors.name?.message}</FormMessage>
+                  <FormMessage>{errors.itemName?.message}</FormMessage>
                 </FormItem>
               )}
             />
 
-            {/* Email Field */}
+            {/* Quantity Field */}
             <FormField
               control={control}
-              name="email"
+              name="quantity"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input type="email" placeholder="Email" {...field} />
-                  </FormControl>
-                  <FormMessage>{errors.email?.message}</FormMessage>
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <Input
-                        type={showPassword ? "text" : "password"}
-                        placeholder="name123$#"
-                        {...field}
-                      />
-                      <button
-                        type="button"
-                        onClick={togglePasswordVisibility}
-                        className="absolute inset-y-0 right-0 px-2 flex items-center"
-                        aria-label={
-                          showPassword ? "Hide password" : "Show password"
-                        }
-                      >
-                        {showPassword ? (
-                          <EyeOff size={16} />
-                        ) : (
-                          <Eye size={16} />
-                        )}
-                      </button>
-                    </div>
-                  </FormControl>
-                  <FormMessage>{errors.password?.message}</FormMessage>
-                </FormItem>
-              )}
-            />
-
-            {/* Phone Field */}
-            <FormField
-              control={control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Phone</FormLabel>
+                  <FormLabel>Quantity</FormLabel>
                   <FormControl>
                     <Input
                       type="number"
-                      placeholder="Phone Number"
+                      placeholder="Quantity"
                       {...field}
                       onChange={(e) =>
-                        field.onChange(parseInt(e.target.value, 10) || "")
+                        field.onChange(parseInt(e.target.value, 10) || 0)
                       }
                     />
                   </FormControl>
-                  <FormMessage>{errors.phone?.message}</FormMessage>
+                  <FormMessage>{errors.quantity?.message}</FormMessage>
                 </FormItem>
               )}
             />
 
-            {/* Address Field */}
+            {/* Price Field */}
             <FormField
               control={control}
-              name="address"
+              name="price"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Address</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Address" {...field} />
-                  </FormControl>
-                  <FormMessage>{errors.address?.message}</FormMessage>
-                </FormItem>
-              )}
-            />
-
-            {/* Role Field */}
-            <FormField
-              control={control}
-              name="role"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Role</FormLabel>
+                  <FormLabel>Price</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Role"
+                      type="number"
+                      placeholder="Price"
                       {...field}
-                      value={"doctor"}
-                      disabled
+                      onChange={(e) =>
+                        field.onChange(parseInt(e.target.value, 10) || 0)
+                      }
                     />
                   </FormControl>
-                  <FormMessage>{errors.role?.message}</FormMessage>
+                  <FormMessage>{errors.price?.message}</FormMessage>
                 </FormItem>
               )}
             />
 
-            {/* Designation Field */}
+            {/* Category Field */}
             <FormField
               control={control}
-              name="designation"
+              name="category"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Designation</FormLabel>
-                  <FormControl>
-                    <Input placeholder="MBBS, FCPS" {...field} />
-                  </FormControl>
-                  <FormMessage>{errors.designation?.message}</FormMessage>
-                </FormItem>
-              )}
-            />
-
-            {/* Passing Year Field */}
-            <FormField
-              control={control}
-              name="passingYear"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Passing Year</FormLabel>
+                  <FormLabel>Category</FormLabel>
                   <FormControl>
                     <select
                       {...field}
-                      className="form-select w-full px-3 py-2 border rounded" // Add styling as needed
+                      className="form-select w-full px-3 py-2 border rounded"
                     >
-                      <option value="">Select Year</option>
-                      {Array.from({ length: 50 }, (_, i) => {
-                        const year = new Date().getFullYear() - i;
-                        return (
-                          <option key={year} value={year}>
-                            {year}
-                          </option>
-                        );
-                      })}
+                      <option value="">Select Category</option>
+                      {categories.map((category) => (
+                        <option key={category} value={category}>
+                          {category}
+                        </option>
+                      ))}
                     </select>
                   </FormControl>
-                  <FormMessage>{errors.passingYear?.message}</FormMessage>
+                  <FormMessage>{errors.category?.message}</FormMessage>
+                </FormItem>
+              )}
+            />
+
+            {/* Purchase Date Field */}
+            <FormField
+              control={control}
+              name="purchaseDate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Purchase Date</FormLabel>
+                  <FormControl>
+                    <Input type="date" {...field} />
+                  </FormControl>
+                  <FormMessage>{errors.purchaseDate?.message}</FormMessage>
+                </FormItem>
+              )}
+            />
+
+            {/* Status Field */}
+            <FormField
+              control={control}
+              name="status"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Status</FormLabel>
+                  <FormControl>
+                    <select
+                      {...field}
+                      className="form-select w-full px-3 py-2 border rounded"
+                    >
+                      <option value="">Select Status</option>
+                      {statuses.map((status) => (
+                        <option key={status} value={status}>
+                          {status}
+                        </option>
+                      ))}
+                    </select>
+                  </FormControl>
+                  <FormMessage>{errors.status?.message}</FormMessage>
                 </FormItem>
               )}
             />
 
             <div className="flex gap-4">
               <Button type="submit">
-                {isEditing ? "Update Doctor" : "Add Doctor"}
+                {isEditing ? "Update Inventory" : "Add Inventory"}
               </Button>
               <Button
                 variant="outline"

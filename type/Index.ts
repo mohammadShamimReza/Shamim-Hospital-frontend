@@ -120,3 +120,25 @@ export interface Pharmacy {
   updatedAt: string; // ISO date string
   appointments?: Appointment[]; // Optional, linked appointments
 }
+
+export interface Laboratory {
+  testName: string;
+  price: number;
+  appointmentId: number;
+  testDate: string;
+  result: string;
+}
+
+export interface Inventory {
+  itemName: string; // Name of the inventory item
+  quantity: number; // Quantity of the item in stock
+  price: number; // Price of the inventory item
+  category: string; // Allowed categories
+  purchaseDate: string; // Date the item was purchased
+  status: string;
+}
+
+export interface Diagnostic {
+  diagnosticName: string; // Name of the diagnostic test
+  price: number; // Cost of the diagnostic test
+}

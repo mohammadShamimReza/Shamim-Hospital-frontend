@@ -2,22 +2,24 @@
 
 import { Button } from "@/components/ui/button";
 import {
-  useCreateDoctorMutation,
-  useDeleteDoctorMutation,
-  useGetAllDoctorQuery,
-  useUpdateDoctorMutation,
-} from "@/redux/api/doctorApi";
-import { Doctor } from "@/schemas/doctorSchema";
+  useCreateInventoryMutation,
+  useDeleteInventoryMutation,
+  useGetAllInventoryQuery,
+  useUpdateInventoryMutation,
+} from "@/redux/api/inventoryApi";
+import { Inventory } from "@/schemas/inventorySchema";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
-import DoctorDetailModals from "./InventoryDetailsModal";
-import DoctorForm from "./InventoryForm";
-import DoctorTable from "./InventoryTable";
+import InventoryDetailModals from "./InventoryDetailsModal";
+import InventoryForm from "./InventoryForm";
+import InventoryTable from "./InventoryTable";
 
 export default function InventoryPage() {
-  const [doctors, setDoctors] = useState<Doctor[]>([]);
-  const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
+  const [inventorys, setInventorys] = useState<Inventory[]>([]);
+  const [selectedInventory, setSelectedInventory] = useState<Inventory | null>(
+    null
+  );
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
@@ -25,25 +27,28 @@ export default function InventoryPage() {
 
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
 
-  const { data: doctorData, isLoading } = useGetAllDoctorQuery();
+  const { data: inventoryData, isLoading } = useGetAllInventoryQuery();
 
-  const [createDoctor] = useCreateDoctorMutation();
-  const [updateDoctor] = useUpdateDoctorMutation();
-  const [deleteDoctor] = useDeleteDoctorMutation();
+  const [createInventory] = useCreateInventoryMutation();
+  const [updateInventory] = useUpdateInventoryMutation();
+  const [deleteInventory] = useDeleteInventoryMutation();
 
   useEffect(() => {
-    if (doctorData?.data) setDoctors(doctorData.data);
-  }, [doctorData]);
+    if (inventoryData?.data) setInventorys(inventoryData.data);
+  }, [inventoryData]);
 
-  // Add or Update Doctor function
-  const handleSaveDoctor = async (doctor: Doctor) => {
-    console.log(doctor, "before save");
+  // Add or Update Inventory function
+  const handleSaveInventory = async (inventory: Inventory) => {
+    console.log(inventory, "before save");
     try {
-      if (isEditing && selectedDoctor !== null) {
-        if (doctor.id) {
-          const result = await updateDoctor({ id: doctor.id, body: doctor });
+      if (isEditing && selectedInventory !== null) {
+        if (inventory.id) {
+          const result = await updateInventory({
+            id: inventory.id,
+            body: inventory,
+          });
 
-          console.log("Doctor Updated:", result);
+          console.log("Inventory Updated:", result);
           if (result?.error) {
             toast("something went wrong", {
               style: {
@@ -52,14 +57,14 @@ export default function InventoryPage() {
               },
             });
           } else {
-            toast("Doctor updated successfully");
+            toast("Inventory updated successfully");
             setIsEditing(false);
             setIsFormVisible(false);
           }
         }
       } else {
-        const result = await createDoctor(doctor);
-        console.log("Doctor Added:", result);
+        const result = await createInventory(inventory);
+        console.log("Inventory Added:", result);
         if (result?.error) {
           toast("something went wrong, please provice correct info", {
             style: {
@@ -73,35 +78,35 @@ export default function InventoryPage() {
       }
       //  setIsFormVisible(false);
       //  setIsEditing(false);
-      //  setSelectedDoctorIndex(null);
+      //  setSelectedInventoryIndex(null);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const handleEdit = (doctor: Doctor) => {
+  const handleEdit = (inventory: Inventory) => {
     setIsEditing(true);
     setIsFormVisible(true);
-    setSelectedDoctor(doctor);
+    setSelectedInventory(inventory);
   };
 
-  const handleDetailsModal = (doctor: Doctor) => {
-    setSelectedDoctor(doctor);
+  const handleDetailsModal = (inventory: Inventory) => {
+    setSelectedInventory(inventory);
     setIsDetailsModalOpen(true);
   };
 
-  const handleDeleteModal = (doctor: Doctor) => {
-    setSelectedDoctor(doctor);
+  const handleDeleteModal = (inventory: Inventory) => {
+    setSelectedInventory(inventory);
     setIsDeleteModalOpen(true);
   };
 
   const confirmDelete = async () => {
-    if (selectedDoctor && selectedDoctor.id) {
+    if (selectedInventory && selectedInventory.id) {
       try {
-        const res = await deleteDoctor(selectedDoctor.id);
+        const res = await deleteInventory(selectedInventory.id);
 
-        console.log("Doctor Deleted:", res);
-        setSelectedDoctor(null);
+        console.log("Inventory Deleted:", res);
+        setSelectedInventory(null);
 
         setIsDeleteModalOpen(false);
       } catch (error) {
@@ -120,34 +125,34 @@ export default function InventoryPage() {
               setIsEditing(false);
             }}
           >
-            Add Doctor
+            Add Inventory
           </Button>
         )}
       </div>
 
       {isFormVisible && (
-        <DoctorForm
-          onSubmit={handleSaveDoctor}
+        <InventoryForm
+          onSubmit={handleSaveInventory}
           onCancel={() => {
             setIsFormVisible(false);
-            setSelectedDoctor(null);
+            setSelectedInventory(null);
           }}
-          initialData={selectedDoctor ? selectedDoctor : null}
+          initialData={selectedInventory ? selectedInventory : null}
           isEditing={isEditing}
         />
       )}
 
-      <DoctorDetailModals
+      <InventoryDetailModals
         isDetailsModalOpen={isDetailsModalOpen}
-        doctor={selectedDoctor}
+        inventory={selectedInventory}
         onClose={() => {
           setIsDetailsModalOpen(false);
-          setSelectedDoctor(null);
+          setSelectedInventory(null);
         }}
       />
 
-      <DoctorTable
-        doctors={doctors}
+      <InventoryTable
+        inventorys={inventorys}
         onEdit={handleEdit}
         onDelete={handleDeleteModal}
         onView={handleDetailsModal}

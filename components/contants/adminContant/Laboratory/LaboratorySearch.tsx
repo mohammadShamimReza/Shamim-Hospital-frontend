@@ -2,15 +2,15 @@
 
 import { Input } from "@/components/ui/input";
 
-interface DoctorSearchProps {
+interface LaboratorySearchProps {
   searchEmail: string;
   onSearch: (email: string) => void;
 }
 
-export default function DoctorSearch({
+export default function LaboratorySearch({
   searchEmail,
   onSearch,
-}: DoctorSearchProps) {
+}: LaboratorySearchProps) {
   return (
     <Input
       placeholder="Search by email"

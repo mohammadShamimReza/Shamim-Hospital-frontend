@@ -1,6 +1,5 @@
 "use client";
 
-import { Doctor } from "@/schemas/doctorSchema";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -10,68 +9,71 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Inventory } from "@/schemas/inventorySchema";
 
-interface DoctorTableProps {
-  doctors: Doctor[];
-  onEdit: (doctor: Doctor) => void;
-  onDelete: (doctor: Doctor) => void;
-  onView: (doctor: Doctor) => void;
+interface InventoryTableProps {
+  inventorys: Inventory[];
+  onEdit: (inventory: Inventory) => void;
+  onDelete: (inventory: Inventory) => void;
+  onView: (inventory: Inventory) => void;
   isLoading: boolean;
 }
 
-export default function DoctorTable({
-  doctors,
+export default function InventoryTable({
+  inventorys,
   onEdit,
   onDelete,
   onView,
-  isLoading
-
-}: DoctorTableProps) {
-      if (isLoading) {
-        return (
-          <div className="flex items-center justify-center py-4">
-            <h2 className="text-xl font-semibold animate-pulse">Loading...</h2>
-          </div>
-        );
-      }
+  isLoading,
+}: InventoryTableProps) {
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-4">
+        <h2 className="text-xl font-semibold animate-pulse">Loading...</h2>
+      </div>
+    );
+  }
   return (
     <Table>
       <TableHeader>
         <TableRow>
           <TableHead>Name</TableHead>
-          <TableHead>Email</TableHead>
-          <TableHead>Phone</TableHead>
-          <TableHead>Designation</TableHead>
+          <TableHead>Price</TableHead>
+          <TableHead>purchesDate</TableHead>
+          <TableHead>quentity</TableHead>
+          <TableHead>status</TableHead>
           <TableHead>Actions</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {doctors.map((doctor, index) => (
+        {inventorys.map((inventory, index) => (
           <TableRow key={index}>
-            <TableCell>{doctor.name}</TableCell>
-            <TableCell>{doctor.email}</TableCell>
-            <TableCell>{doctor.phone}</TableCell>
-            <TableCell>{doctor.designation}</TableCell>
+            <TableCell>{inventory.itemName}</TableCell>
+            <TableCell>{inventory.price}</TableCell>
+            <TableCell>{inventory.purchaseDate}</TableCell>
+            <TableCell>{inventory.quantity}</TableCell>
+
+            <TableCell>{inventory.status}</TableCell>
             <TableCell>
               <div className="flex gap-2">
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => onEdit(doctor)}
+                  onClick={() => onEdit(inventory)}
                 >
                   Edit
                 </Button>
                 <Button
                   variant="destructive"
                   size="sm"
-                  onClick={() => onDelete(doctor)}
+                  onClick={() => onDelete(inventory)}
                 >
                   Delete
                 </Button>
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => onView(doctor)}
+                  onClick={() => onView(inventory)}
                 >
                   View
                 </Button>

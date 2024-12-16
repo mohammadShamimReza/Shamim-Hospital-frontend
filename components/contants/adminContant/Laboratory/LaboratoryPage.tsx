@@ -2,22 +2,23 @@
 
 import { Button } from "@/components/ui/button";
 import {
-  useCreateDoctorMutation,
-  useDeleteDoctorMutation,
-  useGetAllDoctorQuery,
-  useUpdateDoctorMutation,
-} from "@/redux/api/doctorApi";
-import { Doctor } from "@/schemas/doctorSchema";
+  useCreateLaboratoryMutation,
+  useDeleteLaboratoryMutation,
+  useGetAllLaboratoryQuery,
+  useUpdateLaboratoryMutation,
+} from "@/redux/api/laboratoryApi";
+import { Laboratory } from "@/schemas/laboratorySchema";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
-import DoctorDetailModals from "./LaboratoryDetailsModal";
-import DoctorForm from "./LaboratoryForm";
-import DoctorTable from "./LaboratoryTable";
+import LaboratoryDetailModals from "./LaboratoryDetailsModal";
+import LaboratoryForm from "./LaboratoryForm";
+import LaboratoryTable from "./LaboratoryTable";
 
 export default function LaboratoryPage() {
-  const [doctors, setDoctors] = useState<Doctor[]>([]);
-  const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
+  const [laboratorys, setLaboratorys] = useState<Laboratory[]>([]);
+  const [selectedLaboratory, setSelectedLaboratory] =
+    useState<Laboratory | null>(null);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
@@ -25,25 +26,28 @@ export default function LaboratoryPage() {
 
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
 
-  const { data: doctorData, isLoading } = useGetAllDoctorQuery();
+  const { data: laboratoryData, isLoading } = useGetAllLaboratoryQuery();
 
-  const [createDoctor] = useCreateDoctorMutation();
-  const [updateDoctor] = useUpdateDoctorMutation();
-  const [deleteDoctor] = useDeleteDoctorMutation();
+  const [createLaboratory] = useCreateLaboratoryMutation();
+  const [updateLaboratory] = useUpdateLaboratoryMutation();
+  const [deleteLaboratory] = useDeleteLaboratoryMutation();
 
   useEffect(() => {
-    if (doctorData?.data) setDoctors(doctorData.data);
-  }, [doctorData]);
+    if (laboratoryData?.data) setLaboratorys(laboratoryData.data);
+  }, [laboratoryData]);
 
-  // Add or Update Doctor function
-  const handleSaveDoctor = async (doctor: Doctor) => {
-    console.log(doctor, "before save");
+  // Add or Update Laboratory function
+  const handleSaveLaboratory = async (laboratory: Laboratory) => {
+    console.log(laboratory, "before save");
     try {
-      if (isEditing && selectedDoctor !== null) {
-        if (doctor.id) {
-          const result = await updateDoctor({ id: doctor.id, body: doctor });
+      if (isEditing && selectedLaboratory !== null) {
+        if (laboratory.id) {
+          const result = await updateLaboratory({
+            id: laboratory.id,
+            body: laboratory,
+          });
 
-          console.log("Doctor Updated:", result);
+          console.log("Laboratory Updated:", result);
           if (result?.error) {
             toast("something went wrong", {
               style: {
@@ -52,14 +56,14 @@ export default function LaboratoryPage() {
               },
             });
           } else {
-            toast("Doctor updated successfully");
+            toast("Laboratory updated successfully");
             setIsEditing(false);
             setIsFormVisible(false);
           }
         }
       } else {
-        const result = await createDoctor(doctor);
-        console.log("Doctor Added:", result);
+        const result = await createLaboratory(laboratory);
+        console.log("Laboratory Added:", result);
         if (result?.error) {
           toast("something went wrong, please provice correct info", {
             style: {
@@ -73,35 +77,35 @@ export default function LaboratoryPage() {
       }
       //  setIsFormVisible(false);
       //  setIsEditing(false);
-      //  setSelectedDoctorIndex(null);
+      //  setSelectedLaboratoryIndex(null);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const handleEdit = (doctor: Doctor) => {
+  const handleEdit = (laboratory: Laboratory) => {
     setIsEditing(true);
     setIsFormVisible(true);
-    setSelectedDoctor(doctor);
+    setSelectedLaboratory(laboratory);
   };
 
-  const handleDetailsModal = (doctor: Doctor) => {
-    setSelectedDoctor(doctor);
+  const handleDetailsModal = (laboratory: Laboratory) => {
+    setSelectedLaboratory(laboratory);
     setIsDetailsModalOpen(true);
   };
 
-  const handleDeleteModal = (doctor: Doctor) => {
-    setSelectedDoctor(doctor);
+  const handleDeleteModal = (laboratory: Laboratory) => {
+    setSelectedLaboratory(laboratory);
     setIsDeleteModalOpen(true);
   };
 
   const confirmDelete = async () => {
-    if (selectedDoctor && selectedDoctor.id) {
+    if (selectedLaboratory && selectedLaboratory.id) {
       try {
-        const res = await deleteDoctor(selectedDoctor.id);
+        const res = await deleteLaboratory(selectedLaboratory.id);
 
-        console.log("Doctor Deleted:", res);
-        setSelectedDoctor(null);
+        console.log("Laboratory Deleted:", res);
+        setSelectedLaboratory(null);
 
         setIsDeleteModalOpen(false);
       } catch (error) {
@@ -120,34 +124,34 @@ export default function LaboratoryPage() {
               setIsEditing(false);
             }}
           >
-            Add Doctor
+            Add Laboratory
           </Button>
         )}
       </div>
 
       {isFormVisible && (
-        <DoctorForm
-          onSubmit={handleSaveDoctor}
+        <LaboratoryForm
+          onSubmit={handleSaveLaboratory}
           onCancel={() => {
             setIsFormVisible(false);
-            setSelectedDoctor(null);
+            setSelectedLaboratory(null);
           }}
-          initialData={selectedDoctor ? selectedDoctor : null}
+          initialData={selectedLaboratory ? selectedLaboratory : null}
           isEditing={isEditing}
         />
       )}
 
-      <DoctorDetailModals
+      <LaboratoryDetailModals
         isDetailsModalOpen={isDetailsModalOpen}
-        doctor={selectedDoctor}
+        laboratory={selectedLaboratory}
         onClose={() => {
           setIsDetailsModalOpen(false);
-          setSelectedDoctor(null);
+          setSelectedLaboratory(null);
         }}
       />
 
-      <DoctorTable
-        doctors={doctors}
+      <LaboratoryTable
+        laboratorys={laboratorys}
         onEdit={handleEdit}
         onDelete={handleDeleteModal}
         onView={handleDetailsModal}

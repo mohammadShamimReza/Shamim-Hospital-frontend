@@ -1,29 +1,29 @@
 "use client";
 
-import { z } from "zod";
-import { useForm, FormProvider } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import loginImage from "../Assets/login/login.webp"
 import {
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { useAppDispatch } from "@/redux/hooks";
-import { useLoginUserMutation } from "@/redux/api/authApi";
-import { toast } from "sonner";
-import { storeTokenInCookie } from "@/lib/auth/token";
-import { storeAuthToken, storeUserInfo } from "@/redux/slice/authSlice";
+import { Input } from "@/components/ui/input";
 import { useNavigation } from "@/contexts/NavigatoinContext";
+import { storeTokenInCookie } from "@/lib/auth/token";
+import { useLoginUserMutation } from "@/redux/api/authApi";
+import { useAppDispatch } from "@/redux/hooks";
+import { storeAuthToken, storeUserInfo } from "@/redux/slice/authSlice";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
+import loginImage from "../Assets/login/login.webp";
 
 // Define the validation schema using Zod
 const loginSchema = z.object({
@@ -34,8 +34,8 @@ const loginSchema = z.object({
     .regex(
       /(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/,
       "Password must contain a letter, a number, and a special character"
-  ),
-  role: z.enum(["admin","doctor", "patient", "nurse", "staff"]),
+    ),
+  role: z.enum(["admin", "doctor", "patient", "nurse", "staff"]),
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;
@@ -99,6 +99,80 @@ export default function LoginPage() {
       }
     } else {
       toast("Invalid email or password.");
+    }
+  };
+
+  const autoLogin = async (role: string) => {
+    if (role === "admin") {
+      const result = await loginUser({
+        email: "admin@gmail.com",
+        password: "admin123$#",
+        role: "admin",
+      });
+      toast("Login successfully");
+
+      storeTokenInCookie(result?.data?.data.accessToken);
+      dispatch(storeAuthToken(result?.data?.data.accessToken));
+      localStorage.setItem("jwt", result?.data?.data.accessToken);
+
+      dispatch(storeUserInfo(result?.data?.user));
+      setSelectedMenu("Overview");
+
+      router.push("/");
+      window.location.reload();
+      console.log(result);
+    } else if (role === "doctor") {
+      const result = await loginUser({
+        email: "doctor@gmail.com",
+        password: "doctor123$#",
+        role: "doctor",
+      });
+      console.log(result);
+      toast("Login successfully");
+
+      storeTokenInCookie(result?.data?.data.accessToken);
+      dispatch(storeAuthToken(result?.data?.data.accessToken));
+      localStorage.setItem("jwt", result?.data?.data.accessToken);
+
+      dispatch(storeUserInfo(result?.data?.user));
+      setSelectedMenu("Overview");
+
+      router.push("/");
+      window.location.reload();
+    } else if (role === "patient") {
+      const result = await loginUser({
+        email: "user@gmail.com",
+        password: "user123$#",
+        role: "patient",
+      });
+      toast("Login successfully");
+
+      storeTokenInCookie(result?.data?.data.accessToken);
+      dispatch(storeAuthToken(result?.data?.data.accessToken));
+      localStorage.setItem("jwt", result?.data?.data.accessToken);
+
+      dispatch(storeUserInfo(result?.data?.user));
+      setSelectedMenu("Overview");
+
+      router.push("/");
+      window.location.reload();
+    } else if (role === "staff") {
+      const result = await loginUser({
+        email: "staff@gmail.com",
+        password: "staff123$#",
+        role: "staff",
+      });
+      toast("Login successfully");
+
+      storeTokenInCookie(result?.data?.data.accessToken);
+      dispatch(storeAuthToken(result?.data?.data.accessToken));
+      localStorage.setItem("jwt", result?.data?.data.accessToken);
+
+      dispatch(storeUserInfo(result?.data?.user));
+      setSelectedMenu("Overview");
+
+      router.push("/");
+      window.location.reload();
     }
   };
 
@@ -199,9 +273,45 @@ export default function LoginPage() {
               </Button>
             </form>
           </FormProvider>
+          <Button
+            onClick={() => {
+              autoLogin("admin");
+            }}
+            className="w-full mt-4"
+            disabled={loading}
+          >
+            Loggin as Admin
+          </Button>
+          <Button
+            onClick={() => {
+              autoLogin("doctor");
+            }}
+            className="w-full mt-4"
+            disabled={loading}
+          >
+            Loggin as Doctor
+          </Button>
+          <Button
+            onClick={() => {
+              autoLogin("patient");
+            }}
+            className="w-full mt-4"
+            disabled={loading}
+          >
+            Loggin as Patient
+          </Button>
+          <Button
+            onClick={() => {
+              autoLogin("staff");
+            }}
+            className="w-full mt-4"
+            disabled={loading}
+          >
+            Loggin as Staff
+          </Button>
           <div className=" text-right text-sm">
             <Link href="/forgetPassword" className="underline">
-             Forget Password
+              Forget Password
             </Link>
           </div>
           <div className="mt-4 text-center text-sm">

@@ -10,27 +10,27 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Laboratory, laboratorySchema } from "@/schemas/laboratorySchema";
+import { Diagnostic, diagnosticSchema } from "@/schemas/diagnosticSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormProvider, useForm } from "react-hook-form";
 
-interface LaboratoryFormProps {
-  onSubmit: (data: Laboratory) => void;
+interface DiagnosticFormProps {
+  onSubmit: (data: Diagnostic) => void;
   onCancel: () => void;
-  initialData?: Laboratory | null;
+  initialData?: Diagnostic | null;
   isEditing: boolean;
 }
 
-export default function LaboratoryForm({
+export default function DiagnosticForm({
   onSubmit,
   onCancel,
   initialData,
   isEditing,
-}: LaboratoryFormProps) {
-  const methods = useForm<Laboratory>({
-    resolver: zodResolver(laboratorySchema),
+}: DiagnosticFormProps) {
+  const methods = useForm<Diagnostic>({
+    resolver: zodResolver(diagnosticSchema),
     defaultValues: initialData || {
-      testName: "",
+      diagnosticName: "",
       price: 0,
     },
   });
@@ -45,7 +45,9 @@ export default function LaboratoryForm({
   return (
     <Card className="mb-8">
       <CardHeader>
-        <CardTitle>{isEditing ? "Edit Test" : "Add New Test"}</CardTitle>
+        <CardTitle>
+          {isEditing ? "Edit Diagnostic" : "Add New Diagnostic"}
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <FormProvider {...methods}>
@@ -56,17 +58,17 @@ export default function LaboratoryForm({
             })}
             className="grid gap-4"
           >
-            {/* Test Name Field */}
+            {/* Diagnostic Name Field */}
             <FormField
               control={control}
-              name="testName"
+              name="diagnosticName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Test Name</FormLabel>
+                  <FormLabel>Diagnostic Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter Test Name" {...field} />
+                    <Input placeholder="Enter Diagnostic Name" {...field} />
                   </FormControl>
-                  <FormMessage>{errors.testName?.message}</FormMessage>
+                  <FormMessage>{errors.diagnosticName?.message}</FormMessage>
                 </FormItem>
               )}
             />
@@ -84,7 +86,7 @@ export default function LaboratoryForm({
                       placeholder="Enter Price"
                       {...field}
                       onChange={(e) =>
-                        field.onChange(parseFloat(e.target.value) || 0)
+                        field.onChange(parseInt(e.target.value, 10) || 0)
                       }
                     />
                   </FormControl>
@@ -93,10 +95,9 @@ export default function LaboratoryForm({
               )}
             />
 
-            {/* Action Buttons */}
             <div className="flex gap-4">
               <Button type="submit">
-                {isEditing ? "Update Test" : "Add Test"}
+                {isEditing ? "Update Diagnostic" : "Add Diagnostic"}
               </Button>
               <Button
                 variant="outline"

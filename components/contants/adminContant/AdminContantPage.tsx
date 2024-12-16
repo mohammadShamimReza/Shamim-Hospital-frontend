@@ -3,7 +3,7 @@ import { useNavigation } from "@/contexts/NavigatoinContext";
 import AdminAppointmentPage from "../doctorContant/DoctorAppointment/DoctorAppointmenPage";
 import Header from "../Header";
 import AccountPage from "./account/AccountPage";
-import DiagonosticPage from "./Diagonostic/DiagonosticPage";
+import DiagonosticPage from "./Diagonostic/DiagnosticPage";
 import DoctorPage from "./doctor/DoctorPage";
 import InboxPage from "./Inbox/Inbox";
 import InventoryPage from "./Inventory/InventoryPage";

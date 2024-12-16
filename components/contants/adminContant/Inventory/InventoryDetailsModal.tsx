@@ -1,29 +1,38 @@
-import { Modal, ModalContent, ModalFooter } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
-import { Doctor } from "@/schemas/doctorSchema";
+import { Modal, ModalContent, ModalFooter } from "@/components/ui/modal";
+import { Inventory } from "@/schemas/inventorySchema";
 
-interface doctorDetailsModalProps {
+interface inventoryDetailsModalProps {
   isDetailsModalOpen: boolean;
-  doctor: Doctor | null;
+  inventory: Inventory | null;
   onClose: () => void;
 }
 
-export default function DoctorDetailsModal({
+export default function InventoryDetailsModal({
   isDetailsModalOpen,
-  doctor,
+  inventory,
   onClose,
-}: doctorDetailsModalProps) {
-  if (!doctor) return null;
+}: inventoryDetailsModalProps) {
+  if (!inventory) return null;
 
   return (
     <Modal isOpen={isDetailsModalOpen} onClose={onClose}>
       <ModalContent>
-        <h3 className="text-lg font-semibold mb-4">doctor Details</h3>
+        <h3 className="text-lg font-semibold mb-4">inventory Details</h3>
         <p>
-          <strong>Name:</strong> {doctor.name}
+          <strong>Name:</strong> {inventory.itemName}
         </p>
         <p>
-          <strong>Email:</strong> {doctor.email}
+          <strong>Price:</strong> {inventory.price}
+        </p>
+        <p>
+          <strong>PurchesDate:</strong> {inventory.purchaseDate}
+        </p>
+        <p>
+          <strong>Quantity:</strong> {inventory.quantity}
+        </p>
+        <p>
+          <strong>Status:</strong> {inventory.status}
         </p>
       </ModalContent>
       <ModalFooter>

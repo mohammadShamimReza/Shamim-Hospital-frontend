@@ -1,67 +1,78 @@
-import { Doctor } from "@/type/Index";
+import { Inventory } from "@/type/Index";
 import { baseApi } from "./baseApi";
 
-const DOCTOR = "/doctor";
+const INVENTORY = "/inventory";
 
-const DoctorApi = baseApi.injectEndpoints({
+const InventoryApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    createDoctor: builder.mutation<void, Partial<Doctor>>({
+    createInventory: builder.mutation<void, Partial<Inventory>>({
       query: (body) => ({
-        url: `${DOCTOR}/create`,
+        url: `${INVENTORY}/create`,
         method: "POST",
         body,
       }),
-      invalidatesTags: ["getDoctors"], // Invalidate the list to refetch doctors
+      invalidatesTags: ["getInventorys"], // Invalidate the list to refetch inventorys
     }),
-    getAllDoctor: builder.query<
-      { statusCode: number; success: boolean; message: string; data: Doctor[] },
+    getAllInventory: builder.query<
+      {
+        statusCode: number;
+        success: boolean;
+        message: string;
+        data: Inventory[];
+      },
       void
     >({
       query: () => ({
-        url: `${DOCTOR}/`,
+        url: `${INVENTORY}/`,
       }),
-      providesTags: ["getDoctors"], // Provides tag for refetching when invalidated
+      providesTags: ["getInventorys"], // Provides tag for refetching when invalidated
     }),
-    getDoctorById: builder.query<
-      { statusCode: number; success: boolean; message: string; data: Doctor },
+    getInventoryById: builder.query<
+      {
+        statusCode: number;
+        success: boolean;
+        message: string;
+        data: Inventory;
+      },
       { id: number }
     >({
       query: ({ id }) => ({
-        url: `${DOCTOR}/${id}`,
+        url: `${INVENTORY}/${id}`,
       }),
-      providesTags: (result, error, { id }) => [{ type: "Doctor", id }], // Tag specific to doctor ID
+      providesTags: (result, error, { id }) => [{ type: "Inventory", id }], // Tag specific to inventory ID
     }),
-    updateDoctor: builder.mutation<void, { id: number; body: Partial<Doctor> }>(
-      {
-        query: ({ id, body }) => ({
-          url: `${DOCTOR}/${id}`,
-          method: "PATCH",
-          body,
-        }),
-        invalidatesTags: (result, error, { id }) => [
-          "getDoctors",
-          { type: "Doctor", id },
-        ], // Invalidate both the list and the specific doctor entry
-      }
-    ),
-    deleteDoctor: builder.mutation<void, number>({
+    updateInventory: builder.mutation<
+      void,
+      { id: number; body: Partial<Inventory> }
+    >({
+      query: ({ id, body }) => ({
+        url: `${INVENTORY}/${id}`,
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: (result, error, { id }) => [
+        "getInventorys",
+        { type: "Inventory", id },
+      ], // Invalidate both the list and the specific inventory entry
+    }),
+    deleteInventory: builder.mutation<void, number>({
       query: (id) => ({
-        url: `${DOCTOR}/${id}`,
+        url: `${INVENTORY}/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: (result, error, id) => [
-        "getDoctors",
-        { type: "Doctor", id },
-      ], // Invalidate both the list and the specific doctor entry
+        "getInventorys",
+        { type: "Inventory", id },
+      ], // Invalidate both the list and the specific inventory entry
     }),
   }),
   overrideExisting: false,
 });
 
 export const {
-  useCreateDoctorMutation,
-  useGetAllDoctorQuery,
-  useGetDoctorByIdQuery,
-  useUpdateDoctorMutation,
-  useDeleteDoctorMutation,
-} = DoctorApi;
+  useCreateInventoryMutation,
+  useGetAllInventoryQuery,
+  useGetInventoryByIdQuery,
+  useUpdateInventoryMutation,
+  useDeleteInventoryMutation,
+} = InventoryApi;

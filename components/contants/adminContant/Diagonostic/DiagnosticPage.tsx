@@ -2,22 +2,23 @@
 
 import { Button } from "@/components/ui/button";
 import {
-  useCreateDoctorMutation,
-  useDeleteDoctorMutation,
-  useGetAllDoctorQuery,
-  useUpdateDoctorMutation,
-} from "@/redux/api/doctorApi";
-import { Doctor } from "@/schemas/doctorSchema";
+  useCreateDiagnosticMutation,
+  useDeleteDiagnosticMutation,
+  useGetAllDiagnosticQuery,
+  useUpdateDiagnosticMutation,
+} from "@/redux/api/diagnosticApi";
+import { Diagnostic } from "@/schemas/diagnosticSchema";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
-import DoctorDetailModals from "./DiagonosticDetailsModal";
-import DoctorForm from "./DiagonosticForm";
-import DoctorTable from "./DiagonosticTable";
+import DiagnosticDetailModals from "./DiagnosticDetailsModal";
+import DiagnosticForm from "./DiagnosticForm";
+import DiagnosticTable from "./DiagnosticTable";
 
 export default function DiagonosticPage() {
-  const [doctors, setDoctors] = useState<Doctor[]>([]);
-  const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
+  const [diagnostics, setDiagnostics] = useState<Diagnostic[]>([]);
+  const [selectedDiagnostic, setSelectedDiagnostic] =
+    useState<Diagnostic | null>(null);
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
@@ -25,25 +26,28 @@ export default function DiagonosticPage() {
 
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
 
-  const { data: doctorData, isLoading } = useGetAllDoctorQuery();
+  const { data: diagnosticData, isLoading } = useGetAllDiagnosticQuery();
 
-  const [createDoctor] = useCreateDoctorMutation();
-  const [updateDoctor] = useUpdateDoctorMutation();
-  const [deleteDoctor] = useDeleteDoctorMutation();
+  const [createDiagnostic] = useCreateDiagnosticMutation();
+  const [updateDiagnostic] = useUpdateDiagnosticMutation();
+  const [deleteDiagnostic] = useDeleteDiagnosticMutation();
 
   useEffect(() => {
-    if (doctorData?.data) setDoctors(doctorData.data);
-  }, [doctorData]);
+    if (diagnosticData?.data) setDiagnostics(diagnosticData.data);
+  }, [diagnosticData]);
 
-  // Add or Update Doctor function
-  const handleSaveDoctor = async (doctor: Doctor) => {
-    console.log(doctor, "before save");
+  // Add or Update Diagnostic function
+  const handleSaveDiagnostic = async (diagnostic: Diagnostic) => {
+    console.log(diagnostic, "before save");
     try {
-      if (isEditing && selectedDoctor !== null) {
-        if (doctor.id) {
-          const result = await updateDoctor({ id: doctor.id, body: doctor });
+      if (isEditing && selectedDiagnostic !== null) {
+        if (diagnostic.id) {
+          const result = await updateDiagnostic({
+            id: diagnostic.id,
+            body: diagnostic,
+          });
 
-          console.log("Doctor Updated:", result);
+          console.log("Diagnostic Updated:", result);
           if (result?.error) {
             toast("something went wrong", {
               style: {
@@ -52,14 +56,14 @@ export default function DiagonosticPage() {
               },
             });
           } else {
-            toast("Doctor updated successfully");
+            toast("Diagnostic updated successfully");
             setIsEditing(false);
             setIsFormVisible(false);
           }
         }
       } else {
-        const result = await createDoctor(doctor);
-        console.log("Doctor Added:", result);
+        const result = await createDiagnostic(diagnostic);
+        console.log("Diagnostic Added:", result);
         if (result?.error) {
           toast("something went wrong, please provice correct info", {
             style: {
@@ -73,35 +77,35 @@ export default function DiagonosticPage() {
       }
       //  setIsFormVisible(false);
       //  setIsEditing(false);
-      //  setSelectedDoctorIndex(null);
+      //  setSelectedDiagnosticIndex(null);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const handleEdit = (doctor: Doctor) => {
+  const handleEdit = (diagnostic: Diagnostic) => {
     setIsEditing(true);
     setIsFormVisible(true);
-    setSelectedDoctor(doctor);
+    setSelectedDiagnostic(diagnostic);
   };
 
-  const handleDetailsModal = (doctor: Doctor) => {
-    setSelectedDoctor(doctor);
+  const handleDetailsModal = (diagnostic: Diagnostic) => {
+    setSelectedDiagnostic(diagnostic);
     setIsDetailsModalOpen(true);
   };
 
-  const handleDeleteModal = (doctor: Doctor) => {
-    setSelectedDoctor(doctor);
+  const handleDeleteModal = (diagnostic: Diagnostic) => {
+    setSelectedDiagnostic(diagnostic);
     setIsDeleteModalOpen(true);
   };
 
   const confirmDelete = async () => {
-    if (selectedDoctor && selectedDoctor.id) {
+    if (selectedDiagnostic && selectedDiagnostic.id) {
       try {
-        const res = await deleteDoctor(selectedDoctor.id);
+        const res = await deleteDiagnostic(selectedDiagnostic.id);
 
-        console.log("Doctor Deleted:", res);
-        setSelectedDoctor(null);
+        console.log("Diagnostic Deleted:", res);
+        setSelectedDiagnostic(null);
 
         setIsDeleteModalOpen(false);
       } catch (error) {
@@ -120,34 +124,34 @@ export default function DiagonosticPage() {
               setIsEditing(false);
             }}
           >
-            Add Doctor
+            Add Diagnostic
           </Button>
         )}
       </div>
 
       {isFormVisible && (
-        <DoctorForm
-          onSubmit={handleSaveDoctor}
+        <DiagnosticForm
+          onSubmit={handleSaveDiagnostic}
           onCancel={() => {
             setIsFormVisible(false);
-            setSelectedDoctor(null);
+            setSelectedDiagnostic(null);
           }}
-          initialData={selectedDoctor ? selectedDoctor : null}
+          initialData={selectedDiagnostic ? selectedDiagnostic : null}
           isEditing={isEditing}
         />
       )}
 
-      <DoctorDetailModals
+      <DiagnosticDetailModals
         isDetailsModalOpen={isDetailsModalOpen}
-        doctor={selectedDoctor}
+        diagnostic={selectedDiagnostic}
         onClose={() => {
           setIsDetailsModalOpen(false);
-          setSelectedDoctor(null);
+          setSelectedDiagnostic(null);
         }}
       />
 
-      <DoctorTable
-        doctors={doctors}
+      <DiagnosticTable
+        diagnostics={diagnostics}
         onEdit={handleEdit}
         onDelete={handleDeleteModal}
         onView={handleDetailsModal}

@@ -1,29 +1,29 @@
 import { Button } from "@/components/ui/button";
 import { Modal, ModalContent, ModalFooter } from "@/components/ui/modal";
-import { Laboratory } from "@/schemas/laboratorySchema";
+import { Diagnostic } from "@/schemas/diagnosticSchema";
 
-interface laboratoryDetailsModalProps {
+interface diagnosticDetailsModalProps {
   isDetailsModalOpen: boolean;
-  laboratory: Laboratory | null;
+  diagnostic: Diagnostic | null;
   onClose: () => void;
 }
 
-export default function LaboratoryDetailsModal({
+export default function DiagnosticDetailsModal({
   isDetailsModalOpen,
-  laboratory,
+  diagnostic,
   onClose,
-}: laboratoryDetailsModalProps) {
-  if (!laboratory) return null;
+}: diagnosticDetailsModalProps) {
+  if (!diagnostic) return null;
 
   return (
     <Modal isOpen={isDetailsModalOpen} onClose={onClose}>
       <ModalContent>
-        <h3 className="text-lg font-semibold mb-4">laboratory Details</h3>
+        <h3 className="text-lg font-semibold mb-4">diagnostic Details</h3>
         <p>
-          <strong>Name:</strong> {laboratory.testName}
+          <strong>Name:</strong> {diagnostic.diagnosticName}
         </p>
         <p>
-          <strong>Price:</strong> {laboratory.price}
+          <strong>Price:</strong> {diagnostic.price}
         </p>
       </ModalContent>
       <ModalFooter>
