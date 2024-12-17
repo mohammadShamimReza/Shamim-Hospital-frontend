@@ -4,15 +4,15 @@ export interface Nurse {
   email: string;
   password: string;
   phone: number;
-  address: string ;
+  address: string;
   profile_image: string | null;
   role: string;
   roomId: string | null;
+
   room: {
     roomNumber: number;
-  }
+  };
 }
-
 
 export interface Staff {
   id: number;
@@ -64,19 +64,20 @@ export interface Doctor {
   designation: string;
   passingYear: string;
   appointments?: Appointment[];
+  serviceId: number;
+  Service: Service;
 }
-
 
 export interface Notice {
   id: number;
   title: string;
   content: string;
+  expiryDate: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
-
-export interface Service { 
+export interface Service {
   id: number;
   serviceName: string;
   description: string;
@@ -84,7 +85,6 @@ export interface Service {
   serviceType: string;
   bodyPart: string;
 }
-
 
 export interface Room {
   id: number;
@@ -94,7 +94,6 @@ export interface Room {
   staff: Staff[] | [];
 }
 
-
 export interface Appointment {
   id: number;
   doctorId: number;
@@ -102,7 +101,7 @@ export interface Appointment {
 
   patientId: number;
   patient: User;
-
+  status: string;
   appointmentDate: Date;
   serviceId: number;
   Service: Service;

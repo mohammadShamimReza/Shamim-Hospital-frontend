@@ -156,11 +156,11 @@ export default function LoginPage() {
 
       router.push("/");
       window.location.reload();
-    } else if (role === "staff") {
+    } else if (role === "nurse") {
       const result = await loginUser({
-        email: "staff@gmail.com",
-        password: "staff123$#",
-        role: "staff",
+        email: "nurse@gmail.com",
+        password: "nurse123$#",
+        role: "nurse",
       });
       toast("Login successfully");
 
@@ -302,12 +302,12 @@ export default function LoginPage() {
           </Button>
           <Button
             onClick={() => {
-              autoLogin("staff");
+              autoLogin("nurse");
             }}
             className="w-full mt-4"
             disabled={loading}
           >
-            Loggin as Staff
+            Loggin as Nurse
           </Button>
           <div className=" text-right text-sm">
             <Link href="/forgetPassword" className="underline">

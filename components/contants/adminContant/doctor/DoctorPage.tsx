@@ -31,9 +31,9 @@ export default function DoctorPage() {
   const [updateDoctor] = useUpdateDoctorMutation();
   const [deleteDoctor] = useDeleteDoctorMutation();
 
-  useEffect(() => {
-    if (doctorData?.data) setDoctors(doctorData.data);
-  }, [doctorData]);
+    useEffect(() => {
+      if (doctorData?.data) setDoctors(doctorData.data);
+    }, [doctorData]);
 
   // Add or Update Doctor function
   const handleSaveDoctor = async (doctor: Doctor) => {

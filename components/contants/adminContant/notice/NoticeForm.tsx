@@ -1,18 +1,18 @@
 "use client";
 
-import { useForm, FormProvider } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { noticeSchema, Notice } from "@/schemas/noticeSchema";
+import { Input } from "@/components/ui/input";
+import { Notice, noticeSchema } from "@/schemas/noticeSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { FormProvider, useForm } from "react-hook-form";
 
 interface NoticeFormProps {
   onSubmit: (data: Notice) => void;
@@ -32,6 +32,7 @@ export default function NoticeForm({
     defaultValues: initialData || {
       title: "",
       content: "",
+      expiryDate: "",
     },
   });
 
@@ -92,7 +93,19 @@ export default function NoticeForm({
               )}
             />
 
-          
+            <FormField
+              control={control}
+              name="expiryDate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Purchase Date</FormLabel>
+                  <FormControl>
+                    <Input type="date" {...field} />
+                  </FormControl>
+                  <FormMessage>{errors.expiryDate?.message}</FormMessage>
+                </FormItem>
+              )}
+            />
 
             <div className="flex gap-4">
               <Button type="submit">

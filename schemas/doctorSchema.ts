@@ -17,6 +17,7 @@ export const doctorSchema = z.object({
   role: z.string().min(2, "Role is required"),
   designation: z.string(),
   passingYear: z.string(),
+  serviceId: z.number(),
 });
 
 // Define the Doctor type based on the schema

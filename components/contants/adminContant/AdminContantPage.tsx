@@ -1,8 +1,8 @@
 import { SidebarInset } from '@/components/ui/sidebar';
 import { useNavigation } from "@/contexts/NavigatoinContext";
-import AdminAppointmentPage from "../doctorContant/DoctorAppointment/DoctorAppointmenPage";
 import Header from "../Header";
 import AccountPage from "./account/AccountPage";
+import AdminAppointmentPage from "./appointment/AdminAppointmentPage";
 import DiagonosticPage from "./Diagonostic/DiagnosticPage";
 import DoctorPage from "./doctor/DoctorPage";
 import InboxPage from "./Inbox/Inbox";

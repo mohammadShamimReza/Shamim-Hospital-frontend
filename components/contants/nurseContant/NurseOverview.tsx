@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Bell, Calendar, MessageSquare } from "lucide-react"; // Icons for illustration
 
 import { useNavigation } from "@/contexts/NavigatoinContext";
+import NurseOverview from "./ChartOverview";
 
 export default function NurseOverviewPage() {
   const { setSelectedMenu } = useNavigation();
@@ -23,10 +24,8 @@ export default function NurseOverviewPage() {
             overview of each section.
           </p>
         </header>
-
+        <NurseOverview />
         <main className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          
-         
           {/* Notices Section */}
           <Card className="p-4">
             <CardHeader>

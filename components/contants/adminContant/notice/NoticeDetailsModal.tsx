@@ -1,5 +1,5 @@
-import { Modal, ModalContent, ModalFooter } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
+import { Modal, ModalContent, ModalFooter } from "@/components/ui/modal";
 import { Notice } from "@/schemas/noticeSchema";
 
 interface NoticeDetailsModalProps {
@@ -22,9 +22,12 @@ export default function NoticeDetailsModal({
         <p>
           <strong>Title:</strong> {notice.title}
         </p>
-     
+
         <p>
           <strong>Content:</strong> {notice.content}
+        </p>
+        <p>
+          <strong>Expair IN:</strong> {notice.expiryDate}
         </p>
       </ModalContent>
       <ModalFooter>

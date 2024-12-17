@@ -1,21 +1,22 @@
 "use client";
 
-import { useForm, FormProvider } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { useGetAllServiceQuery } from "@/redux/api/serviceApi";
 import { Doctor, doctorSchema } from "@/schemas/doctorSchema";
+import { Service } from "@/type/Index";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
-
+import { FormProvider, useForm } from "react-hook-form";
 
 interface DoctorFormProps {
   onSubmit: (data: Doctor) => void;
@@ -27,7 +28,7 @@ interface DoctorFormProps {
 export default function DoctorForm({
   onSubmit,
   onCancel,
-  initialData ,
+  initialData,
   isEditing,
 }: DoctorFormProps) {
   const [showPassword, setShowPassword] = useState(false);
@@ -46,8 +47,12 @@ export default function DoctorForm({
       role: "doctor",
       designation: "",
       passingYear: "",
-    } ,
+      serviceId: 0,
+    },
   });
+
+  const { data: allServices } = useGetAllServiceQuery();
+  console.log(allServices);
 
   const {
     handleSubmit,
@@ -202,6 +207,30 @@ export default function DoctorForm({
                     <Input placeholder="MBBS, FCPS" {...field} />
                   </FormControl>
                   <FormMessage>{errors.designation?.message}</FormMessage>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={control}
+              name="serviceId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Service</FormLabel>
+                  <FormControl>
+                    <select
+                      {...field}
+                      onChange={(e) => field.onChange(Number(e.target.value))} // Ensure it's a number
+                      className="form-select w-full px-3 py-2 border rounded"
+                    >
+                      <option value="">Select Service</option>
+                      {allServices?.data?.map((service: Service) => (
+                        <option key={service.id} value={service.id}>
+                          {service.serviceName}
+                        </option>
+                      ))}
+                    </select>
+                  </FormControl>
+                  <FormMessage>{errors.serviceId?.message}</FormMessage>
                 </FormItem>
               )}
             />

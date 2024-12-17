@@ -1,6 +1,5 @@
 "use client";
 
-import { Doctor } from "@/schemas/doctorSchema";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -10,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Doctor } from "@/schemas/doctorSchema";
 
 interface DoctorTableProps {
   doctors: Doctor[];
@@ -24,16 +24,17 @@ export default function DoctorTable({
   onEdit,
   onDelete,
   onView,
-  isLoading
-
+  isLoading,
 }: DoctorTableProps) {
-      if (isLoading) {
-        return (
-          <div className="flex items-center justify-center py-4">
-            <h2 className="text-xl font-semibold animate-pulse">Loading...</h2>
-          </div>
-        );
-      }
+  console.log(doctors);
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-4">
+        <h2 className="text-xl font-semibold animate-pulse">Loading...</h2>
+      </div>
+    );
+  }
+
   return (
     <Table>
       <TableHeader>
@@ -42,6 +43,7 @@ export default function DoctorTable({
           <TableHead>Email</TableHead>
           <TableHead>Phone</TableHead>
           <TableHead>Designation</TableHead>
+          <TableHead>Service</TableHead>
           <TableHead>Actions</TableHead>
         </TableRow>
       </TableHeader>
@@ -52,6 +54,11 @@ export default function DoctorTable({
             <TableCell>{doctor.email}</TableCell>
             <TableCell>{doctor.phone}</TableCell>
             <TableCell>{doctor.designation}</TableCell>
+            <TableCell>
+              {(doctor as unknown as { Service?: { serviceName: string } })
+                ?.Service?.serviceName || "Not addigned"}
+            </TableCell>
+
             <TableCell>
               <div className="flex gap-2">
                 <Button

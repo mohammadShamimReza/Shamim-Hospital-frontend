@@ -1,5 +1,5 @@
-import { Modal, ModalContent, ModalFooter } from "@/components/ui/modal";
 import { Button } from "@/components/ui/button";
+import { Modal, ModalContent, ModalFooter } from "@/components/ui/modal";
 import { Doctor } from "@/schemas/doctorSchema";
 
 interface doctorDetailsModalProps {
@@ -24,6 +24,11 @@ export default function DoctorDetailsModal({
         </p>
         <p>
           <strong>Email:</strong> {doctor.email}
+        </p>
+        <p>
+          <strong>Serviec Name: </strong>{" "}
+          {(doctor as unknown as { Service?: { serviceName: string } })?.Service
+            ?.serviceName || "Not addigned"}
         </p>
       </ModalContent>
       <ModalFooter>

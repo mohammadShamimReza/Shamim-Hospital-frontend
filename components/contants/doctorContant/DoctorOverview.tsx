@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Bell, Calendar, MessageSquare, UserIcon } from "lucide-react"; // Icons for illustration
 
 import { useNavigation } from "@/contexts/NavigatoinContext";
+import DoctorOverview from "./ChartOverview";
 
 export default function Overview() {
   const { setSelectedMenu } = useNavigation();
@@ -23,7 +24,7 @@ export default function Overview() {
             overview of each section.
           </p>
         </header>
-
+        <DoctorOverview />
         <main className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {/* Doctors Section */}
           <Card className="p-4">
@@ -66,9 +67,6 @@ export default function Overview() {
               </div>
             </CardContent>
           </Card>
-
-
-         
 
           {/* Notices Section */}
           <Card className="p-4">

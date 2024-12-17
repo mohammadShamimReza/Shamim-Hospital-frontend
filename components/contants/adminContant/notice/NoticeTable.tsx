@@ -1,6 +1,5 @@
 "use client";
 
-import { Notice } from "@/schemas/noticeSchema";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -10,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Notice } from "@/schemas/noticeSchema";
 
 interface NoticeTableProps {
   notices: Notice[];
@@ -24,21 +24,22 @@ export default function NoticeTable({
   onEdit,
   onDelete,
   onView,
-  isLoading
+  isLoading,
 }: NoticeTableProps) {
-    if (isLoading) {
-      return (
-        <div className="flex items-center justify-center py-4">
-          <h2 className="text-xl font-semibold animate-pulse">Loading...</h2>
-        </div>
-      );
-    }
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-4">
+        <h2 className="text-xl font-semibold animate-pulse">Loading...</h2>
+      </div>
+    );
+  }
   return (
     <Table>
       <TableHeader>
         <TableRow>
           <TableHead>Title</TableHead>
           <TableHead>Description</TableHead>
+          <TableHead>Expair IN</TableHead>
           <TableHead>Actions</TableHead>
         </TableRow>
       </TableHeader>
@@ -49,6 +50,7 @@ export default function NoticeTable({
             <TableCell>
               {notice.content.split(" ").slice(0, 4).join(" ")}...
             </TableCell>
+            <TableCell>{notice.expiryDate}</TableCell>
 
             <TableCell>
               <div className="flex gap-2">
