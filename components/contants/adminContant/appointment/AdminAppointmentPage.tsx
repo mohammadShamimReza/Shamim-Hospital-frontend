@@ -23,7 +23,7 @@ const AdminAppointmentPage = () => {
     cancelled: "bg-red-500 text-white",
   };
 
-  const statusOptions = ["requested", "scheduled", "completed", "cancelled"];
+  const statusOptions = ["requested", "scheduled", "cancelled"];
 
   const handleStatusChange = async (
     appointmentId: number,
@@ -103,22 +103,26 @@ const AdminAppointmentPage = () => {
                   >
                     {currentStatus}
                   </td>
-                  <td className="py-2 px-4 border-b text-center">
-                    {/* Dropdown to change status */}
-                    <select
-                      value={currentStatus}
-                      onChange={(e) =>
-                        handleStatusChange(appointment.id, e.target.value)
-                      }
-                      className="p-2 border rounded bg-gray-50"
-                    >
-                      {statusOptions.map((status) => (
-                        <option key={status} value={status}>
-                          {status.charAt(0).toUpperCase() + status.slice(1)}
-                        </option>
-                      ))}
-                    </select>
-                  </td>
+                  {currentStatus === "completed" ? (
+                    ""
+                  ) : (
+                    <td className="py-2 px-4 border-b text-center">
+                      {/* Dropdown to change status */}
+                      <select
+                        value={currentStatus}
+                        onChange={(e) =>
+                          handleStatusChange(appointment.id, e.target.value)
+                        }
+                        className="p-2 border rounded bg-gray-50"
+                      >
+                        {statusOptions.map((status) => (
+                          <option key={status} value={status}>
+                            {status.charAt(0).toUpperCase() + status.slice(1)}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
+                  )}
                 </tr>
               );
             })}
