@@ -27,6 +27,20 @@ const AppointmentApi = baseApi.injectEndpoints({
       }),
       providesTags: ["getAppointments"], // Provide the appointments list tag
     }),
+    getAllAppointmentByUser: builder.query<
+      {
+        statusCode: number;
+        success: boolean;
+        message: string;
+        data: Appointment[];
+      },
+      { id: string }
+    >({
+      query: ({ id }) => ({
+        url: `${APPOINTMENT}/user/${id}`,
+      }),
+      providesTags: ["getAppointments"], // Provide the appointments list tag
+    }),
     updateAppointment: builder.mutation<
       void,
       { id: number; body: Partial<Appointment> }
@@ -54,4 +68,5 @@ export const {
   useGetAllAppointmentQuery,
   useUpdateAppointmentMutation,
   useDeleteAppointmentMutation,
+  useGetAllAppointmentByUserQuery,
 } = AppointmentApi;

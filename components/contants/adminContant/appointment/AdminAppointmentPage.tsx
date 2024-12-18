@@ -93,14 +93,16 @@ const AdminAppointmentPage = () => {
                   <td className="py-2 px-4 border-b">
                     {format(new Date(appointment.appointmentDate), "PPP p")}
                   </td>
-                  <td
-                    className={`border-b text-center capitalize font-semibold rounded ${
-                      statusColors[
-                        currentStatus as keyof typeof statusColors
-                      ] || "bg-gray-300"
-                    }`}
-                  >
-                    {currentStatus}
+                  <td>
+                    <p
+                      className={`border-b text-center capitalize  rounded p-1 ${
+                        statusColors[
+                          currentStatus as keyof typeof statusColors
+                        ] || "bg-gray-300"
+                      }`}
+                    >
+                      {currentStatus}
+                    </p>
                   </td>
                   {currentStatus === "completed" ? (
                     ""

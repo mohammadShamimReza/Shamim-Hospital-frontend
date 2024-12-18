@@ -19,7 +19,14 @@ import { toast } from "sonner";
 import { useCreateDiagnosticAppointmentMutation } from "@/redux/api/DiagnosticAppointmentApi";
 import { useCreateLaboratoryAppointmentMutation } from "@/redux/api/LabAppointmentApi";
 import { useCreatePharmacyAppointmentMutation } from "@/redux/api/PharmacyAppointmentApi";
-import { Diagnostic, Laboratory, Pharmacy } from "@/type/Index";
+import {
+  Diagnostic,
+  DiagnosticAppointment,
+  Laboratory,
+  LaboratoryAppointment,
+  Pharmacy,
+  PharmacyAppointment,
+} from "@/type/Index";
 import Select, { MultiValue } from "react-select";
 
 interface Option {
@@ -55,8 +62,15 @@ const AppointmentsTable = () => {
 
   const handleOpenPrescriptionDialog = (
     appointmentId: number,
-    prescription: string | null
+    prescription: string | null,
+    existingPharmacies: Option[],
+    existingLaboratories: Option[],
+    existingDiagnostics: Option[]
   ) => {
+    setSelectedPharmacies(existingPharmacies);
+    setSelectedLaboratories(existingLaboratories);
+    setSelectedDiagnostics(existingDiagnostics);
+
     setSelectedAppointmentId(appointmentId);
     setPrescriptionText(prescription || ""); // Set existing prescription or empty if null
     setIsDialogOpen(true);
@@ -73,7 +87,7 @@ const AppointmentsTable = () => {
         body: { prescription: prescriptionText },
         id: selectedAppointmentId || 1,
       });
-      console.log(result, "this is the result of update of appointment");
+
       if (result?.error) {
         toast("something went wrong", {
           style: {
@@ -85,7 +99,7 @@ const AppointmentsTable = () => {
         toast("successfully");
         setIsDialogOpen(false);
         setPrescriptionText("");
-        // window.location.reload();
+        window.location.reload();
       }
 
       const pharmacyRequests = selectedPharmacies.map((pharmacy) =>
@@ -197,6 +211,27 @@ const AppointmentsTable = () => {
             {appointments.data.appointments
               .filter((appointment) => appointment.status === "scheduled")
               .map((appointment) => {
+                const existingPharmacies =
+                  appointment.Pharmacy?.map((p: PharmacyAppointment) => ({
+                    value: p.pharmacy.id,
+                    label: p.pharmacy.name,
+                  })) || [];
+
+                const existingLaboratories =
+                  appointment.LabAppointment?.map(
+                    (lab: LaboratoryAppointment) => ({
+                      value: lab.laboratory.id,
+                      label: lab.laboratory.testName,
+                    })
+                  ) || [];
+
+                const existingDiagnostics =
+                  appointment.DiagnosticAppointment?.map(
+                    (diag: DiagnosticAppointment) => ({
+                      value: diag.diagnostic.id,
+                      label: diag.diagnostic.diagnosticName,
+                    })
+                  ) || [];
                 const currentStatus =
                   statusData[appointment.id] || appointment.status;
                 return (
@@ -210,14 +245,16 @@ const AppointmentsTable = () => {
                     <td className="py-2 px-4 border-b">
                       {appointment.Service.serviceName}
                     </td>
-                    <td
-                      className={`border-b text-center capitalize font-semibold rounded ${
-                        statusColors[
-                          currentStatus as keyof typeof statusColors
-                        ] || "bg-gray-300"
-                      }`}
-                    >
-                      {currentStatus}
+                    <td>
+                      <p
+                        className={`border-b text-center capitalize  rounded p-1 ${
+                          statusColors[
+                            currentStatus as keyof typeof statusColors
+                          ] || "bg-gray-300"
+                        }`}
+                      >
+                        {currentStatus}
+                      </p>
                     </td>
 
                     <td className="py-2 px-4 border-b">
@@ -233,7 +270,10 @@ const AppointmentsTable = () => {
                             onClick={() =>
                               handleOpenPrescriptionDialog(
                                 appointment.id,
-                                appointment.prescription
+                                appointment.prescription,
+                                existingPharmacies,
+                                existingLaboratories,
+                                existingDiagnostics
                               )
                             }
                             className="px-3 py-1 rounded-md"

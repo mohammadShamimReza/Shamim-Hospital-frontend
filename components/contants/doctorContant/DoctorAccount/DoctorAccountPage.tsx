@@ -1,23 +1,26 @@
 "use client";
 
-import React, { useState } from "react";
-import { useForm, FormProvider } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { useAppSelector } from "@/redux/hooks";
 import { User } from "@/schemas/userSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import { z } from "zod";
 
-import { useUpdateDoctorMutation } from "@/redux/api/doctorApi";
+import {
+  useGetDoctorByIdQuery,
+  useUpdateDoctorMutation,
+} from "@/redux/api/doctorApi";
 
 // Define schema with Zod
 const userSchema = z.object({
@@ -31,6 +34,34 @@ const userSchema = z.object({
 const DoctorAccountPage = () => {
   const userInfo = useAppSelector((state) => state.auth.userInfo);
   const [isEditing, setIsEditing] = useState(false);
+
+  console.log(userInfo);
+
+  const { data: appointments } = useGetDoctorByIdQuery({
+    id: Number(userInfo.id),
+  });
+  console.log(appointments, "this is appointments");
+
+  const getTotalCompletedPrice = () => {
+    if (!appointments?.data?.appointments) return 0;
+
+    return appointments.data.appointments
+      .filter((appointment) => appointment.status === "completed")
+      .reduce((sum, appointment) => sum + (appointment.price || 0), 0);
+  };
+
+  const getCompletedAppointmentCount = () => {
+    if (!appointments?.data?.appointments) return 0;
+
+    return appointments.data.appointments.filter(
+      (appointment) => appointment.status === "completed"
+    ).length;
+  };
+
+  const totalCompletedPrice = getTotalCompletedPrice();
+  const completedAppointmentCount = getCompletedAppointmentCount();
+
+  console.log(totalCompletedPrice, completedAppointmentCount);
 
   // Initialize react-hook-form with default values from Redux state
   const methods = useForm<User>({
@@ -55,7 +86,10 @@ const DoctorAccountPage = () => {
     console.log(user, user.id);
     console.log("Updated User Data:", user);
     try {
-      const result = await updateDoctor({ id: Number(userInfo.id), body: user });
+      const result = await updateDoctor({
+        id: Number(userInfo.id),
+        body: user,
+      });
       console.log("userd Updated:", result);
     } catch (error) {
       console.log(error);
@@ -194,6 +228,16 @@ const DoctorAccountPage = () => {
           </Button>
         </CardContent>
       </Card>
+      <div className="mt-4">
+        <h3 className="text-md flex">
+          Total Price of Completed Appointments:{" "}
+          <p className="font-semibold">$ {totalCompletedPrice}</p>
+        </h3>
+        <h3 className="text-md flex">
+          Total Completed Appointments:
+          <p className="font-semibold"> {completedAppointmentCount}</p>
+        </h3>
+      </div>
     </div>
   );
 };

@@ -98,7 +98,7 @@ export interface Appointment {
   id: number;
   doctorId: number;
   doctor: Doctor;
-
+  price: number;
   patientId: number;
   patient: User;
   status: string;
@@ -106,6 +106,19 @@ export interface Appointment {
   serviceId: number;
   Service: Service;
   prescription: string;
+  Billing: BillingAppointment;
+  DiagnosticAppointment: DiagnosticAppointment[];
+  LabAppointment: LaboratoryAppointment[];
+  Pharmacy: PharmacyAppointment[];
+}
+
+export interface BillingAppointment {
+  id: number;
+  userId: number;
+  totalAmount: number;
+  paidAmount: number;
+  dueAmount: number;
+  paymentStatus: string;
 }
 
 export interface Pharmacy {
@@ -144,13 +157,13 @@ export interface Diagnostic {
   price: number; // Cost of the diagnostic test
 }
 
-
 export interface DiagnosticAppointment {
   id: number;
   diagnosticId: number;
   appointmentId: number;
   result?: string;
   status: string;
+  diagnostic: Diagnostic;
 }
 
 export interface LaboratoryAppointment {
@@ -160,10 +173,12 @@ export interface LaboratoryAppointment {
   result?: string;
   status: string;
   testDate: string;
+  laboratory: Laboratory;
 }
 
 export interface PharmacyAppointment {
   id: number;
   pharmacyId: number;
   appointmentId: number;
+  pharmacy: Pharmacy;
 }
