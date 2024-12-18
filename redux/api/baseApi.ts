@@ -59,6 +59,9 @@ export const baseApi = createApi({
     "getLaboratorys",
     "getDiagnostics",
     "getInventorys",
+    "getDiagnosticAppointments",
+    "getLaboratoryAppointments",
+    "getPharmacyAppointments",
     "Doctor",
     "Notice",
     "Nurse",
@@ -71,5 +74,8 @@ export const baseApi = createApi({
     "Laboratory",
     "Inventory",
     "Diagnostic",
+    "DiagnosticAppointment",
+    "LaboratoryAppointment",
+    "PharmacyAppointment",
   ],
 });

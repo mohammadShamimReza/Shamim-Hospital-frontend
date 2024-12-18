@@ -7,23 +7,49 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useUpdateAppointmentMutation } from "@/redux/api/appointment";
+import { useGetAllDiagnosticQuery } from "@/redux/api/diagnosticApi";
 import { useGetDoctorByIdQuery } from "@/redux/api/doctorApi";
+import { useGetAllLaboratoryQuery } from "@/redux/api/laboratoryApi";
+import { useGetAllPharmacyQuery } from "@/redux/api/pharmacyApi";
 import { useAppSelector } from "@/redux/hooks";
 import { format } from "date-fns";
 import { useState } from "react";
 import { toast } from "sonner";
+
+import { useCreateDiagnosticAppointmentMutation } from "@/redux/api/DiagnosticAppointmentApi";
+import { useCreateLaboratoryAppointmentMutation } from "@/redux/api/LabAppointmentApi";
+import { useCreatePharmacyAppointmentMutation } from "@/redux/api/PharmacyAppointmentApi";
+import { Diagnostic, Laboratory, Pharmacy } from "@/type/Index";
+import Select, { MultiValue } from "react-select";
+
+interface Option {
+  value: number;
+  label: string;
+}
 
 const AppointmentsTable = () => {
   const UserInfo = useAppSelector((state) => state.auth.userInfo);
   const { data: appointments, isLoading } = useGetDoctorByIdQuery({
     id: Number(UserInfo.id),
   });
+  console.log(appointments, "this is appointments");
   const [statusData, setStatusData] = useState<Record<number, string>>({});
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [prescriptionText, setPrescriptionText] = useState("");
   const [selectedAppointmentId, setSelectedAppointmentId] = useState<
     number | null
   >(null);
+  const [selectedPharmacies, setSelectedPharmacies] = useState<Option[]>([]);
+  const [selectedLaboratories, setSelectedLaboratories] = useState<Option[]>(
+    []
+  );
+  const [selectedDiagnostics, setSelectedDiagnostics] = useState<Option[]>([]);
+
+  const { data: pharmacyData } = useGetAllPharmacyQuery();
+
+  const { data: laboratoryData } = useGetAllLaboratoryQuery();
+
+  const { data: diagnosticData } = useGetAllDiagnosticQuery();
 
   const [updateAppointment] = useUpdateAppointmentMutation();
 
@@ -35,6 +61,11 @@ const AppointmentsTable = () => {
     setPrescriptionText(prescription || ""); // Set existing prescription or empty if null
     setIsDialogOpen(true);
   };
+
+  const [createPharmacyOnAppointment] = useCreatePharmacyAppointmentMutation();
+  const [createLabAppointment] = useCreateLaboratoryAppointmentMutation();
+  const [createDiagnosticAppointment] =
+    useCreateDiagnosticAppointmentMutation();
 
   const handleSubmitPrescription = async () => {
     try {
@@ -54,7 +85,38 @@ const AppointmentsTable = () => {
         toast("successfully");
         setIsDialogOpen(false);
         setPrescriptionText("");
+        // window.location.reload();
       }
+
+      const pharmacyRequests = selectedPharmacies.map((pharmacy) =>
+        createPharmacyOnAppointment({
+          appointmentId: selectedAppointmentId || 0, // The selected appointment ID
+          pharmacyId: pharmacy.value, // The selected pharmacy ID
+        })
+      );
+
+      const labRequests = selectedLaboratories.map((lab) =>
+        createLabAppointment({
+          appointmentId: selectedAppointmentId || 0,
+          laboratoryId: lab.value,
+        })
+      );
+
+      const diagnosticRequests = selectedDiagnostics.map((diag) =>
+        createDiagnosticAppointment({
+          appointmentId: selectedAppointmentId || 0,
+          diagnosticId: diag.value,
+        })
+      );
+
+      console.log(pharmacyRequests, labRequests, diagnosticRequests);
+
+      // Execute all requests in parallel
+      await Promise.all([
+        ...pharmacyRequests,
+        ...labRequests,
+        ...diagnosticRequests,
+      ]);
     } catch (error) {
       console.log(error);
     }
@@ -91,6 +153,20 @@ const AppointmentsTable = () => {
     // Here, you would call the API to update the status
     // Example: updateAppointmentStatus({ id: appointmentId, status: newStatus })
   };
+  const mapPharmacyOptions = (data: Pharmacy[] | undefined): Option[] =>
+    data?.map((item) => ({ value: item.id, label: item.name })) || [];
+
+  const mapLaboratoryOptions = (data: Laboratory[] | undefined): Option[] =>
+    data?.map((item) => ({ value: item.id, label: item.testName })) || [];
+
+  const mapDiagnosticOptions = (data: Diagnostic[] | undefined): Option[] =>
+    data?.map((item) => ({ value: item.id, label: item.diagnosticName })) || [];
+
+  const handleSelectChange =
+    (setter: React.Dispatch<React.SetStateAction<Option[]>>) =>
+    (newValue: MultiValue<Option>) => {
+      setter(newValue as Option[]);
+    };
 
   if (isLoading) {
     return (
@@ -167,20 +243,54 @@ const AppointmentsTable = () => {
                         </DialogTrigger>
                         <DialogContent>
                           <DialogHeader>
-                            <DialogTitle>Add Prescription</DialogTitle>
+                            <DialogTitle>Prescription</DialogTitle>
                           </DialogHeader>
-                          <div className="p-4">
+                          <div>
                             <textarea
                               value={prescriptionText}
                               onChange={(e) =>
                                 setPrescriptionText(e.target.value)
                               }
+                              className="w-full p-2 border rounded"
                               placeholder="Enter prescription details"
-                              className="w-full p-2 border border-gray-300 rounded-md"
-                              rows={4}
-                            />
+                            ></textarea>
+                            <div className="mt-4">
+                              <h3 className="font-semibold">Pharmacy</h3>
+                              <Select
+                                isMulti
+                                options={mapPharmacyOptions(pharmacyData?.data)}
+                                value={selectedPharmacies}
+                                onChange={handleSelectChange(
+                                  setSelectedPharmacies
+                                )}
+                              />
+
+                              <h3 className="font-semibold mt-4">Laboratory</h3>
+                              <Select
+                                isMulti
+                                options={mapLaboratoryOptions(
+                                  laboratoryData?.data
+                                )}
+                                value={selectedLaboratories}
+                                onChange={handleSelectChange(
+                                  setSelectedLaboratories
+                                )}
+                              />
+
+                              <h3 className="font-semibold mt-4">Diagnostic</h3>
+                              <Select
+                                isMulti
+                                options={mapDiagnosticOptions(
+                                  diagnosticData?.data
+                                )}
+                                value={selectedDiagnostics}
+                                onChange={handleSelectChange(
+                                  setSelectedDiagnostics
+                                )}
+                              />
+                            </div>
                           </div>
-                          <div className="flex justify-end space-x-2 p-4">
+                          <div className="flex justify-end mt-4">
                             <Button
                               variant="outline"
                               onClick={() => setIsDialogOpen(false)}

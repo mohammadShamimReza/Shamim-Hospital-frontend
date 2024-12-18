@@ -29,7 +29,6 @@ const AdminAppointmentPage = () => {
     appointmentId: number,
     newStatus: string
   ) => {
-    console.log(`Appointment ID: ${appointmentId}, New Status: ${newStatus}`);
     try {
       const result = await updateAppointment({
         id: appointmentId,

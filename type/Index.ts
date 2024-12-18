@@ -121,6 +121,7 @@ export interface Pharmacy {
 }
 
 export interface Laboratory {
+  id: number;
   testName: string;
   price: number;
   appointmentId: number;
@@ -138,6 +139,31 @@ export interface Inventory {
 }
 
 export interface Diagnostic {
+  id: number;
   diagnosticName: string; // Name of the diagnostic test
   price: number; // Cost of the diagnostic test
+}
+
+
+export interface DiagnosticAppointment {
+  id: number;
+  diagnosticId: number;
+  appointmentId: number;
+  result?: string;
+  status: string;
+}
+
+export interface LaboratoryAppointment {
+  id: number;
+  laboratoryId: number;
+  appointmentId: number;
+  result?: string;
+  status: string;
+  testDate: string;
+}
+
+export interface PharmacyAppointment {
+  id: number;
+  pharmacyId: number;
+  appointmentId: number;
 }
