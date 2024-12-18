@@ -18,11 +18,11 @@ import {
 } from "../ui/sidebar";
 
 
+import { useNavigation } from "@/contexts/NavigatoinContext";
 import { removeToken } from "@/lib/auth/token";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { removeAuthToken, storeUserInfo } from "@/redux/slice/authSlice";
 import { useRouter } from "next/navigation";
-import { useNavigation } from "@/contexts/NavigatoinContext";
 
 
 
@@ -53,6 +53,7 @@ export default function MySidebarFooter() {
          id: "",
          phone: 0,
          address: "",
+         payment: false,
        })
      );
     removeToken()

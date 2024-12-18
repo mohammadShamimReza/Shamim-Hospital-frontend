@@ -6,7 +6,8 @@ interface UserInfo {
   role: string;
   id: string;
   phone: number;
-  address: string
+  address: string;
+  payment: boolean;
 }
 
 interface AuthState {
@@ -22,6 +23,7 @@ const initialState: AuthState = {
     id: "",
     phone: 0, // Initial value for phone (default to 0 or your preferred placeholder)
     address: "", // Initial value for address (default to an empty string)
+    payment: false, //
   },
   authToken: null,
 };

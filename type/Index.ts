@@ -39,6 +39,7 @@ export interface User {
   profile_image: string | null;
   role: string;
   roomId: string | null;
+  payment: boolean;
 }
 
 export interface Admin {

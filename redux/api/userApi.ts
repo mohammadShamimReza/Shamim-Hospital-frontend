@@ -14,6 +14,15 @@ const UserApi = baseApi.injectEndpoints({
       }),
       providesTags: ["getUsers"], // Provides tag for user list refetch
     }),
+    getUserbyId: builder.query<
+      { statusCode: number; success: boolean; message: string; data: User },
+      { id: string }
+    >({
+      query: ({ id }) => ({
+        url: `${USER}/${id}`,
+      }),
+      providesTags: ["getUsers"], // Provides tag for user list refetch
+    }),
     updateUser: builder.mutation<void, { id: number; body: Partial<User> }>({
       query: ({ id, body }) => ({
         url: `${USER}/${id}`, // Include the id in the URL
@@ -42,5 +51,6 @@ const UserApi = baseApi.injectEndpoints({
 export const {
   useGetAllUserQuery,
   useUpdateUserMutation,
+  useGetUserbyIdQuery,
   useDeleteUserMutation,
 } = UserApi;

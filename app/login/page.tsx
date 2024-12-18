@@ -102,237 +102,225 @@ export default function LoginPage() {
     }
   };
 
-  const autoLogin = async (role: string) => {
-    if (role === "admin") {
-      const result = await loginUser({
-        email: "admin@gmail.com",
-        password: "admin123$#",
-        role: "admin",
-      });
-      toast("Login successfully");
+const autoLogin = async (
+  role: "admin" | "doctor" | "patient" | "nurse" | "staff"
+) => {
+  // Define the credentials object with the same key types as role
+  const credentials = {
+    admin: { email: "admin@gmail.com", password: "admin123$#", role: "admin" },
+    doctor: {
+      email: "doctor@gmail.com",
+      password: "doctor123$#",
+      role: "doctor",
+    },
+    patient: {
+      email: "user@gmail.com",
+      password: "user123$#",
+      role: "patient",
+    },
+    nurse: { email: "nurse@gmail.com", password: "nurse123$#", role: "nurse" },
+    staff: { email: "staff@gmail.com", password: "staff123$#", role: "staff" },
+  } as const; // Use `as const` to preserve literal types for keys and values
 
-      storeTokenInCookie(result?.data?.data.accessToken);
-      dispatch(storeAuthToken(result?.data?.data.accessToken));
-      localStorage.setItem("jwt", result?.data?.data.accessToken);
+  // Use the role directly to index the credentials object
+  const selectedCredentials = credentials[role];
 
-      dispatch(storeUserInfo(result?.data?.user));
-      setSelectedMenu("Overview");
+  if (selectedCredentials) {
+    formMethods.setValue("email", selectedCredentials.email);
+    formMethods.setValue("password", selectedCredentials.password);
+    formMethods.setValue("role", selectedCredentials.role);
 
-      router.push("/");
-      window.location.reload();
-      console.log(result);
-    } else if (role === "doctor") {
-      const result = await loginUser({
-        email: "doctor@gmail.com",
-        password: "doctor123$#",
-        role: "doctor",
-      });
-      console.log(result);
-      toast("Login successfully");
+    try {
+      setLoading(true);
+      const result = await loginUser(selectedCredentials);
 
-      storeTokenInCookie(result?.data?.data.accessToken);
-      dispatch(storeAuthToken(result?.data?.data.accessToken));
-      localStorage.setItem("jwt", result?.data?.data.accessToken);
+      if (result?.error) {
+        toast("Login failed. Please check your credentials.", {
+          style: {
+            backgroundColor: "red",
+            color: "white",
+          },
+        });
+      } else {
+        toast("Login successfully");
 
-      dispatch(storeUserInfo(result?.data?.user));
-      setSelectedMenu("Overview");
+        storeTokenInCookie(result?.data?.data.accessToken);
+        dispatch(storeAuthToken(result?.data?.data.accessToken));
+        localStorage.setItem("jwt", result?.data?.data.accessToken);
 
-      router.push("/");
-      window.location.reload();
-    } else if (role === "patient") {
-      const result = await loginUser({
-        email: "user@gmail.com",
-        password: "user123$#",
-        role: "patient",
-      });
-      toast("Login successfully");
+        dispatch(storeUserInfo(result?.data?.user));
+        setSelectedMenu("Overview");
 
-      storeTokenInCookie(result?.data?.data.accessToken);
-      dispatch(storeAuthToken(result?.data?.data.accessToken));
-      localStorage.setItem("jwt", result?.data?.data.accessToken);
-
-      dispatch(storeUserInfo(result?.data?.user));
-      setSelectedMenu("Overview");
-
-      router.push("/");
-      window.location.reload();
-    } else if (role === "nurse") {
-      const result = await loginUser({
-        email: "nurse@gmail.com",
-        password: "nurse123$#",
-        role: "nurse",
-      });
-      toast("Login successfully");
-
-      storeTokenInCookie(result?.data?.data.accessToken);
-      dispatch(storeAuthToken(result?.data?.data.accessToken));
-      localStorage.setItem("jwt", result?.data?.data.accessToken);
-
-      dispatch(storeUserInfo(result?.data?.user));
-      setSelectedMenu("Overview");
-
-      router.push("/");
-      window.location.reload();
+        router.push("/");
+        window.location.reload();
+      }
+    } catch (error) {
+      console.log("Error during auto-login:", error);
+    } finally {
+      setLoading(false);
     }
-  };
+  } else {
+    toast("Invalid role selected.");
+  }
+};
 
-  return (
-    <div className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
-      {/* Left Column - Login Form */}
-      <div className="flex items-center justify-center py-12">
-        <div className="mx-auto grid w-[350px] gap-6">
-          <div className="grid gap-2 text-center">
-            <h1 className="text-3xl font-bold">Login</h1>
-            <p className="text-muted-foreground">
-              Enter your email below to login to your account
-            </p>
-          </div>
+return (
+  <div className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
+    {/* Left Column - Login Form */}
+    <div className="flex items-center justify-center py-12">
+      <div className="mx-auto grid w-[350px] gap-6">
+        <div className="grid gap-2 text-center">
+          <h1 className="text-3xl font-bold">Login</h1>
+          <p className="text-muted-foreground">
+            Enter your email below to login to your account
+          </p>
+        </div>
 
-          <FormProvider {...formMethods}>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input placeholder="m@example.com" {...field} />
-                    </FormControl>
-                    <FormMessage>{errors.email?.message}</FormMessage>
-                  </FormItem>
-                )}
-              />
+        <FormProvider {...formMethods}>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+              control={control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input placeholder="m@example.com" {...field} />
+                  </FormControl>
+                  <FormMessage>{errors.email?.message}</FormMessage>
+                </FormItem>
+              )}
+            />
 
-              <FormField
-                control={control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="flex items-center justify-between">
-                      <FormLabel>Password</FormLabel>
-                      {/* <Link
+            <FormField
+              control={control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex items-center justify-between">
+                    <FormLabel>Password</FormLabel>
+                    {/* <Link
                         href="/forgot-password"
                         className="text-sm underline"
                       >
                         Forgot your password?
                       </Link> */}
+                  </div>
+                  <FormControl>
+                    <div className="relative">
+                      <Input
+                        type={showPassword ? "text" : "password"}
+                        placeholder="name123$#"
+                        {...field}
+                      />
+                      <button
+                        type="button"
+                        onClick={togglePasswordVisibility}
+                        className="absolute inset-y-0 right-0 px-2 flex items-center"
+                        aria-label={
+                          showPassword ? "Hide password" : "Show password"
+                        }
+                      >
+                        {showPassword ? (
+                          <EyeOff size={16} />
+                        ) : (
+                          <Eye size={16} />
+                        )}
+                      </button>
                     </div>
-                    <FormControl>
-                      <div className="relative">
-                        <Input
-                          type={showPassword ? "text" : "password"}
-                          placeholder="name123$#"
-                          {...field}
-                        />
-                        <button
-                          type="button"
-                          onClick={togglePasswordVisibility}
-                          className="absolute inset-y-0 right-0 px-2 flex items-center"
-                          aria-label={
-                            showPassword ? "Hide password" : "Show password"
-                          }
-                        >
-                          {showPassword ? (
-                            <EyeOff size={16} />
-                          ) : (
-                            <Eye size={16} />
-                          )}
-                        </button>
-                      </div>
-                    </FormControl>
-                    <FormMessage>{errors.password?.message}</FormMessage>
-                  </FormItem>
-                )}
-              />
+                  </FormControl>
+                  <FormMessage>{errors.password?.message}</FormMessage>
+                </FormItem>
+              )}
+            />
 
-              <FormField
-                control={control}
-                name="role"
-                render={({ field }) => (
-                  <FormItem>
-                    <div className="flex items-center justify-between">
-                      <FormLabel>role</FormLabel>
-                    </div>
-                    <FormControl>
-                      <select {...field} className="border rounded-md p-2">
-                        <option value="patient">Patient</option>
-                        <option value="admin">Admin</option>
-                        <option value="doctor">Doctor</option>
-                        <option value="staff">Staff</option>
-                        <option value="nurse">Nurse</option>
-                      </select>
-                    </FormControl>
-                    <FormMessage>{errors.role?.message}</FormMessage>
-                  </FormItem>
-                )}
-              />
+            <FormField
+              control={control}
+              name="role"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex items-center justify-between">
+                    <FormLabel>role</FormLabel>
+                  </div>
+                  <FormControl>
+                    <select {...field} className="border rounded-md p-2">
+                      <option value="patient">Patient</option>
+                      <option value="admin">Admin</option>
+                      <option value="doctor">Doctor</option>
+                      <option value="staff">Staff</option>
+                      <option value="nurse">Nurse</option>
+                    </select>
+                  </FormControl>
+                  <FormMessage>{errors.role?.message}</FormMessage>
+                </FormItem>
+              )}
+            />
 
-              <Button type="submit" className="w-full mt-4" disabled={loading}>
-                {loading ? "Logging in..." : "Login"}
-              </Button>
-            </form>
-          </FormProvider>
-          <Button
-            onClick={() => {
-              autoLogin("admin");
-            }}
-            className="w-full mt-4"
-            disabled={loading}
-          >
-            Loggin as Admin
-          </Button>
-          <Button
-            onClick={() => {
-              autoLogin("doctor");
-            }}
-            className="w-full mt-4"
-            disabled={loading}
-          >
-            Loggin as Doctor
-          </Button>
-          <Button
-            onClick={() => {
-              autoLogin("patient");
-            }}
-            className="w-full mt-4"
-            disabled={loading}
-          >
-            Loggin as Patient
-          </Button>
-          <Button
-            onClick={() => {
-              autoLogin("nurse");
-            }}
-            className="w-full mt-4"
-            disabled={loading}
-          >
-            Loggin as Nurse
-          </Button>
-          <div className=" text-right text-sm">
-            <Link href="/forgetPassword" className="underline">
-              Forget Password
-            </Link>
-          </div>
-          <div className="mt-4 text-center text-sm">
-            Don&apos;t have an account?{" "}
-            <Link href="/signup" className="underline">
-              Sign up
-            </Link>
-          </div>
+            <Button type="submit" className="w-full mt-4" disabled={loading}>
+              {loading ? "Logging in..." : "Login"}
+            </Button>
+          </form>
+        </FormProvider>
+        <Button
+          onClick={() => autoLogin("admin")}
+          className="w-full mt-4 bg-gray-900 text-white hover:bg-gray-800 disabled:opacity-50"
+          disabled={loading}
+        >
+          Login as Admin
+        </Button>
+        <Button
+          onClick={() => autoLogin("doctor")}
+          className="w-full mt-4 bg-gray-700 text-white hover:bg-gray-600 disabled:opacity-50"
+          disabled={loading}
+        >
+          Login as Doctor
+        </Button>
+        <Button
+          onClick={() => autoLogin("patient")}
+          className="w-full mt-4 bg-gray-500 text-white hover:bg-gray-400 disabled:opacity-50"
+          disabled={loading}
+        >
+          Login as Patient
+        </Button>
+        <Button
+          onClick={() => autoLogin("staff")}
+          className="w-full mt-4 bg-gray-300 text-black hover:bg-gray-200 disabled:opacity-50"
+          disabled={loading}
+        >
+          Login as Staff
+        </Button>
+        <Button
+          onClick={() => autoLogin("nurse")}
+          className="w-full mt-4 bg-white text-black border border-gray-300 hover:bg-gray-100 disabled:opacity-50"
+          disabled={loading}
+        >
+          Login as Nurse
+        </Button>
+
+        <div className=" text-right text-sm">
+          <Link href="/forgetPassword" className="underline">
+            Forget Password
+          </Link>
+        </div>
+        <div className="mt-4 text-center text-sm">
+          Don&apos;t have an account?{" "}
+          <Link href="/signup" className="underline">
+            Sign up
+          </Link>
         </div>
       </div>
-
-      {/* Right Column - Cover Image */}
-      <div className="hidden bg-muted lg:block">
-        <Image
-          src={loginImage}
-          alt="Login Cover"
-          width={1920}
-          height={1080}
-          className="h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
-        />
-      </div>
     </div>
-  );
+
+    {/* Right Column - Cover Image */}
+    <div className="hidden bg-muted lg:block">
+      <Image
+        src={loginImage}
+        alt="Login Cover"
+        width={1920}
+        height={1080}
+        className="h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+      />
+    </div>
+  </div>
+);
 }
