@@ -1,21 +1,29 @@
 "use client";
 
-import React, { useState } from "react";
-import { useForm, FormProvider } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { useAppSelector } from "@/redux/hooks";
 import { User } from "@/schemas/userSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Image from "next/image";
+import React, { useState } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 
 import { useUpdateStaffMutation } from "@/redux/api/staffApi";
 
@@ -23,7 +31,10 @@ import { useUpdateStaffMutation } from "@/redux/api/staffApi";
 const userSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Invalid email"),
-  phone: z.number().min(10, "Phone number should be at least 10 characters"),
+  phone: z.preprocess(
+    (value) => Number(value),
+    z.number().min(1000000000, "Invalid phone number")
+  ), // Ensure phone is converted to a number
   address: z.string().min(1, "Address is required"),
   role: z.string(),
 });
@@ -31,6 +42,10 @@ const userSchema = z.object({
 const UserProfile = () => {
   const userInfo = useAppSelector((state) => state.auth.userInfo);
   const [isEditing, setIsEditing] = useState(false);
+  const [profile_image, setProfileImage] = useState<string | null>(
+    userInfo.profile_image || null
+  );
+  const [isUploading, setIsUploading] = useState(false);
 
   // Initialize react-hook-form with default values from Redux state
   const methods = useForm<User>({
@@ -52,21 +67,60 @@ const UserProfile = () => {
   const [updateStaff] = useUpdateStaffMutation();
 
   const onSubmit = async (user: User) => {
-    console.log(user, user.id);
-    console.log("Updated User Data:", user);
     try {
-      const result = await updateStaff({ id: Number(userInfo.id), body: user });
-      console.log("userd Updated:", result);
+      const result = await updateStaff({
+        id: Number(userInfo.id),
+        body: user,
+      });
+      console.log("User Updated:", result);
+      toast.success("Profile updated successfully!");
     } catch (error) {
       console.log(error);
+      toast.error("Failed to update profile.");
     }
 
     setIsEditing(false);
   };
 
+  const handleImageUploadClick = () => {
+    // Programmatically trigger the file input click
+    const input = document.getElementById("profile-upload") as HTMLInputElement;
+    if (input) {
+      input.click();
+    }
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || e.target.files.length === 0) return;
+
+    setIsUploading(true);
+
+    const file = e.target.files[0];
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", "your_upload_preset");
+
+    // Uncomment and replace with your upload logic
+    // try {
+    //   const response = await axios.post(
+    //     "https://api.cloudinary.com/v1_1/your_cloud_name/image/upload",
+    //     formData
+    //   );
+
+    //   const imageUrl = response.data.secure_url;
+    //   setProfileImage(imageUrl);
+    //   toast.success("Image uploaded successfully!");
+    // } catch (error) {
+    //   console.error("Image upload failed:", error);
+    //   toast.error("Failed to upload image. Please try again.");
+    // } finally {
+    //   setIsUploading(false);
+    // }
+  };
+
   return (
     <div className="p-6 space-y-8 min-h-screen">
-      <Card className="mb-8 ">
+      <Card className="mb-8">
         <CardHeader>
           <CardTitle>
             {isEditing ? "Edit User Profile" : "User Profile"}
@@ -144,33 +198,69 @@ const UserProfile = () => {
                   )}
                 />
 
-                {/* Role Field (Read-only) */}
-                <FormField
-                  control={control}
-                  name="role"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Role</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder="Role"
-                          {...field}
-                          value={userInfo.role}
-                          disabled
-                        />
-                      </FormControl>
-                      <FormMessage>{errors.role?.message}</FormMessage>
-                    </FormItem>
-                  )}
-                />
+                {/* Image Upload */}
+                <div className="space-y-4">
+                  <FormLabel>Profile Picture</FormLabel>
+                  <div className="flex flex-col items-center gap-4">
+                    {profile_image ? (
+                      <Image
+                        src={profile_image}
+                        alt="Profile"
+                        width={128}
+                        height={128}
+                        className="rounded-full object-cover border"
+                      />
+                    ) : (
+                      <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center">
+                        No Image
+                      </div>
+                    )}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="hidden"
+                      id="profile-upload"
+                    />
+                    <Button
+                      type="button" // Prevent the button from triggering form submission
+                      variant="outline"
+                      disabled={isUploading}
+                      onClick={handleImageUploadClick}
+                    >
+                      {isUploading ? "Uploading..." : "Upload Image"}
+                    </Button>
+                  </div>
+                </div>
 
                 <div className="flex gap-4">
                   <Button type="submit">Save Changes</Button>
+                  <Button
+                    onClick={() => setIsEditing(false)}
+                    variant="secondary"
+                  >
+                    Cancel
+                  </Button>
                 </div>
               </form>
             </FormProvider>
           ) : (
             <div className="grid gap-4">
+              <div className="flex flex-col items-center gap-4">
+                {profile_image ? (
+                  <Image
+                    src={profile_image}
+                    alt="Profile"
+                    width={128}
+                    height={128}
+                    className="rounded-full object-cover border"
+                  />
+                ) : (
+                  <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center">
+                    No Image
+                  </div>
+                )}
+              </div>
               <div>
                 <strong>Name:</strong> {userInfo.name}
               </div>
@@ -188,11 +278,12 @@ const UserProfile = () => {
               </div>
             </div>
           )}
-          <br />
+        </CardContent>
+        <CardFooter>
           <Button onClick={() => setIsEditing(!isEditing)} variant="secondary">
             {isEditing ? "Cancel" : "Edit"}
           </Button>
-        </CardContent>
+        </CardFooter>
       </Card>
     </div>
   );

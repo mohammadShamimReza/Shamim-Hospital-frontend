@@ -1,6 +1,9 @@
 "use client";
 
 
+import { useNavigation } from "@/contexts/NavigatoinContext";
+import { useAppSelector } from "@/redux/hooks";
+import { useEffect, useState } from "react";
 import {
   SidebarContent,
   SidebarGroup,
@@ -9,9 +12,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "../ui/sidebar";
-import { useNavigation } from "@/contexts/NavigatoinContext";
-import { useAppSelector } from "@/redux/hooks";
-import { useEffect, useState } from "react";
 import { SidebarNavMenus } from "./NavMenu";
 
 
@@ -31,9 +31,9 @@ export default function MySidebarContant() {
   } else if (role === "patient") {
     menus = navMenus.navPatient
   } else if (role === "staff") {
-    menus = navMenus.navStaffandNurse
+    menus = navMenus.navStaff;
   } else if (role === "nurse") { 
-    menus = navMenus.navStaffandNurse
+    menus = navMenus.navNurse;
   } else {
     menus = navMenus.navSuperAdmin
   }

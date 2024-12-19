@@ -8,8 +8,8 @@ import {
 import { format } from "date-fns";
 import { useState } from "react";
 
-const AdminAppointmentPage = () => {
-  // const UserInfo = useAppSelector((state) => state.auth.userInfo);
+const StaffAppointment = () => {
+  //   const UserInfo = useAppSelector((state) => state.auth.userInfo);
   const { data: appointments, isLoading } = useGetAllAppointmentQuery();
   const [statusData, setStatusData] = useState<Record<number, string>>({});
 
@@ -136,4 +136,4 @@ const AdminAppointmentPage = () => {
   );
 };
 
-export default AdminAppointmentPage;
+export default StaffAppointment;

@@ -154,7 +154,42 @@ export const SidebarNavMenus = {
       icon: SquareUserRound,
     },
   ],
-  navStaffandNurse: [
+  navStaff: [
+    {
+      title: "Overview",
+      url: "#",
+      icon: FolderKanban,
+      isActive: true,
+    },
+    {
+      title: "Notice",
+      url: "#",
+      icon: Shell,
+    },
+    {
+      title: "Room",
+      url: "#",
+      icon: School,
+    },
+    {
+      title: "Appointments",
+      url: "#",
+      icon: Signature,
+    },
+
+    // {
+    //   title: "Inbox",
+    //   url: "#",
+    //   icon: Inbox,
+    // },
+
+    {
+      title: "Account",
+      url: "#",
+      icon: SquareUserRound,
+    },
+  ],
+  navNurse: [
     {
       title: "Overview",
       url: "#",

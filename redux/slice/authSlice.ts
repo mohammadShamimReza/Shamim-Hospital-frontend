@@ -8,6 +8,7 @@ interface UserInfo {
   phone: number;
   address: string;
   payment: boolean;
+  profile_image: string;
 }
 
 interface AuthState {
@@ -24,6 +25,7 @@ const initialState: AuthState = {
     phone: 0, // Initial value for phone (default to 0 or your preferred placeholder)
     address: "", // Initial value for address (default to an empty string)
     payment: false, //
+    profile_image: "",
   },
   authToken: null,
 };
