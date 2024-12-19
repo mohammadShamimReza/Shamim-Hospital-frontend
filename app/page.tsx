@@ -66,6 +66,7 @@ export default function Page() {
         phone: 0,
         address: "",
         payment: false,
+        profile_image: "",
       })
     );
     removeToken();

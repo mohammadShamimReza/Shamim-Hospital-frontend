@@ -54,6 +54,7 @@ export default function MySidebarFooter() {
          phone: 0,
          address: "",
          payment: false,
+         profile_image: "",
        })
      );
     removeToken()
