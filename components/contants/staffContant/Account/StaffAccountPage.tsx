@@ -19,8 +19,7 @@ import { Input } from "@/components/ui/input";
 import { useAppSelector } from "@/redux/hooks";
 import { User } from "@/schemas/userSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Image from "next/image";
-import React, { useState } from "react";
+import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -42,10 +41,6 @@ const userSchema = z.object({
 const UserProfile = () => {
   const userInfo = useAppSelector((state) => state.auth.userInfo);
   const [isEditing, setIsEditing] = useState(false);
-  const [profile_image, setProfileImage] = useState<string | null>(
-    userInfo.profile_image || null
-  );
-  const [isUploading, setIsUploading] = useState(false);
 
   // Initialize react-hook-form with default values from Redux state
   const methods = useForm<User>({
@@ -74,6 +69,7 @@ const UserProfile = () => {
       });
       console.log("User Updated:", result);
       toast.success("Profile updated successfully!");
+      window.location.reload();
     } catch (error) {
       console.log(error);
       toast.error("Failed to update profile.");
@@ -82,41 +78,41 @@ const UserProfile = () => {
     setIsEditing(false);
   };
 
-  const handleImageUploadClick = () => {
-    // Programmatically trigger the file input click
-    const input = document.getElementById("profile-upload") as HTMLInputElement;
-    if (input) {
-      input.click();
-    }
-  };
+  // const handleImageUploadClick = () => {
+  //   // Programmatically trigger the file input click
+  //   const input = document.getElementById("profile-upload") as HTMLInputElement;
+  //   if (input) {
+  //     input.click();
+  //   }
+  // };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files || e.target.files.length === 0) return;
+  // const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   if (!e.target.files || e.target.files.length === 0) return;
 
-    setIsUploading(true);
+  //   setIsUploading(true);
 
-    const file = e.target.files[0];
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", "your_upload_preset");
+  //   const file = e.target.files[0];
+  //   const formData = new FormData();
+  //   formData.append("file", file);
+  //   formData.append("upload_preset", "your_upload_preset");
 
-    // Uncomment and replace with your upload logic
-    // try {
-    //   const response = await axios.post(
-    //     "https://api.cloudinary.com/v1_1/your_cloud_name/image/upload",
-    //     formData
-    //   );
+  //   // Uncomment and replace with your upload logic
+  //   // try {
+  //   //   const response = await axios.post(
+  //   //     "https://api.cloudinary.com/v1_1/your_cloud_name/image/upload",
+  //   //     formData
+  //   //   );
 
-    //   const imageUrl = response.data.secure_url;
-    //   setProfileImage(imageUrl);
-    //   toast.success("Image uploaded successfully!");
-    // } catch (error) {
-    //   console.error("Image upload failed:", error);
-    //   toast.error("Failed to upload image. Please try again.");
-    // } finally {
-    //   setIsUploading(false);
-    // }
-  };
+  //   //   const imageUrl = response.data.secure_url;
+  //   //   setProfileImage(imageUrl);
+  //   //   toast.success("Image uploaded successfully!");
+  //   // } catch (error) {
+  //   //   console.error("Image upload failed:", error);
+  //   //   toast.error("Failed to upload image. Please try again.");
+  //   // } finally {
+  //   //   setIsUploading(false);
+  //   // }
+  // };
 
   return (
     <div className="p-6 space-y-8 min-h-screen">
@@ -199,7 +195,7 @@ const UserProfile = () => {
                 />
 
                 {/* Image Upload */}
-                <div className="space-y-4">
+                {/* <div className="space-y-4">
                   <FormLabel>Profile Picture</FormLabel>
                   <div className="flex flex-col items-center gap-4">
                     {profile_image ? (
@@ -231,7 +227,7 @@ const UserProfile = () => {
                       {isUploading ? "Uploading..." : "Upload Image"}
                     </Button>
                   </div>
-                </div>
+                </div> */}
 
                 <div className="flex gap-4">
                   <Button type="submit">Save Changes</Button>
@@ -247,7 +243,7 @@ const UserProfile = () => {
           ) : (
             <div className="grid gap-4">
               <div className="flex flex-col items-center gap-4">
-                {profile_image ? (
+                {/* {profile_image ? (
                   <Image
                     src={profile_image}
                     alt="Profile"
@@ -259,7 +255,7 @@ const UserProfile = () => {
                   <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center">
                     No Image
                   </div>
-                )}
+                )} */}
               </div>
               <div>
                 <strong>Name:</strong> {userInfo.name}
