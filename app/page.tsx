@@ -86,7 +86,8 @@ export default function Page() {
 
   if (
     userAllData?.data?.role === "patient" &&
-    userAllData?.data?.payment === false
+    userAllData?.data?.payment === false &&
+    userInfo.role === "patient"
   ) {
     return (
       <div className="flex items-center justify-center min-h-screen">

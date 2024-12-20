@@ -65,7 +65,7 @@ export default function LoginPage() {
   };
 
   const onSubmit = async (data: LoginFormData) => {
-    console.log(data);
+    console.log(data, "this is a login form");
     if (data.email !== "" && data.password !== "") {
       try {
         setLoading(true);
@@ -133,7 +133,7 @@ const autoLogin = async (
     try {
       setLoading(true);
       const result = await loginUser(selectedCredentials);
-
+console.log(result);
       if (result?.error) {
         toast("Login failed. Please check your credentials.", {
           style: {
