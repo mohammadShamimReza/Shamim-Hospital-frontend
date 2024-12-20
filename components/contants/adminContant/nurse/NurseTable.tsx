@@ -1,6 +1,5 @@
 "use client";
 
-import { Nurse } from "@/schemas/nurseSchema";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -10,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Nurse } from "@/schemas/nurseSchema";
 
 interface NurseTableProps {
   nurseList: Nurse[] | null;
@@ -39,7 +39,6 @@ export default function NurseTable({
         <TableRow>
           <TableHead>Name</TableHead>
           <TableHead>Email</TableHead>
-          <TableHead>Department</TableHead>
           <TableHead>Actions</TableHead>
         </TableRow>
       </TableHeader>
@@ -53,7 +52,9 @@ export default function NurseTable({
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => { onEdit(nurse)}}
+                  onClick={() => {
+                    onEdit(nurse);
+                  }}
                 >
                   Edit
                 </Button>
