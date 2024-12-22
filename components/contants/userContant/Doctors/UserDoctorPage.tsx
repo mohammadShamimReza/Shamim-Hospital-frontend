@@ -1,8 +1,9 @@
-import React, { useState } from "react";
-import { useGetAllDoctorQuery } from "@/redux/api/doctorApi";
 import { Button } from "@/components/ui/button";
+import { LoadingSpinner } from "@/components/ui/loading";
 import { Modal } from "@/components/ui/modal";
+import { useGetAllDoctorQuery } from "@/redux/api/doctorApi";
 import { Doctor } from "@/schemas/doctorSchema";
+import { useState } from "react";
 
 export default function UserDoctorPage() {
   const { data: doctorData, isLoading } = useGetAllDoctorQuery();
@@ -15,13 +16,13 @@ export default function UserDoctorPage() {
   const handleCloseModal = () => {
     setSelectedDoctor(null);
   };
-      if (isLoading) {
-        return (
-          <div className="flex items-center justify-center py-4">
-            <h2 className="text-xl font-semibold animate-pulse">Loading...</h2>
-          </div>
-        );
-      }
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-4">
+        <LoadingSpinner />
+      </div>
+    );
+  }
 
   return (
     <div className="p-4">

@@ -1,4 +1,5 @@
-import { Service } from "@/schemas/serviceSchema";
+import { Button } from "@/components/ui/button";
+import { LoadingSpinner } from "@/components/ui/loading";
 import {
   Table,
   TableBody,
@@ -7,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
+import { Service } from "@/schemas/serviceSchema";
 
 interface ServiceTableProps {
   services: Service[];
@@ -24,13 +25,13 @@ export default function ServiceTable({
   onView,
   isLoading,
 }: ServiceTableProps) {
-      if (isLoading) {
-        return (
-          <div className="flex items-center justify-center py-4">
-            <h2 className="text-xl font-semibold animate-pulse">Loading...</h2>
-          </div>
-        );
-      }
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-4">
+        <LoadingSpinner />
+      </div>
+    );
+  }
   return (
     <Table>
       <TableHeader>

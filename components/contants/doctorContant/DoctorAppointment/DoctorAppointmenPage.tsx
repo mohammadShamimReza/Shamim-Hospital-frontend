@@ -16,6 +16,7 @@ import { format } from "date-fns";
 import { useState } from "react";
 import { toast } from "sonner";
 
+import { LoadingSpinner } from "@/components/ui/loading";
 import { useCreateDiagnosticAppointmentMutation } from "@/redux/api/DiagnosticAppointmentApi";
 import { useCreateLaboratoryAppointmentMutation } from "@/redux/api/LabAppointmentApi";
 import { useCreatePharmacyAppointmentMutation } from "@/redux/api/PharmacyAppointmentApi";
@@ -185,7 +186,7 @@ const AppointmentsTable = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-4">
-        <h2 className="text-xl font-semibold animate-pulse">Loading...</h2>
+        <LoadingSpinner />
       </div>
     );
   }

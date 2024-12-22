@@ -1,17 +1,17 @@
-import { useGetAllNoticeQuery } from '@/redux/api/noticeApi'
-import React from 'react'
+import { LoadingSpinner } from "@/components/ui/loading";
+import { useGetAllNoticeQuery } from "@/redux/api/noticeApi";
 import { format } from "date-fns";
 
-
 export default function UserNoticePage() {
-  const { data: notices, isLoading } = useGetAllNoticeQuery()
-    if (isLoading) {
-      return (
-        <div className="flex items-center justify-center py-4">
-          <h2 className="text-xl font-semibold animate-pulse">Loading...</h2>
-        </div>
-      );
-    }  return (
+  const { data: notices, isLoading } = useGetAllNoticeQuery();
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-4">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+  return (
     <div>
       {" "}
       <div className="p-4">

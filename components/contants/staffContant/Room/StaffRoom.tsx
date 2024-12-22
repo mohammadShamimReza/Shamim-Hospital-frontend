@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { LoadingSpinner } from "@/components/ui/loading";
 import { useGetStaffByIdQuery } from "@/redux/api/staffApi";
 import { useAppSelector } from "@/redux/hooks";
 
@@ -7,24 +8,24 @@ export default function StaffRoom() {
   const { data, isLoading } = useGetStaffByIdQuery({
     id: Number(nurseInfo.id),
   });
-      if (isLoading) {
-        return (
-          <div className="flex items-center justify-center py-4">
-            <h2 className="text-xl font-semibold animate-pulse">Loading...</h2>
-          </div>
-        );
-      }
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-4">
+        <LoadingSpinner />
+      </div>
+    );
+  }
   return (
     <Card className="max-w-lg mx-auto my-8">
       <CardHeader>
         <CardTitle>
           {" "}
-          {!data?.data?.room 
+          {!data?.data?.room
             ? "You are not assigned any where"
             : "Assigned Room Details"}
         </CardTitle>
       </CardHeader>
-      {!data?.data?.room  ? (
+      {!data?.data?.room ? (
         ""
       ) : (
         <CardContent className="space-y-4">

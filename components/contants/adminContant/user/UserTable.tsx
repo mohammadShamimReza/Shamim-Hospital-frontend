@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { LoadingSpinner } from "@/components/ui/loading";
 import {
   Table,
   TableBody,
@@ -14,19 +15,25 @@ import { User } from "@/schemas/userSchema";
 interface UserTableProps {
   users: User[];
   onEdit: (user: User) => void;
-  onDelete: (user:User) => void;
+  onDelete: (user: User) => void;
   onView: (user: User) => void;
   isLoading: boolean;
 }
 
-export default function UserTable({ users, onEdit, onDelete, onView, isLoading }: UserTableProps) {
-      if (isLoading) {
-        return (
-          <div className="flex items-center justify-center py-4">
-            <h2 className="text-xl font-semibold animate-pulse">Loading...</h2>
-          </div>
-        );
-      }
+export default function UserTable({
+  users,
+  onEdit,
+  onDelete,
+  onView,
+  isLoading,
+}: UserTableProps) {
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-4">
+        <LoadingSpinner />
+      </div>
+    );
+  }
   return (
     <Table>
       <TableHeader>

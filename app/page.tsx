@@ -1,6 +1,7 @@
 "use client";
 
 import MainPage from "@/components/contants/MainPage";
+import { LoadingSpinner } from "@/components/ui/loading";
 import { getTokenFromCookie } from "@/lib/auth/token";
 import { useGetUserInfoQuery } from "@/redux/api/authApi";
 import { useAppDispatch } from "@/redux/hooks";
@@ -44,7 +45,7 @@ export default function Page() {
   if (!isMounted && isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <h2 className="text-2xl font-semibold  animate-pulse">Loading...</h2>
+        <LoadingSpinner />
       </div>
     );
   }

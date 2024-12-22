@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { LoadingSpinner } from "@/components/ui/loading";
 import {
   Table,
   TableBody,
@@ -29,7 +30,7 @@ export default function DiagnosticTable({
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-4">
-        <h2 className="text-xl font-semibold animate-pulse">Loading...</h2>
+        <LoadingSpinner />
       </div>
     );
   }

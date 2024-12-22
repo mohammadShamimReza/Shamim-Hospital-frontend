@@ -1,3 +1,10 @@
+import { Button } from "@/components/ui/button";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+import { LoadingSpinner } from "@/components/ui/loading";
 import {
   Table,
   TableBody,
@@ -6,16 +13,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import AddStaffAndNurse from "./AddStaffAndNurse";
-import { Room } from "@/type/Index";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
 import { useUpdateRoomMutation } from "@/redux/api/roomApi";
+import { Room } from "@/type/Index";
 import { toast } from "sonner";
+import AddStaffAndNurse from "./AddStaffAndNurse";
 
 interface RoomTableProps {
   rooms: Room[];
@@ -62,7 +63,7 @@ export default function RoomTable({
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-4">
-        <h2 className="text-xl font-semibold animate-pulse">Loading...</h2>
+        <LoadingSpinner />
       </div>
     );
   }

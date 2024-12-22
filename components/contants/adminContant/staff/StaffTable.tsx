@@ -1,7 +1,7 @@
 "use client";
 
-import { Staff } from "@/schemas/staffSchema";
 import { Button } from "@/components/ui/button";
+import { LoadingSpinner } from "@/components/ui/loading";
 import {
   Table,
   TableBody,
@@ -10,6 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Staff } from "@/schemas/staffSchema";
 
 interface StaffTableProps {
   staffList: Staff[];
@@ -24,17 +25,16 @@ export default function StaffTable({
   onEdit,
   onDelete,
   onView,
-  isLoading
+  isLoading,
 }: StaffTableProps) {
-      if (isLoading) {
-        return (
-          <div className="flex items-center justify-center py-4">
-            <h2 className="text-xl font-semibold animate-pulse">Loading...</h2>
-          </div>
-        );
-      }
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-4">
+        <LoadingSpinner />
+      </div>
+    );
+  }
   return (
-    
     <Table>
       <TableHeader>
         <TableRow>

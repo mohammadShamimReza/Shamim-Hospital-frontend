@@ -1,8 +1,8 @@
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { useGetNurseByIdQuery } from '@/redux/api/nurseApi'
-import { useAppSelector } from '@/redux/hooks'
-import React from 'react'
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { LoadingSpinner } from "@/components/ui/loading";
+import { useGetNurseByIdQuery } from "@/redux/api/nurseApi";
+import { useAppSelector } from "@/redux/hooks";
 
 export default function NurseRoom() {
   const nurseInfo = useAppSelector(state => state.auth.userInfo)
@@ -11,7 +11,7 @@ export default function NurseRoom() {
       if (isLoading) {
         return (
           <div className="flex items-center justify-center py-4">
-            <h2 className="text-xl font-semibold animate-pulse">Loading...</h2>
+            <LoadingSpinner />
           </div>
         );
       }

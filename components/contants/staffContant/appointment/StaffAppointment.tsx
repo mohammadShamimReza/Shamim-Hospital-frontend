@@ -1,5 +1,6 @@
 "use client";
 
+import { LoadingSpinner } from "@/components/ui/loading";
 import {
   useGetAllAppointmentQuery,
   useUpdateAppointmentMutation,
@@ -53,7 +54,7 @@ const StaffAppointment = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-4">
-        <h2 className="text-xl font-semibold animate-pulse">Loading...</h2>
+        <LoadingSpinner />
       </div>
     );
   }

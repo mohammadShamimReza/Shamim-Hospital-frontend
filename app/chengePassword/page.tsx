@@ -1,11 +1,12 @@
 "use client";
 
-import { Suspense, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Eye, EyeOff } from "lucide-react";
+import { LoadingSpinner } from "@/components/ui/loading";
 import { decodedToken } from "@/lib/auth/jwt";
 import { useResetPasswordMutation } from "@/redux/api/authApi";
+import { Eye, EyeOff } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -190,7 +191,7 @@ export default function ResetPassPage() {
     <Suspense
       fallback={
         <div className="min-h-screen flex items-center justify-center">
-          Loading...
+          <LoadingSpinner />
         </div>
       }
     >

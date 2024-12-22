@@ -1,13 +1,14 @@
-import { useEffect, useState } from "react";
 import { useAppSelector } from "@/redux/hooks";
+import { useEffect, useState } from "react";
 import MySidebarContant from "../sidebar/MySidebarContant";
 import MySidebarFooter from "../sidebar/MySidebarFooter";
 import MySidebarHeader from "../sidebar/MySidebarHeader";
+import { LoadingSpinner } from "../ui/loading";
 import { Sidebar, SidebarProvider } from "../ui/sidebar";
 import AdminContantPage from "./adminContant/AdminContantPage";
+import DoctorContantPage from "./doctorContant/DoctorContantPage";
 import NurseContantPage from "./nurseContant/NurseContantPage";
 import StaffContantPage from "./staffContant/StaffContantPage";
-import DoctorContantPage from "./doctorContant/DoctorContantPage";
 import UserContantPage from "./userContant/UserMainPage";
 
 export default function MainPage() {
@@ -26,7 +27,7 @@ export default function MainPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <p>Loading...</p>
+        <LoadingSpinner />
       </div>
     );
   }
