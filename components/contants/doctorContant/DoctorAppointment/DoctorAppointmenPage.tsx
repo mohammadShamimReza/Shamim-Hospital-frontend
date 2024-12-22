@@ -59,8 +59,16 @@ const AppointmentsTable = () => {
 
   const { data: diagnosticData } = useGetAllDiagnosticQuery();
 
-  const [updateAppointment] = useUpdateAppointmentMutation();
-
+  const [updateAppointment, { isLoading: updating }] =
+    useUpdateAppointmentMutation();
+  if (updating) {
+    toast("updating", {
+      style: {
+        backgroundColor: "green",
+        color: "white",
+      },
+    });
+  }
   const handleOpenPrescriptionDialog = (
     appointmentId: number,
     prescription: string | null,

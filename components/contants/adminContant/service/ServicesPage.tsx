@@ -1,115 +1,127 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import ServiceForm from "./ServiceForm";
-import ServiceTable from "./ServiceTable";
+import {
+  useCreateServiceMutation,
+  useDeleteServiceMutation,
+  useGetAllServiceQuery,
+  useUpdateServiceMutation,
+} from "@/redux/api/serviceApi";
 import { Service } from "@/schemas/serviceSchema";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import ServiceDeleteConfirmationModal from "./ServiceDeleteConfirmationModal";
 import ServiceDetailsModal from "./ServiceDetailsModal";
-import { useCreateServiceMutation, useDeleteServiceMutation, useGetAllServiceQuery, useUpdateServiceMutation } from "@/redux/api/serviceApi";
-import { toast } from "sonner";
+import ServiceForm from "./ServiceForm";
+import ServiceTable from "./ServiceTable";
 
 export default function ServicesPage() {
-    const [services, setServices] = useState<Service[]>([]);
-    const [selectedService, setSelectedService] = useState<Service | null>(null);
-    const [isFormVisible, setIsFormVisible] = useState(false);
-    const [isEditing, setIsEditing] = useState(false);
+  const [services, setServices] = useState<Service[]>([]);
+  const [selectedService, setSelectedService] = useState<Service | null>(null);
+  const [isFormVisible, setIsFormVisible] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-  
+
   const [serviceName, setServicesName] = useState("");
 
   const { data: serviceData, isLoading } = useGetAllServiceQuery();
 
-const filteredServices = services.filter((service) =>
-  service.serviceName.toLowerCase().includes(serviceName.toLowerCase())
-);
-  console.log(filteredServices, 'Filtered Services');
-  console.log(serviceName, 'Service Name');
-    const [createService] = useCreateServiceMutation();
-    const [updateService] = useUpdateServiceMutation();
-    const [deleteService] = useDeleteServiceMutation();
+  const filteredServices = services.filter((service) =>
+    service.serviceName.toLowerCase().includes(serviceName.toLowerCase())
+  );
+  console.log(filteredServices, "Filtered Services");
+  console.log(serviceName, "Service Name");
+  const [createService, { isLoading: createing }] = useCreateServiceMutation();
+  const [updateService, { isLoading: updating }] = useUpdateServiceMutation();
+  const [deleteService, { isLoading: deleting }] = useDeleteServiceMutation();
 
-    useEffect(() => {
-      if (serviceData?.data) setServices(serviceData.data);
-    }, [serviceData]);
+  useEffect(() => {
+    if (serviceData?.data) setServices(serviceData.data);
+  }, [serviceData]);
+
+  if (createing || updating || deleting) {
+    toast(createing ? "createing" : updating ? "updating" : "deleting", {
+      style: {
+        backgroundColor: "green",
+        color: "white",
+      },
+    });
+  }
 
   const handleSaveService = async (service: Service) => {
     try {
       if (isEditing && selectedService !== null) {
         if (service.id) {
-         const result = await updateService({ id: service.id, body: service });
-         if (result?.error) {
-           toast("something went wrong", {
-             style: {
-               backgroundColor: "red",
-               color: "white",
-             },
-           });
-         } else {
-           toast("Updated successfully");
+          const result = await updateService({ id: service.id, body: service });
+          if (result?.error) {
+            toast("something went wrong", {
+              style: {
+                backgroundColor: "red",
+                color: "white",
+              },
+            });
+          } else {
+            toast("Updated successfully");
 
-           setIsEditing(false);
-           setIsFormVisible(false);
-         }
+            setIsEditing(false);
+            setIsFormVisible(false);
+          }
         }
       } else {
         const result = await createService(service);
-           if (result?.error) {
-             toast("something went wrong, please provice correct info", {
-               style: {
-                 backgroundColor: "red",
-                 color: "white",
-               },
-             });
-           } else {
-             toast("Created successfully");
-           }
+        if (result?.error) {
+          toast("something went wrong, please provice correct info", {
+            style: {
+              backgroundColor: "red",
+              color: "white",
+            },
+          });
+        } else {
+          toast("Created successfully");
+        }
         setIsFormVisible(false);
         console.log("Service Added:", result);
       }
-      //  setIsFormVisible(false);
-      //  setIsEditing(false);
-      //  setSelectedDoctorIndex(null);
+      setIsFormVisible(false);
+      setIsEditing(false);
     } catch (error) {
       console.log(error);
     }
   };
 
+  const handleEdit = (service: Service) => {
+    setIsEditing(true);
+    setIsFormVisible(true);
+    setSelectedService(service);
+  };
 
-   const handleEdit = (service: Service) => {
-     setIsEditing(true);
-     setIsFormVisible(true);
-     setSelectedService(service);
-   };
+  const handleDetailsModal = (service: Service) => {
+    setSelectedService(service);
+    setIsDetailsModalOpen(true);
+  };
 
-   const handleDetailsModal = (service: Service) => {
-     setSelectedService(service);
-     setIsDetailsModalOpen(true);
-   };
+  const handleDeleteModal = (service: Service) => {
+    setSelectedService(service);
+    setIsDeleteModalOpen(true);
+  };
 
-   const handleDeleteModal = (service: Service) => {
-     setSelectedService(service);
-     setIsDeleteModalOpen(true);
-   };
+  const confirmDelete = async () => {
+    if (selectedService && selectedService.id) {
+      try {
+        await deleteService(selectedService.id);
 
-    const confirmDelete = async () => {
-      if (selectedService && selectedService.id) {
-        try {
-           await deleteService(selectedService.id);
+        setSelectedService(null);
 
-          setSelectedService(null);
-
-          setIsDeleteModalOpen(false);
-        } catch (error) {
-          console.log("Error Deleting Nurse:", error);
-        }
+        setIsDeleteModalOpen(false);
+      } catch (error) {
+        console.log("Error Deleting Nurse:", error);
       }
-    };
+    }
+  };
 
   return (
     <div className="p-6">
@@ -150,7 +162,7 @@ const filteredServices = services.filter((service) =>
         onEdit={handleEdit}
         onDelete={handleDeleteModal}
         onView={handleDetailsModal}
-        isLoading={isLoading} 
+        isLoading={isLoading}
       />
 
       <ServiceDeleteConfirmationModal

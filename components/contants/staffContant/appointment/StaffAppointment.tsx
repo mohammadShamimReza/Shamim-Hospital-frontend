@@ -8,13 +8,15 @@ import {
 // import { useAppSelector } from "@/redux/hooks";
 import { format } from "date-fns";
 import { useState } from "react";
+import { toast } from "sonner";
 
 const StaffAppointment = () => {
   //   const UserInfo = useAppSelector((state) => state.auth.userInfo);
   const { data: appointments, isLoading } = useGetAllAppointmentQuery();
   const [statusData, setStatusData] = useState<Record<number, string>>({});
 
-  const [updateAppointment] = useUpdateAppointmentMutation();
+  const [updateAppointment, { isLoading: updating }] =
+    useUpdateAppointmentMutation();
 
   // Status colors
   const statusColors = {
@@ -23,6 +25,14 @@ const StaffAppointment = () => {
     completed: "bg-green-500 text-white",
     cancelled: "bg-red-500 text-white",
   };
+  if (updating) {
+    toast("updating", {
+      style: {
+        backgroundColor: "green",
+        color: "white",
+      },
+    });
+  }
 
   const statusOptions = ["requested", "scheduled", "cancelled"];
 

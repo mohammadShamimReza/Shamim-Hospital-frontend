@@ -1,13 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
+import {
+  useDeleteUserMutation,
+  useGetAllUserQuery,
+  useUpdateUserMutation,
+} from "@/redux/api/userApi";
 import { User } from "@/schemas/userSchema";
-import UserTable from "./UserTable";
-import UserForm from "./UserForm";
+import { useEffect, useState } from "react";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
-import { useDeleteUserMutation, useGetAllUserQuery, useUpdateUserMutation } from "@/redux/api/userApi";
 import UserDetailsModal from "./UserDetailsModal";
+import UserForm from "./UserForm";
+import UserTable from "./UserTable";
 
 export default function UserPage() {
   const [users, setUsers] = useState<User[]>([]);
@@ -27,31 +31,28 @@ export default function UserPage() {
     }
   }, [userData]);
   const handleEdit = (user: User) => {
-    console.log('first')
     setSelectedUser(user);
     setIsFormVisible(true);
-    handleEditUser(user)
+    handleEditUser(user);
   };
-    const [updateUser] = useUpdateUserMutation();
+  const [updateUser] = useUpdateUserMutation();
 
-  const handleEditUser = async (user: User) => {     
-      if (user.id) {
-        const result = await updateUser({ id: user.id, body: user });
-        console.log("userd Updated:", result);
+  const handleEditUser = async (user: User) => {
+    if (user.id) {
+      const result = await updateUser({ id: user.id, body: user });
+      console.log("userd Updated:", result);
 
-    setIsFormVisible(true);
-      }
-  }
+      setIsFormVisible(true);
+    }
+  };
 
-  console.log(selectedUser)
   const [deleteUser] = useDeleteUserMutation();
 
   const handleDelete = (user: User) => {
-    console.log(user)
+    console.log(user);
     setSelectedUser(user);
     setIsDeleteModalOpen(true);
   };
-
 
   const confirmDelete = async () => {
     if (selectedUser && selectedUser.id) {

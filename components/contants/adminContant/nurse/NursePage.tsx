@@ -1,19 +1,19 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import NurseForm from "./NurseForm";
-import NurseTable from "./NurseTable";
-import { Nurse } from "@/schemas/nurseSchema";
 import {
   useCreateNurseMutation,
   useDeleteNurseMutation,
   useGetAllNurseQuery,
   useUpdateNurseMutation,
 } from "@/redux/api/nurseApi";
-import NurseDetailsModal from "./NurseDetailsModal";
-import DeleteConfirmationModal from "./DeleteConfirmationModal";
+import { Nurse } from "@/schemas/nurseSchema";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
+import DeleteConfirmationModal from "./DeleteConfirmationModal";
+import NurseDetailsModal from "./NurseDetailsModal";
+import NurseForm from "./NurseForm";
+import NurseTable from "./NurseTable";
 
 export default function NursePage() {
   const [formState, setFormState] = useState({
@@ -28,9 +28,18 @@ export default function NursePage() {
   });
 
   const { data: nurseData, isLoading } = useGetAllNurseQuery();
-  const [createNurse] = useCreateNurseMutation();
-  const [updateNurse] = useUpdateNurseMutation();
-  const [deleteNurse] = useDeleteNurseMutation();
+  const [createNurse, { isLoading: createing }] = useCreateNurseMutation();
+  const [updateNurse, { isLoading: updating }] = useUpdateNurseMutation();
+  const [deleteNurse, { isLoading: deleting }] = useDeleteNurseMutation();
+
+  if (createing || updating || deleting) {
+    toast(createing ? "createing" : updating ? "updating" : "deleting", {
+      style: {
+        backgroundColor: "green",
+        color: "white",
+      },
+    });
+  }
 
   // Effect to load nurses on data fetch
   useEffect(() => {
@@ -54,33 +63,36 @@ export default function NursePage() {
         if (nurse.id) {
           const result = await updateNurse({ id: nurse.id, body: nurse });
           console.log("Nurse Updated:", result);
-            if (result?.error) {
-              toast("something went wrong", {
-                style: {
-                  backgroundColor: "red",
-                  color: "white",
-                },
-              });
-            } else {
-              toast("Updated successfully");
-            }
+          if (result?.error) {
+            toast("something went wrong", {
+              style: {
+                backgroundColor: "red",
+                color: "white",
+              },
+            });
+          } else {
+            toast("Updated successfully");
+          }
         }
       } else {
         const result = await createNurse(nurse);
         console.log("Nurse Added:", result);
         setNurses((prev) => [...prev, nurse]);
-         if (result?.error) {
-           toast("something went wrong, please provice correct info", {
-             style: {
-               backgroundColor: "red",
-               color: "white",
-             },
-           });
-         } else {
-           toast("Created successfully");
-         }
+        if (result?.error) {
+          toast("something went wrong, please provice correct info", {
+            style: {
+              backgroundColor: "red",
+              color: "white",
+            },
+          });
+        } else {
+          toast("Created successfully");
+        }
       }
       toggleFormVisibility(false);
+      //  setIsFormVisible(false);
+      //  setIsEditing(false);
+      //  setSelectedPharmacyIndex(null);
     } catch (error) {
       console.log("Error Saving Nurse:", error);
     }

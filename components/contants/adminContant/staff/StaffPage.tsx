@@ -1,19 +1,19 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import StaffForm from "./StaffForm";
-import StaffTable from "./StaffTable";
-import { Staff } from "@/schemas/staffSchema";
 import {
   useCreateStaffMutation,
   useDeleteStaffMutation,
   useGetAllStaffQuery,
   useUpdateStaffMutation,
 } from "@/redux/api/staffApi"; // Adjust to match Staff API endpoints
-import StaffDetailsModal from "./StaffDetailsModal";
-import DeleteConfirmationModal from "./DeleteConfirmationModal";
+import { Staff } from "@/schemas/staffSchema";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
+import DeleteConfirmationModal from "./DeleteConfirmationModal";
+import StaffDetailsModal from "./StaffDetailsModal";
+import StaffForm from "./StaffForm";
+import StaffTable from "./StaffTable";
 
 export default function StaffPage() {
   const [formState, setFormState] = useState({
@@ -28,9 +28,18 @@ export default function StaffPage() {
   });
 
   const { data: staffData, isLoading } = useGetAllStaffQuery();
-  const [createStaff] = useCreateStaffMutation();
-  const [updateStaff] = useUpdateStaffMutation();
-  const [deleteStaff] = useDeleteStaffMutation();
+  const [createStaff, { isLoading: createing }] = useCreateStaffMutation();
+  const [updateStaff, { isLoading: updating }] = useUpdateStaffMutation();
+  const [deleteStaff, { isLoading: deleting }] = useDeleteStaffMutation();
+
+  if (createing || updating || deleting) {
+    toast(createing ? "createing" : updating ? "updating" : "deleting", {
+      style: {
+        backgroundColor: "green",
+        color: "white",
+      },
+    });
+  }
 
   useEffect(() => {
     if (staffData?.data) setStaffList(staffData.data);
@@ -53,32 +62,30 @@ export default function StaffPage() {
         if (staff.id) {
           const result = await updateStaff({ id: staff.id, body: staff });
           console.log("Staff Updated:", result);
-           if (result?.error) {
-             toast("something went wrong", {
-               style: {
-                 backgroundColor: "red",
-                 color: "white",
-               },
-             });
-           } else {
-             toast("Updated successfully");
-
-         
-           }
-        }
-      } else {
-        const result = await createStaff(staff);
-        console.log("Staff Added:", result);
           if (result?.error) {
-            toast("something went wrong, please provice correct info", {
+            toast("something went wrong", {
               style: {
                 backgroundColor: "red",
                 color: "white",
               },
             });
           } else {
-            toast("Created successfully");
+            toast("Updated successfully");
           }
+        }
+      } else {
+        const result = await createStaff(staff);
+        console.log("Staff Added:", result);
+        if (result?.error) {
+          toast("something went wrong, please provice correct info", {
+            style: {
+              backgroundColor: "red",
+              color: "white",
+            },
+          });
+        } else {
+          toast("Created successfully");
+        }
         setStaffList((prev) => [...prev, staff]);
       }
       toggleFormVisibility(false);

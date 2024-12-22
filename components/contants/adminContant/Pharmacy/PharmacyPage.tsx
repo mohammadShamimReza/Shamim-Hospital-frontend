@@ -31,9 +31,19 @@ export default function PharmacyPage() {
 
   console.log(pharmacyData, "this is pharmacy data");
 
-  const [createPharmacy] = useCreatePharmacyMutation();
-  const [updatePharmacy] = useUpdatePharmacyMutation();
-  const [deletePharmacy] = useDeletePharmacyMutation();
+  const [createPharmacy, { isLoading: createing }] =
+    useCreatePharmacyMutation();
+  const [updatePharmacy, { isLoading: updating }] = useUpdatePharmacyMutation();
+  const [deletePharmacy, { isLoading: deleting }] = useDeletePharmacyMutation();
+
+  if (createing || updating || deleting) {
+    toast(createing ? "createing" : updating ? "updating" : "deleting", {
+      style: {
+        backgroundColor: "green",
+        color: "white",
+      },
+    });
+  }
 
   useEffect(() => {
     if (pharmacyData?.data) setPharmacys(pharmacyData.data);
@@ -78,9 +88,8 @@ export default function PharmacyPage() {
           toast("Created successfully");
         }
       }
-      //  setIsFormVisible(false);
-      //  setIsEditing(false);
-      //  setSelectedPharmacyIndex(null);
+       setIsFormVisible(false);
+       setIsEditing(false);
     } catch (error) {
       console.log(error);
     }

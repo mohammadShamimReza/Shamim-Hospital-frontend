@@ -27,9 +27,18 @@ export default function DoctorPage() {
 
   const { data: doctorData, isLoading } = useGetAllDoctorQuery();
 
-  const [createDoctor] = useCreateDoctorMutation();
-  const [updateDoctor] = useUpdateDoctorMutation();
-  const [deleteDoctor] = useDeleteDoctorMutation();
+  const [createDoctor, { isLoading: createing }] = useCreateDoctorMutation();
+  const [updateDoctor, { isLoading: updating }] = useUpdateDoctorMutation();
+  const [deleteDoctor, { isLoading: deleting }] = useDeleteDoctorMutation();
+
+  if (createing || updating || deleting) {
+    toast(createing ? "createing" : updating ? "updating" : "deleting", {
+      style: {
+        backgroundColor: "green",
+        color: "white",
+      },
+    });
+  }
 
     useEffect(() => {
       if (doctorData?.data) setDoctors(doctorData.data);
@@ -71,9 +80,8 @@ export default function DoctorPage() {
           toast("Created successfully");
         }
       }
-      //  setIsFormVisible(false);
-      //  setIsEditing(false);
-      //  setSelectedDoctorIndex(null);
+       setIsFormVisible(false);
+       setIsEditing(false);
     } catch (error) {
       console.log(error);
     }

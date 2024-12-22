@@ -1,9 +1,5 @@
-import { useGetAllServiceQuery } from "@/redux/api/serviceApi";
-import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useGetAllDoctorQuery } from "@/redux/api/doctorApi";
-import { Doctor } from "@/schemas/doctorSchema";
-import { Service } from "@/schemas/serviceSchema";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Drawer,
   DrawerClose,
@@ -13,17 +9,21 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { format } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 import { useCreateAppointmentMutation } from "@/redux/api/appointment";
+import { useGetAllDoctorQuery } from "@/redux/api/doctorApi";
+import { useGetAllServiceQuery } from "@/redux/api/serviceApi";
 import { useAppSelector } from "@/redux/hooks";
+import { Doctor } from "@/schemas/doctorSchema";
+import { Service } from "@/schemas/serviceSchema";
+import { format } from "date-fns";
+import { Calendar as CalendarIcon } from "lucide-react";
+import React, { useState } from "react";
 import { toast } from "sonner";
 
 interface UserServicesTableProps {
@@ -31,64 +31,71 @@ interface UserServicesTableProps {
 }
 
 export default function UserServicesTable({
-    setSelectedService,
+  setSelectedService,
 }: UserServicesTableProps) {
-    const [date, setDate] = React.useState<Date>();
-    const [isDrawerOpen, setIsDrawerOpen] = useState(false); 
-    const [selectServiceForDoctor, setSelectServiceForDoctor] =
-        useState<Service | null>(null);
-    const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
-    const { data: doctorData } = useGetAllDoctorQuery();
-    const { data: serviceData } = useGetAllServiceQuery();
+  const [date, setDate] = React.useState<Date>();
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [selectServiceForDoctor, setSelectServiceForDoctor] =
+    useState<Service | null>(null);
+  const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
+  const { data: doctorData } = useGetAllDoctorQuery();
+  const { data: serviceData } = useGetAllServiceQuery();
 
-    const handleDetailsClick = (service: Service) => {
-        setSelectedService(service);
+  const handleDetailsClick = (service: Service) => {
+    setSelectedService(service);
+  };
+
+  const handleBookingService = (service: Service) => {
+    setSelectServiceForDoctor(service);
+  };
+  const UserInfo = useAppSelector((state) => state.auth.userInfo);
+
+  const [createAppointment, { isLoading: createing }] =
+    useCreateAppointmentMutation();
+  if (createing) {
+    toast("createing", {
+      style: {
+        backgroundColor: "green",
+        color: "white",
+      },
+    });
+  }
+  const handleMakeAppointment = async () => {
+    const appointmentDate = date || new Date(); // Use selected date or current date
+    const appointmentData = {
+      doctorId: selectedDoctor?.id,
+      serviceId: selectServiceForDoctor?.id,
+      appointmentDate,
+      patientId: Number(UserInfo.id),
     };
-
-    const handleBookingService = (service: Service) => {
-        setSelectServiceForDoctor(service);
-    };
-    const UserInfo = useAppSelector(state => state.auth.userInfo);
-    
-    const [ createAppointment ] = useCreateAppointmentMutation();
-
-    const handleMakeAppointment = async () => {
-        const appointmentDate = date || new Date(); // Use selected date or current date
-        const appointmentData = {
-          doctorId: selectedDoctor?.id,
-          serviceId: selectServiceForDoctor?.id,
-          appointmentDate,
-          patientId: Number(UserInfo.id),
-        };
-        alert("are you sure you want to book this appointment?");
-        try {
-            const result = await createAppointment(appointmentData);
-          console.log(result, 'making appointment')
-            if (result?.error) {
-              toast("Something went wront please try again", {
-                style: {
-                  backgroundColor: "red",
-                  color: "white",
-                },
-              });
-            } else {
-              toast("Appointment successful");
-            }
-            setDate(undefined);
-            setSelectedDoctor(null);
-            setSelectServiceForDoctor(null);
-            setIsDrawerOpen(false);
-        } catch (error) {
-            toast("Something went wront please try again", {
-                style: {
-                  backgroundColor: "red",
-                  color: "white",
-                },
-              });
-            console.error(error);
-        }
+    alert("are you sure you want to book this appointment?");
+    try {
+      const result = await createAppointment(appointmentData);
+      console.log(result, "making appointment");
+      if (result?.error) {
+        toast("Something went wront please try again", {
+          style: {
+            backgroundColor: "red",
+            color: "white",
+          },
+        });
+      } else {
+        toast("Appointment successful");
+      }
+      setDate(undefined);
+      setSelectedDoctor(null);
+      setSelectServiceForDoctor(null);
+      setIsDrawerOpen(false);
+    } catch (error) {
+      toast("Something went wront please try again", {
+        style: {
+          backgroundColor: "red",
+          color: "white",
+        },
+      });
+      console.error(error);
     }
-  
+  };
 
   return (
     <div>

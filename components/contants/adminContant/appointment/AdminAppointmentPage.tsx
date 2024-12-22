@@ -8,14 +8,25 @@ import {
 // import { useAppSelector } from "@/redux/hooks";
 import { format } from "date-fns";
 import { useState } from "react";
+import { toast } from "sonner";
 
 const AdminAppointmentPage = () => {
   // const UserInfo = useAppSelector((state) => state.auth.userInfo);
   const { data: appointments, isLoading } = useGetAllAppointmentQuery();
   const [statusData, setStatusData] = useState<Record<number, string>>({});
 
-  const [updateAppointment] = useUpdateAppointmentMutation();
+  const [updateAppointment, { isLoading: updating }] =
+    useUpdateAppointmentMutation();
 
+  if (updating) {
+    toast("updating", {
+      style: {
+        backgroundColor: "green",
+        color: "white",
+      },
+    });
+  }
+  
   // Status colors
   const statusColors = {
     requested: "bg-yellow-500 text-white",

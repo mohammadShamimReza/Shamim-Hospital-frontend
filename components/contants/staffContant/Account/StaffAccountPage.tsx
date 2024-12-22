@@ -59,8 +59,15 @@ const UserProfile = () => {
     control,
     formState: { errors },
   } = methods;
-  const [updateStaff] = useUpdateStaffMutation();
-
+  const [updateStaff, { isLoading: updating }] = useUpdateStaffMutation();
+  if (updating) {
+    toast("updating", {
+      style: {
+        backgroundColor: "green",
+        color: "white",
+      },
+    });
+  }
   const onSubmit = async (user: User) => {
     try {
       const result = await updateStaff({

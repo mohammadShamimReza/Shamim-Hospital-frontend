@@ -24,6 +24,7 @@ export default function DoctorNoticePage() {
                 {format(new Date(notice.createdAt), "PPP p")}
               </p>
               <p className="">{notice.content}</p>
+              <p>{notice.expiryDate}</p>
             </div>
           ))}
         </div>

@@ -28,9 +28,21 @@ export default function DiagonosticPage() {
 
   const { data: diagnosticData, isLoading } = useGetAllDiagnosticQuery();
 
-  const [createDiagnostic] = useCreateDiagnosticMutation();
-  const [updateDiagnostic] = useUpdateDiagnosticMutation();
-  const [deleteDiagnostic] = useDeleteDiagnosticMutation();
+  const [createDiagnostic, { isLoading: createing }] =
+    useCreateDiagnosticMutation();
+  const [updateDiagnostic, { isLoading: updating }] =
+    useUpdateDiagnosticMutation();
+  const [deleteDiagnostic, { isLoading: deleting }] =
+    useDeleteDiagnosticMutation();
+
+  if (createing || updating || deleting) {
+    toast(createing ? "createing" : updating ? "updating" : "deleting", {
+      style: {
+        backgroundColor: "green",
+        color: "white",
+      },
+    });
+  }
 
   useEffect(() => {
     if (diagnosticData?.data) setDiagnostics(diagnosticData.data);
@@ -75,9 +87,8 @@ export default function DiagonosticPage() {
           toast("Created successfully");
         }
       }
-      //  setIsFormVisible(false);
-      //  setIsEditing(false);
-      //  setSelectedDiagnosticIndex(null);
+      setIsFormVisible(false);
+      setIsEditing(false);
     } catch (error) {
       console.log(error);
     }

@@ -31,8 +31,17 @@ const TodayAppointments = () => {
 
   console.log(appointments);
 
-  const [deleteAppointment] = useDeleteAppointmentMutation();
+  const [deleteAppointment, { isLoading: deleting }] =
+    useDeleteAppointmentMutation();
 
+  if (deleting) {
+    toast("deleting", {
+      style: {
+        backgroundColor: "green",
+        color: "white",
+      },
+    });
+  }
   const handleDeletePrescription = async (id: number) => {
     console.log(id);
     try {

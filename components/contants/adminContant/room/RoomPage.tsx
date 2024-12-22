@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import RoomForm from "./RoomForm";
-import RoomTable from "./RoomTable";
+import { useEffect, useState } from "react";
 import RoomDeleteConfirmationModal from "./RoomDeleteConfirmationModal";
 import RoomDetailsModal from "./RoomDetailsModal";
+import RoomForm from "./RoomForm";
+import RoomTable from "./RoomTable";
 
 import {
   useCreateRoomMutation,
@@ -14,8 +14,8 @@ import {
   useGetAllRoomQuery,
   useUpdateRoomMutation,
 } from "@/redux/api/roomApi";
-import { toast } from "sonner";
 import { Room } from "@/type/Index";
+import { toast } from "sonner";
 
 export default function RoomPage() {
   const [rooms, setRooms] = useState<Room[]>([]);
@@ -29,10 +29,17 @@ export default function RoomPage() {
 
   const { data: roomData, isLoading } = useGetAllRoomQuery();
 
-  const [createRoom] = useCreateRoomMutation();
-  const [updateRoom] = useUpdateRoomMutation();
-  const [deleteRoom] = useDeleteRoomMutation();
-
+  const [createRoom, { isLoading: createing }] = useCreateRoomMutation();
+  const [updateRoom, { isLoading: updating }] = useUpdateRoomMutation();
+  const [deleteRoom, { isLoading: deleting }] = useDeleteRoomMutation();
+  if (createing || updating || deleting) {
+    toast(createing ? "createing" : updating ? "updating" : "deleting", {
+      style: {
+        backgroundColor: "green",
+        color: "white",
+      },
+    });
+  }
   useEffect(() => {
     if (roomData?.data) setRooms(roomData.data);
   }, [roomData]);
@@ -72,9 +79,8 @@ export default function RoomPage() {
           toast("Created successfully");
         }
       }
-      //  setIsFormVisible(false);
-      //  setIsEditing(false);
-      //  setSelectedDoctorIndex(null);
+      setIsFormVisible(false);
+      setIsEditing(false);
     } catch (error) {
       console.log(error);
     }

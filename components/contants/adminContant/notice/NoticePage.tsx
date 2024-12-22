@@ -1,14 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import {
+  useCreateNoticeMutation,
+  useDeleteNoticeMutation,
+  useGetAllNoticeQuery,
+  useUpdateNoticeMutation,
+} from "@/redux/api/noticeApi";
+import { Notice } from "@/schemas/noticeSchema";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import DeleteConfirmationModal from "./DeleteConfirmationModal";
+import NoticeDetailsModal from "./NoticeDetailsModal";
 import NoticeForm from "./NoticeForm";
 import NoticeTable from "./NoticeTable";
-import DeleteConfirmationModal from "./DeleteConfirmationModal";
-import { Notice } from "@/schemas/noticeSchema";
-import NoticeDetailsModal from "./NoticeDetailsModal";
-import { useCreateNoticeMutation, useDeleteNoticeMutation, useGetAllNoticeQuery, useUpdateNoticeMutation } from "@/redux/api/noticeApi";
-import { toast } from "sonner";
 
 export default function NoticePage() {
   const [notices, setNotices] = useState<Notice[]>([]);
@@ -16,22 +21,28 @@ export default function NoticePage() {
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
 
-   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const { data: noticeData, isLoading } = useGetAllNoticeQuery();
 
-
-
-   const { data: noticeData, isLoading } = useGetAllNoticeQuery();
-
-   const [createNotice] = useCreateNoticeMutation();
-   const [updateNotice] = useUpdateNoticeMutation();
-   const [deleteNotice] = useDeleteNoticeMutation();
+  const [createNotice, { isLoading: createing }] = useCreateNoticeMutation();
+  const [updateNotice, { isLoading: updating }] = useUpdateNoticeMutation();
+  const [deleteNotice, { isLoading: deleting }] = useDeleteNoticeMutation();
 
   useEffect(() => {
     if (noticeData?.data) setNotices(noticeData.data);
   }, [noticeData]);
+
+  if (createing || updating || deleting) {
+    toast(createing ? "createing" : updating ? "updating" : "deleting", {
+      style: {
+        backgroundColor: "green",
+        color: "white",
+      },
+    });
+  }
 
   const handleSaveNotice = async (notice: Notice) => {
     console.log(notice, "before save");
@@ -40,37 +51,36 @@ export default function NoticePage() {
         if (notice.id) {
           const result = await updateNotice({ id: notice.id, body: notice });
           console.log("notice Updated:", result);
-         if (result?.error) {
-           toast("something went wrong", {
-             style: {
-               backgroundColor: "red",
-               color: "white",
-             },
-           });
-         } else {
-           toast("Updated successfully");
+          if (result?.error) {
+            toast("something went wrong", {
+              style: {
+                backgroundColor: "red",
+                color: "white",
+              },
+            });
+          } else {
+            toast("Updated successfully");
 
-           setIsEditing(false);
-           setIsFormVisible(false);
-         }
+            setIsEditing(false);
+            setIsFormVisible(false);
+          }
         }
       } else {
         const result = await createNotice(notice);
         console.log("notice Added:", result);
-         if (result?.error) {
-           toast("something went wrong, please provice correct info", {
-             style: {
-               backgroundColor: "red",
-               color: "white",
-             },
-           });
-         } else {
-           toast("Created successfully");
-         }
+        if (result?.error) {
+          toast("something went wrong, please provice correct info", {
+            style: {
+              backgroundColor: "red",
+              color: "white",
+            },
+          });
+        } else {
+          toast("Created successfully");
+        }
       }
-      //  setIsFormVisible(false);
-      //  setIsEditing(false);
-      //  setSelectedDoctorIndex(null);
+      setIsFormVisible(false);
+      setIsEditing(false);
     } catch (error) {
       console.log(error);
     }
@@ -82,17 +92,16 @@ export default function NoticePage() {
     setSelectedNotice(notice);
   };
 
-
   const handleDetailsModal = (notice: Notice) => {
     setSelectedNotice(notice);
     setIsDetailsModalOpen(true);
   };
 
-    const handleDeleteModal = (notice: Notice) => {
-      console.log(notice);
-      setSelectedNotice(notice);
-      setIsDeleteModalOpen(true);
-    };
+  const handleDeleteModal = (notice: Notice) => {
+    console.log(notice);
+    setSelectedNotice(notice);
+    setIsDeleteModalOpen(true);
+  };
 
   const confirmDelete = async () => {
     if (selectedNotice && selectedNotice.id) {

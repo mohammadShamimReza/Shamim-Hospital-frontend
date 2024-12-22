@@ -21,6 +21,7 @@ import {
   useGetDoctorByIdQuery,
   useUpdateDoctorMutation,
 } from "@/redux/api/doctorApi";
+import { toast } from "sonner";
 
 // Define schema with Zod
 const userSchema = z.object({
@@ -80,7 +81,16 @@ const DoctorAccountPage = () => {
     control,
     formState: { errors },
   } = methods;
-  const [updateDoctor] = useUpdateDoctorMutation();
+  const [updateDoctor, { isLoading: updating }] = useUpdateDoctorMutation();
+
+  if (updating) {
+    toast("updating", {
+      style: {
+        backgroundColor: "green",
+        color: "white",
+      },
+    });
+  }
 
   const onSubmit = async (user: User) => {
     console.log(user, user.id);

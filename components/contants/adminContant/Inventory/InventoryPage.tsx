@@ -29,9 +29,22 @@ export default function InventoryPage() {
 
   const { data: inventoryData, isLoading } = useGetAllInventoryQuery();
 
-  const [createInventory] = useCreateInventoryMutation();
-  const [updateInventory] = useUpdateInventoryMutation();
-  const [deleteInventory] = useDeleteInventoryMutation();
+  const [createInventory, { isLoading: createing }] =
+    useCreateInventoryMutation();
+  const [updateInventory, { isLoading: updating }] =
+    useUpdateInventoryMutation();
+  const [deleteInventory, { isLoading: deleting }] =
+    useDeleteInventoryMutation();
+
+  if (createing || updating || deleting) {
+    toast(createing ? "createing" : updating ? "updating" : "deleting", {
+      style: {
+        backgroundColor: "green",
+        color: "white",
+      },
+    });
+  }
+
 
   useEffect(() => {
     if (inventoryData?.data) setInventorys(inventoryData.data);
@@ -76,9 +89,8 @@ export default function InventoryPage() {
           toast("Created successfully");
         }
       }
-      //  setIsFormVisible(false);
-      //  setIsEditing(false);
-      //  setSelectedInventoryIndex(null);
+       setIsFormVisible(false);
+       setIsEditing(false);
     } catch (error) {
       console.log(error);
     }

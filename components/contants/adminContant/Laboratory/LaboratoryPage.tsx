@@ -28,9 +28,23 @@ export default function LaboratoryPage() {
 
   const { data: laboratoryData, isLoading } = useGetAllLaboratoryQuery();
 
-  const [createLaboratory] = useCreateLaboratoryMutation();
-  const [updateLaboratory] = useUpdateLaboratoryMutation();
-  const [deleteLaboratory] = useDeleteLaboratoryMutation();
+  const [createLaboratory, { isLoading: createing }] =
+    useCreateLaboratoryMutation();
+  const [updateLaboratory, { isLoading: updating }] =
+    useUpdateLaboratoryMutation();
+  const [deleteLaboratory, { isLoading: deleting }] =
+    useDeleteLaboratoryMutation();
+
+  if (createing || updating || deleting) {
+    toast(createing ? "createing" : updating ? "updating" : "deleting", {
+      style: {
+        backgroundColor: "green",
+        color: "white",
+      },
+    });
+  }
+
+
 
   useEffect(() => {
     if (laboratoryData?.data) setLaboratorys(laboratoryData.data);
