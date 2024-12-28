@@ -172,7 +172,16 @@ return (
         <div className="grid gap-2 text-center">
           <h1 className="text-3xl font-bold">Login</h1>
           <p className="text-muted-foreground">
-            Enter your email below to login to your account
+            Get all login crediantials in{" "}
+            <Link
+              className="underline text-blue-700"
+              href={
+                "https://github.com/mohammadShamimReza/Shamim-Hospital-frontend?tab=readme-ov-file#credentials-for-testing"
+              }
+              target="_blank"
+            >
+              Here
+            </Link>
           </p>
         </div>
 
@@ -261,6 +270,9 @@ return (
             </Button>
           </form>
         </FormProvider>
+        <p className="text-muted-foreground">
+          Or use the following buttons to auto-login as a specific role.
+        </p>
         <Button
           onClick={() => autoLogin("admin")}
           className="w-full mt-4 bg-gray-900 text-white hover:bg-gray-800 disabled:opacity-50"
