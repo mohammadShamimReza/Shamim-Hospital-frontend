@@ -66,25 +66,7 @@ export default function UserOverviewKPage() {
             </CardContent>
           </Card>
 
-          {/* Messaging Section */}
-          <Card className="p-4">
-            <CardHeader>
-              <MessageSquare className="text-pink-600 size-6 mb-2" />
-              <CardTitle>Messaging</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p>Facilitate direct communication between hospital staff.</p>
-              <div className="flex flex-wrap gap-2 mt-4">
-                <Button
-                  onClick={() => setSelectedMenu("Doctors")}
-                  variant="outline"
-                  className="w-full sm:w-auto"
-                >
-                  Go to Inbox
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+          
 
           {/* Services Section */}
           <Card className="p-4">

@@ -133,12 +133,7 @@ const NurseOverview = () => {
         </div>
 
         {/* Activity Log */}
-        <div className="p-4 bg-white rounded-lg shadow-lg col-span-3">
-          <h2 className="text-xl font-semibold mb-4 text-gray-700">
-            Monthly Activity Log
-          </h2>
-          <Bar data={activityLogData} />
-        </div>
+        
       </div>
     </div>
   );

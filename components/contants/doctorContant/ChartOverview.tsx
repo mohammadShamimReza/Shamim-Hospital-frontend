@@ -135,22 +135,7 @@ const DoctorOverview = () => {
         </div>
 
         {/* Top Services Provided */}
-        <div className="p-4 bg-white rounded-lg shadow-lg col-span-2">
-          <h2 className="text-xl font-semibold mb-4 text-gray-700">
-            Top Services Provided
-          </h2>
-          <Bar
-            data={topServicesData}
-            options={{
-              indexAxis: "y", // Horizontal Bar Chart
-              plugins: {
-                legend: {
-                  display: false,
-                },
-              },
-            }}
-          />
-        </div>
+       
       </div>
     </div>
   );

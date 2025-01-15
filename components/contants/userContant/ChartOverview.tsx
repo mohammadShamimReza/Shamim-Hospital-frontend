@@ -144,12 +144,7 @@ const PatientOverview = () => {
         </div>
 
         {/* Activity Timeline */}
-        <div className="p-4 bg-white rounded-lg shadow-lg col-span-2">
-          <h2 className="text-xl font-semibold mb-4 text-gray-700">
-            Monthly Activity Timeline
-          </h2>
-          <Bar data={activityData} />
-        </div>
+        
       </div>
     </div>
   );
