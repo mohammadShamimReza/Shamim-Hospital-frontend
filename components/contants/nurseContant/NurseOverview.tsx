@@ -24,7 +24,7 @@ export default function NurseOverviewPage() {
             overview of each section.
           </p>
         </header>
-        <NurseOverview />
+
         <main className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {/* Notices Section */}
           <Card className="p-4">
@@ -46,8 +46,6 @@ export default function NurseOverviewPage() {
             </CardContent>
           </Card>
 
-          
-
           <Card className="p-4">
             <CardHeader>
               <Calendar className="text-indigo-600 size-6 mb-2" />
@@ -67,6 +65,7 @@ export default function NurseOverviewPage() {
             </CardContent>
           </Card>
         </main>
+        <NurseOverview />
       </div>
     </>
   );

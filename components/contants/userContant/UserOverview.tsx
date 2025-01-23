@@ -24,7 +24,7 @@ export default function UserOverviewKPage() {
             overview of each section.
           </p>
         </header>
-        <PatientOverview />
+
         <main className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {/* Doctors Section */}
           <Card className="p-4">
@@ -66,8 +66,6 @@ export default function UserOverviewKPage() {
             </CardContent>
           </Card>
 
-          
-
           {/* Services Section */}
           <Card className="p-4">
             <CardHeader>
@@ -88,6 +86,7 @@ export default function UserOverviewKPage() {
             </CardContent>
           </Card>
         </main>
+        <PatientOverview />
       </div>
     </>
   );

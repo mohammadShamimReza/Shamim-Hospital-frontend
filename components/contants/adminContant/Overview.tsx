@@ -24,7 +24,6 @@ export default function Overview() {
             overview of each section.
           </p>
         </header>
-        <AdminOverview />
         <main className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {/* Doctors Section */}
           <Card className="p-4">
@@ -128,8 +127,6 @@ export default function Overview() {
             </CardContent>
           </Card>
 
-         
-
           {/* Services Section */}
           <Card className="p-4">
             <CardHeader>
@@ -150,6 +147,7 @@ export default function Overview() {
             </CardContent>
           </Card>
         </main>
+        <AdminOverview />
       </div>
     </>
   );
