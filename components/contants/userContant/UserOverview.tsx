@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Bell, Calendar, MessageSquare, UserIcon } from "lucide-react"; // Icons for illustration
+import { Bell, Calendar,  UserIcon } from "lucide-react"; // Icons for illustration
 
 import { useNavigation } from "@/contexts/NavigatoinContext";
 import PatientOverview from "./ChartOverview";

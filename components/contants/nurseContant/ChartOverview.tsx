@@ -76,17 +76,6 @@ const NurseOverview = () => {
     ],
   };
 
-  const activityLogData = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-    datasets: [
-      {
-        label: "Monthly Activities",
-        data: [10, 15, 12, 18, 20, 14],
-        backgroundColor: "#FFCE56",
-        hoverBackgroundColor: "#FFD97C",
-      },
-    ],
-  };
 
   return (
     <div className="p-8 bg-gray-50 min-h-screen">

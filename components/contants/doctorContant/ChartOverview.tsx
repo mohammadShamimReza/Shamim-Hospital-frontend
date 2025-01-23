@@ -84,17 +84,7 @@ const DoctorOverview = () => {
     ],
   };
 
-  const topServicesData = {
-    labels: ["General Checkup", "Cardiology", "Orthopedics", "Neurology"],
-    datasets: [
-      {
-        label: "Number of Services",
-        data: [45, 30, 20, 10],
-        backgroundColor: "#FFCE56",
-        hoverBackgroundColor: "#FFD97C",
-      },
-    ],
-  };
+
 
   return (
     <div className="p-8  min-h-screen">

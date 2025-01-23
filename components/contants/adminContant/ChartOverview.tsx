@@ -27,14 +27,7 @@ ChartJS.register(
 );
 
 // Dummy Data (Replace this with API calls later)
-const stats = [
-  { label: "Total Appointments", value: "450", growth: "+10%" },
-  { label: "Active Patients", value: "1,500", growth: "+5%" },
-  { label: "Monthly Revenue", value: "$50,000", growth: "+20%" },
-  { label: "Pending Diagnostics", value: "35", growth: "-3%" },
-  { label: "Available Inventory", value: "800 Items", growth: "-1%" },
-  { label: "Staff Members", value: "120", growth: "+8%" },
-];
+
 
 const appointmentStatusData = {
   labels: ["Requested", "Scheduled", "Completed", "Cancelled"],

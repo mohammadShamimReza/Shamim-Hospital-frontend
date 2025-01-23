@@ -83,17 +83,7 @@ const PatientOverview = () => {
     ],
   };
 
-  const activityData = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-    datasets: [
-      {
-        label: "Monthly Activities",
-        data: [4, 8, 5, 7, 6, 9],
-        backgroundColor: "#36A2EB",
-        hoverBackgroundColor: "#63B3ED",
-      },
-    ],
-  };
+ 
 
   return (
     <div className="p-8  min-h-screen">
